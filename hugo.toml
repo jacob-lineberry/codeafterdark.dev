@@ -1,0 +1,233 @@
+baseURL = 'https://codeafterdark.dev'
+languageCode = 'en-us'
+title = 'code after dark'
+theme = ['PaperMod']
+enableRobotsTXT = true
+buildDrafts = false
+buildFuture = false
+buildExpired = false
+enableEmoji = true
+pygmentsUseClasses = true
+enableGitInfo = true
+
+[minify]
+disableXML = true
+minifyOutput = true
+
+[params]
+env = 'production'
+title = 'code after dark'
+description = 'Code, cloud, and late-night thoughts.'
+images = ['/images/og-default.png']
+mainSections = ['posts']
+rssLimit = 20
+keywords = [
+    'DevOps',
+    'SWE',
+    'Cloud',
+    'Kubernetes',
+    'Architecture',
+    'Docker',
+    'CI/CD',
+]
+author = 'Jacob Lineberry'
+defaultTheme = 'dark'
+disableThemeToggle = true
+DateFormat = 'Jan 2, 2006'
+ShowReadingTime = false
+ShowShareButtons = false
+ShowPostNavLinks = false
+ShowBreadCrumbs = true
+ShowCodeCopyButtons = true
+ShowWordCount = false
+ShowRssButtonInSectionTermList = true
+UseHugoToc = true
+disableSpecial1stPost = false
+disableScrollToTop = false
+comments = false
+hidemeta = true
+hideSummary = false
+ShowToc = true
+TocOpen = true
+ShowLastMod = false
+hideFooter = false
+showRelatedPosts = true
+
+# Home page - straight to content
+[params.homeInfoParams]
+enabled = true
+title = "code after dark"
+content = """
+Code, cloud, and late-night thoughts.
+"""
+
+# Clean social presence
+[[params.socialIcons]]
+name = 'discord'
+url = 'https://discord.gg/JKGyDs7R'
+
+[[params.socialIcons]]
+name = 'github'
+url = 'https://github.com/jacob-lineberry'
+
+[[params.socialIcons]]
+name = 'LinkedIn'
+url = 'https://www.linkedin.com/in/jacoblineberry/'
+
+[[params.socialIcons]]
+name = 'email'
+url = 'mailto:jacob@codeafterdark.dev'
+
+[params.code]
+copy = true
+maxShownLines = 50
+
+# Enhanced search functionality
+[params.fuseOpts]
+isCaseSensitive = false
+shouldSort = true
+location = 0
+distance = 1000
+threshold = 0.4
+minMatchCharLength = 0
+keys = ['title', 'permalink', 'summary', 'content', 'tags']
+
+# Cover images
+[params.cover]
+hidden = false
+hiddenInList = false
+hiddenInSingle = false
+linkFullImages = true
+responsiveImages = true
+
+# Edit post link (if using GitHub)
+[params.editPost]
+URL = 'https://github.com/jacob-lineberry/codeafterdark.dev/edit/main/content'
+Text = 'Suggest Edit'
+appendFilePath = true
+
+# Assets and branding
+[params.assets]
+disableHLJS = false
+disableFingerprinting = false
+customCSS = ['css/extended/custom.css']
+favicon = '/favicon.ico'
+favicon16x16 = '/favicon-16x16.png'
+favicon32x32 = '/favicon-32x32.png'
+apple_touch_icon = '/apple-touch-icon.png'
+safari_pinned_tab = '/safari-pinned-tab.svg'
+
+# Terminal-style branding
+[params.label]
+text = '~/'
+iconHeight = 35
+
+# Analytics (uncomment when ready)
+# [params.analytics.google]
+#   SiteVerificationTag = 'YOUR_VERIFICATION_TAG'
+
+# Enhanced syntax highlighting for code
+[markup]
+defaultMarkdownHandler = 'goldmark'
+
+[markup.goldmark]
+[markup.goldmark.extensions]
+definitionList = true
+footnote = true
+linkify = true
+linkifyProtocol = 'https'
+strikethrough = true
+table = true
+taskList = true
+typographer = true
+
+[markup.goldmark.parser]
+autoHeadingID = true
+autoHeadingIDType = 'github'
+wrapStandAloneImageWithinParagraph = true
+
+[markup.goldmark.parser.attribute]
+block = true
+title = true
+
+[markup.goldmark.renderer]
+hardWraps = false
+unsafe = true
+xhtml = false
+
+[markup.highlight]
+lineNos = false
+anchorLineNos = false
+codeFences = true
+guessSyntax = true
+hl_inline = false
+lineAnchors = ''
+lineNoStart = 1
+lineNumbersInTable = true
+noClasses = false
+noHl = false
+style = 'dracula'
+tabWidth = 2
+
+[markup.tableOfContents]
+endLevel = 3
+ordered = false
+startLevel = 2
+
+# Clean URL structure
+[permalinks]
+posts = '/:year/:slug/'
+tags = '/tags/:slug/'
+categories = '/categories/:slug/'
+
+# Taxonomies for organization
+[taxonomies]
+category = 'categories'
+tag = 'tags'
+
+# Menu configuration
+[languages]
+[languages.en]
+languageName = 'EN'
+weight = 1
+
+[[languages.en.menu.main]]
+name = 'about'
+url = '/about/'
+weight = 10
+
+[[languages.en.menu.main]]
+name = 'archives'
+url = '/archives/'
+weight = 15
+
+# Output formats for search
+[outputs]
+home = ['HTML', 'RSS', 'JSON']
+
+# Privacy settings
+[privacy]
+[privacy.youtube]
+disabled = false
+privacyEnhanced = true
+
+# Service configuration
+[services]
+[services.instagram]
+disableInlineCSS = true
+
+# Sitemap for SEO
+[sitemap]
+changefreq = 'weekly'
+filename = 'sitemap.xml'
+priority = 0.5
+
+# Security settings
+[security]
+[security.exec]
+allow = ['^(dart-)?sass(-embedded)?$', '^go$', '^git$', '^npx$', '^postcss$']
+[security.funcs]
+getenv = ['^HUGO_', '^CI$']
+[security.http]
+methods = ['(?i)GET|POST']
+urls = ['.*']

@@ -1,0 +1,27 @@
+# General
+.DS_Store
+__MACOSX/
+.AppleDouble
+.LSOverride
+Icon[
+]
+
+# Cursor
+.cursorignore
+.cursorindexingignore
+
+# VSCode
+.vscode/*
+
+# Built Visual Studio Code Extensions
+*.vsix
+
+# Prettier
+.prettierignore
+.prettierrc
+
+# Hugo
+.hugo_build.lock
+public/
+.hugo_build.lock
+node_modules/
