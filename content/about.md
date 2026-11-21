@@ -25,7 +25,7 @@ I focus on AWS automation, multi-region networking, developer platforms, and sca
 
 Before Chewy, I led cloud migrations and built platform engineering practices at a major telecom. I started out in networking, which still shapes how I think about system design.
 
-Open to talk platform engineering, cloud architecture, or weird infra edge cases — jacob@codeafterdark.dev
+Open to talk platform engineering, cloud architecture, or weird infra edge cases — <jacob@codeafterdark.dev>
 
 ---
 
