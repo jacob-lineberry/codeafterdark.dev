@@ -23,5 +23,10 @@ Icon[
 # Hugo
 .hugo_build.lock
 public/
-.hugo_build.lock
+resources/
 node_modules/
+
+# Agent and design tool state (Claude Code, Impeccable); not site source
+.claude/
+.impeccable/
+PRODUCT.md
