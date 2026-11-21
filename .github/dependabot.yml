@@ -1,0 +1,10 @@
+version: 2
+updates:
+  # Also updates the lint tools: each action pins its tool version to the action release
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]

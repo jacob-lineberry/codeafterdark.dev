@@ -1,0 +1,11 @@
+# Posts are prose: long lines and inline HTML (goldmark unsafe = true) are intentional
+config:
+  MD013: false
+  MD033: false
+  # Go code blocks are tab-indented
+  MD010:
+    code_blocks: false
+  # Consecutive callouts (> [!NOTE], > [!TIP]) are separate blockquotes on purpose
+  MD028: false
+  # Compact and aligned tables are both fine
+  MD060: false

@@ -1,0 +1,4 @@
+rules:
+  # The site takes dependency updates without a waiting period; the 7 day cooldown is a dev-environment policy
+  dependabot-cooldown:
+    disable: true
