@@ -5,6 +5,10 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+  # zizmor's online audits (known-vulnerable-actions, impostor-commit) use advisory data that
+  # changes without any code change, so scan weekly too.
+  schedule:
+    - cron: "0 6 * * 1"
 
 permissions: {}
 
@@ -56,3 +60,5 @@ jobs:
           version: 1.32.0
           # Fail this job on findings instead of uploading them to code scanning
           advanced-security: false
+          # Show findings as annotations on the PR (needs advanced-security: false)
+          annotations: true
