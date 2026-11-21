@@ -2,43 +2,80 @@ name: Deploy to codeafterdark.dev
 
 on:
   push:
-    branches: ["main"]
+    branches: [main]
+  pull_request:
+  schedule:
+    # Weekly external link check; scheduled runs never deploy
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  # Cancel superseded PR builds, never an in-flight deploy
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  # Bump both together: the checksum is hugo_${HUGO_VERSION}_linux-amd64.tar.gz in the release's checksums file
+  HUGO_VERSION: 0.170.1
+  HUGO_SHA256: 841a5462853aefc9942e4de1e8a5d75584b6a5181941e6ad3f1d745190e03cd8
 
 jobs:
-  deploy:
+  build:
+    name: Build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # enableGitInfo reads each page's last commit
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Install Hugo
+        run: |
+          tarball="hugo_${HUGO_VERSION}_linux-amd64.tar.gz"
+          curl -sfL --output-dir "$RUNNER_TEMP" -O "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/${tarball}"
+          echo "${HUGO_SHA256}  ${RUNNER_TEMP}/${tarball}" | sha256sum -c -
+          mkdir -p "$RUNNER_TEMP/hugo"
+          tar -C "$RUNNER_TEMP/hugo" -xf "$RUNNER_TEMP/${tarball}" hugo
+          echo "$RUNNER_TEMP/hugo" >> "$GITHUB_PATH"
+
+      - name: Build
+        run: hugo build --gc --minify --panicOnWarning
+
+      # Internal links on every run; external sites too on the weekly schedule
+      - name: Check links
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          args: >-
+            --config lychee.toml --no-progress
+            ${{ github.event_name != 'schedule' && '--offline' || '' }}
+            --root-dir ${{ github.workspace }}/public
+            --remap 'https://codeafterdark\.dev/ file://${{ github.workspace }}/public/'
+            public
+          jobSummary: true
+
+      - if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: public
+
+  deploy:
+    name: Deploy
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          submodules: true
-          fetch-depth: 0
-
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v3
-        with:
-          hugo-version: 'latest'
-          extended: true
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Build site
-        run: hugo --minify
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./public
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

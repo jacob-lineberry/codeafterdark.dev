@@ -1,0 +1,9 @@
+# Link check for the built site (public/), as in google/docsy-example.
+# PRs check internal links offline; a weekly scheduled run also checks external ones.
+index_files = ["index.html"]
+include_fragments = "full"
+include_mail = false
+# Feeds and the search index repeat every page's links
+exclude_path = ["(^|/)index\\.(xml|json)$"]
+# LinkedIn answers automated requests with status 999
+exclude = ["^https://(www\\.)?linkedin\\.com/"]
