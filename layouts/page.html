@@ -1,0 +1,48 @@
+{{ define "main" }}
+{{- $f := partial "format.html" . }}
+{{- $isPost := eq .Section "posts" }}
+{{- $toc := .TableOfContents | replaceRE `^<nav id="TableOfContents">` "<div class=\"toc-list\">" | replaceRE `</nav>$` "</div>" }}
+{{- $hasToc := and (ne .Params.showToc false) (gt (len (findRE "<li>" $toc)) 1) }}
+<article class="post{{ with $f.data }} h-{{ .hue }}{{ end }}">
+  <header class="title-card wrap">
+    <h1 class="display post-title">{{ .Title }}</h1>
+    {{- if $isPost }}
+    {{ partial "strip.html" $f.slug }}
+    <p class="post-meta">
+      {{- with $f.data }}<a class="fmt" href="{{ printf "/formats/%s/" $f.slug | relURL }}"><i></i>{{ .name }}</a>{{ end }}
+      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format site.Params.dateFormat }}</time>
+      <span>{{ .ReadingTime }} min read</span>
+      {{- with .GetTerms "tags" }}
+      <span class="tags">{{ range . }}<a href="{{ .RelPermalink }}">{{ .LinkTitle | lower }}</a>{{ end }}</span>
+      {{- end }}
+    </p>
+    {{- else }}
+    {{- with .Description }}<p class="page-sub">{{ . }}</p>{{ end }}
+    {{- end }}
+  </header>
+
+  <div class="wrap post-grid{{ if not $hasToc }} no-toc{{ end }}">
+    {{- if $hasToc }}
+    <details class="toc-mobile">
+      <summary>Contents</summary>
+      <div class="toc">{{ $toc | safeHTML }}</div>
+    </details>
+    {{- end }}
+    <div class="prose" id="prose">
+      {{ .Content }}
+    </div>
+    {{- if $hasToc }}
+    <aside class="rail">
+      <nav class="toc" aria-labelledby="toc-h">
+        <h2 class="rail-h" id="toc-h">Contents</h2>
+        {{ $toc | safeHTML }}
+      </nav>
+    </aside>
+    {{- end }}
+  </div>
+
+  {{- if $isPost }}
+  {{ partial "post-end.html" (dict "page" . "format" $f) }}
+  {{- end }}
+</article>
+{{ end }}

@@ -1,0 +1,31 @@
+{{ define "main" }}
+{{- $isFormats := eq .Data.Plural "formats" }}
+<header class="page-head wrap">
+  <h1 class="display page-title">{{ if $isFormats }}Formats{{ else }}{{ .Title }}{{ end }}</h1>
+  {{- if $isFormats }}
+  <p class="page-sub">Every post is one of four formats, colour-keyed across the site.</p>
+  {{- end }}
+</header>
+
+<div class="wrap">
+  {{- if $isFormats }}
+  <ul class="format-list">
+    {{- range sort hugo.Data.formats "order" }}
+    {{- $n := len (index site.Taxonomies.formats .slug) }}
+    <li class="h-{{ .hue }}">
+      <span class="key-bar"></span>
+      <h2>{{ if $n }}<a href="{{ printf "/formats/%s/" .slug | relURL }}">{{ .plural }}</a>{{ else }}{{ .plural }}{{ end }}</h2>
+      <p>{{ .blurb }}</p>
+      <span class="count">{{ $n }} {{ cond (eq $n 1) "post" "posts" }}</span>
+    </li>
+    {{- end }}
+  </ul>
+  {{- else }}
+  <ul class="term-cloud">
+    {{- range .Data.Terms.ByCount }}
+    <li><a href="{{ .Page.RelPermalink }}">{{ .Page.LinkTitle | lower }}<span>{{ .Count }}</span></a></li>
+    {{- end }}
+  </ul>
+  {{- end }}
+</div>
+{{ end }}

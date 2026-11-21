@@ -1,0 +1,50 @@
+/* Chroma syntax colours from the site palette. Hugo emits classes (noClasses = false). */
+
+.chroma { color: #E3DDD0; background: transparent; }
+.chroma .line { display: flex; }
+.chroma .cl { display: block; flex: 1; }
+.chroma .hl { display: block; background: var(--ground-3); margin-inline: -1.15rem; padding-inline: 1.15rem; }
+.chroma .lnt, .chroma .ln { color: #5D5974; margin-right: 1rem; user-select: none; -webkit-user-select: none; }
+.chroma .lntd { vertical-align: top; padding: 0; margin: 0; border: 0; }
+.chroma .lntable { border-spacing: 0; padding: 0; margin: 0; border: 0; }
+
+/* Comments */
+.chroma :is(.c, .ch, .cm, .c1, .cs, .cpf) { color: var(--ink-3); font-style: italic; }
+.chroma :is(.cp) { color: var(--magenta); }
+
+/* Keywords */
+.chroma :is(.k, .kd, .kn, .kp, .kr, .kv) { color: var(--cyan); }
+.chroma .kt { color: var(--cyan); font-style: italic; }
+.chroma .kc { color: var(--magenta); }
+
+/* Names */
+.chroma :is(.nf, .fm, .nx) { color: var(--green); }
+.chroma :is(.nc, .nn, .ne) { color: var(--green); font-weight: 600; }
+.chroma :is(.nb, .bp) { color: var(--cyan); }
+.chroma :is(.na) { color: var(--green); }
+.chroma :is(.nt) { color: var(--cyan); }
+.chroma :is(.nv, .vc, .vg, .vi, .vm) { color: #E3DDD0; }
+.chroma :is(.no) { color: var(--magenta); }
+.chroma :is(.nd) { color: var(--yellow); }
+.chroma :is(.nl) { color: var(--ink-2); }
+
+/* Literals */
+.chroma :is(.s, .sa, .sb, .sc, .dl, .sd, .s2, .sh, .s1, .ss) { color: var(--yellow); }
+.chroma :is(.se, .si, .sx, .sr) { color: #F2D97E; }
+.chroma :is(.m, .mb, .mf, .mh, .mi, .il, .mo) { color: var(--magenta); }
+.chroma .l, .chroma .ld { color: var(--yellow); }
+
+/* Operators and punctuation */
+.chroma :is(.o, .ow) { color: var(--ink-2); }
+.chroma .p { color: var(--ink-3); }
+
+/* Generic (diffs, prompts, output) */
+.chroma .gd { color: var(--red); background: color-mix(in srgb, var(--red) 10%, transparent); }
+.chroma .gi { color: var(--green); background: color-mix(in srgb, var(--green) 10%, transparent); }
+.chroma :is(.gh, .gu) { color: var(--ink-3); font-weight: 600; }
+.chroma .gp { color: var(--yellow); user-select: none; -webkit-user-select: none; }
+.chroma .go { color: var(--ink-2); }
+.chroma .gr, .chroma .gt { color: var(--red); }
+.chroma .ge { font-style: italic; }
+.chroma .gs { font-weight: 700; }
+.chroma .err { color: var(--red); }

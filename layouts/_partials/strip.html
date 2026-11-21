@@ -1,0 +1,7 @@
+{{- /* The format key strip. Context: the current format slug ("" for none). */ -}}
+{{- $cur := . -}}
+<div class="strip{{ with $cur }} has-current{{ end }}" aria-hidden="true">
+  {{- range sort hugo.Data.formats "order" -}}
+  <span class="strip-bar h-{{ .hue }}{{ if eq .slug $cur }} is-current{{ end }}"></span>
+  {{- end -}}
+</div>

@@ -1,0 +1,7 @@
+{{- /* Resolves a page's format from front matter `formats = ['war-story']`.
+       Returns dict: slug (string, may be empty) and data (map from data/formats.toml, or nil). */ -}}
+{{- $slug := "" -}}
+{{- with .Params.formats -}}{{- $slug = index . 0 | urlize -}}{{- end -}}
+{{- $data := "" -}}
+{{- with $slug -}}{{- $data = index hugo.Data.formats . -}}{{- end -}}
+{{- return (dict "slug" $slug "data" $data) -}}

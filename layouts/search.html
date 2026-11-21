@@ -1,0 +1,15 @@
+{{ define "main" }}
+<header class="page-head wrap">
+  <h1 class="display page-title">Search</h1>
+  <p class="page-sub">Titles, tags and full text of every post.</p>
+</header>
+<div class="wrap search">
+  <form class="search-box" role="search" action="{{ "search/" | relURL }}" method="get">
+    <label for="q" class="sr-only">Search posts</label>
+    <input id="q" name="q" type="search" placeholder="Try “terraform” or “mtu”" autocomplete="off" spellcheck="false" data-index="{{ "index.json" | relURL }}">
+  </form>
+  <p class="search-status" id="search-status" aria-live="polite"></p>
+  <ol class="rows compact" id="search-results"></ol>
+  <noscript><p class="empty">Search needs JavaScript. Every post is also listed in the <a href="{{ "archives/" | relURL }}">archive</a>.</p></noscript>
+</div>
+{{ end }}

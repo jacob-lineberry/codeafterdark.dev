@@ -1,0 +1,22 @@
+{{- /* Source code gets a highlighted panel; terminal output and logs get a distinct
+       near-black block. Fence a block as ```console, ```terminal, ```output or ```log
+       to mark it as output. Optional {title="..."} attribute names either kind. */ -}}
+{{- $lang := .Type | lower -}}
+{{- $termLangs := slice "console" "terminal" "shell-session" "output" "log" "logs" -}}
+{{- if in $termLangs $lang -}}
+{{- $label := cond (in (slice "log" "logs") $lang) "Log" (cond (eq $lang "output") "Output" "Terminal") -}}
+{{- with .Attributes.title }}{{ $label = . }}{{ end -}}
+{{- $body := .Inner | htmlEscape -}}
+{{- $body = $body | replaceRE `(?m)^(\$|#|&gt;|PS&gt;) ` `<span class="p">$1</span> ` -}}
+{{- $body = $body | replaceRE `(?mi)^(.*\b(?:error|fatal|failed|panic|denied|refused)\b.*)$` `<span class="x">$1</span>` -}}
+{{- $body = $body | replaceRE `(?m)^(.*\b(?:WARN|WARNING)\b.*)$` `<span class="w">$1</span>` -}}
+<figure class="term">
+  <figcaption><span>{{ $label }}</span><button class="copy" type="button" hidden>Copy</button></figcaption>
+  <pre tabindex="0"><code>{{ $body | safeHTML }}</code></pre>
+</figure>
+{{- else -}}
+<figure class="code">
+  <figcaption><span>{{ with .Attributes.title }}{{ . }}{{ else }}{{ $lang | default "text" }}{{ end }}</span><button class="copy" type="button" hidden>Copy</button></figcaption>
+  {{ transform.Highlight .Inner ($lang | default "text") .Options }}
+</figure>
+{{- end -}}

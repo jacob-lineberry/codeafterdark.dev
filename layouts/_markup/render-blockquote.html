@@ -1,0 +1,14 @@
+{{- /* GitHub-style alerts become callouts:  > [!WARNING]  (NOTE, TIP, IMPORTANT, WARNING, CAUTION).
+       A custom title works too:  > [!TIP] TL;DR  */ -}}
+{{- if eq .Type "alert" -}}
+{{- $t := .AlertType | lower -}}
+{{- $names := dict "note" "Note" "tip" "Tip" "important" "Important" "warning" "Warning" "caution" "Caution" -}}
+<aside class="callout c-{{ $t }}">
+  <p class="callout-h">{{ with .AlertTitle }}{{ . }}{{ else }}{{ index $names $t | default ($t | title) }}{{ end }}</p>
+  {{ .Text }}
+</aside>
+{{- else -}}
+<blockquote{{ with .Attributes.cite }} cite="{{ . }}"{{ end }}>
+  {{ .Text }}
+</blockquote>
+{{- end -}}

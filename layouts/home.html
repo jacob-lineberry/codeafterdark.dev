@@ -1,0 +1,24 @@
+{{ define "main" }}
+<section class="intro wrap">
+  <h1 class="display intro-title">Code, cloud, and late-night thoughts.</h1>
+  <p class="intro-sub">Notes on cloud infrastructure, platform engineering and networking, by {{ site.Params.author }}.</p>
+  {{ partial "format-key.html" . }}
+</section>
+
+<section class="wrap list-section" aria-labelledby="latest">
+  <h2 id="latest" class="section-h">Latest</h2>
+  {{- $posts := where site.RegularPages "Section" "in" site.Params.mainSections }}
+  {{- with $posts }}
+  <ol class="rows lead">
+    {{- range first 12 .ByDate.Reverse }}
+    {{ partial "post-row.html" (dict "page" .) }}
+    {{- end }}
+  </ol>
+  {{- if gt (len $posts) 12 }}
+  <a class="more" href="{{ "archives/" | relURL }}">Every post, by year</a>
+  {{- end }}
+  {{- else }}
+  <p class="empty">Nothing published yet. The first posts are on their way: <a href="{{ "index.xml" | relURL }}">subscribe by RSS</a> to catch them.</p>
+  {{- end }}
+</section>
+{{ end }}

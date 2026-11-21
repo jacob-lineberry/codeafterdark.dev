@@ -1,0 +1,14 @@
+<script type="application/ld+json">
+{{- $d := dict
+  "@context" "https://schema.org"
+  "@type" "BlogPosting"
+  "headline" .Title
+  "datePublished" (.Date.Format "2006-01-02T15:04:05Z07:00")
+  "dateModified" (.Lastmod.Format "2006-01-02T15:04:05Z07:00")
+  "url" .Permalink
+  "author" (dict "@type" "Person" "name" site.Params.author)
+  "wordCount" .WordCount
+}}
+{{- with .Description }}{{ $d = merge $d (dict "description" .) }}{{ end }}
+{{ $d | jsonify | safeJS }}
+</script>

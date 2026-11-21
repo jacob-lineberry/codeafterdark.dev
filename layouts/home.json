@@ -1,0 +1,20 @@
+{{- $index := slice -}}
+{{- range where site.RegularPages "Section" "in" site.Params.mainSections -}}
+{{- $f := partial "format.html" . -}}
+{{- $fname := "" }}{{ $fhue := "" -}}
+{{- with $f.data }}{{ $fname = .name }}{{ $fhue = .hue }}{{ end -}}
+{{- $index = $index | append (dict
+  "title" .Title
+  "permalink" .RelPermalink
+  "date" (.Date.Format "2006-01-02")
+  "dateLabel" (.Date.Format "Jan 2")
+  "year" (.Date.Format "2006")
+  "minutes" .ReadingTime
+  "summary" (.Summary | plainify | htmlUnescape | truncate 200)
+  "content" (.Plain | htmlUnescape | truncate 5000)
+  "tags" (.Params.tags | default slice)
+  "format" $fname
+  "hue" $fhue
+) -}}
+{{- end -}}
+{{- $index | jsonify -}}

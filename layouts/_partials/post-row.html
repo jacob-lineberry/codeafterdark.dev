@@ -1,0 +1,18 @@
+{{- /* One post in a list. Context: dict page, compact (bool). */ -}}
+{{- $p := .page -}}
+{{- $f := partial "format.html" $p -}}
+<li class="row{{ with $f.data }} h-{{ .hue }}{{ end }}">
+  <time datetime="{{ $p.Date.Format "2006-01-02" }}">{{ $p.Date.Format "Jan 2" }} <span>{{ $p.Date.Format "2006" }}</span></time>
+  <div class="row-body">
+    <h3 class="row-title"><a href="{{ $p.RelPermalink }}">{{ $p.Title }}</a></h3>
+    {{- if not .compact }}
+    {{- with $p.Description | default $p.Summary }}
+    <p class="row-sum">{{ . | plainify | htmlUnescape | truncate 200 }}</p>
+    {{- end }}
+    {{- end }}
+  </div>
+  <p class="row-meta">
+    {{- with $f.data }}<span class="fmt"><i></i>{{ .name }}</span>{{ end -}}
+    <span>{{ $p.ReadingTime }} min</span>
+  </p>
+</li>

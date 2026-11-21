@@ -1,0 +1,19 @@
+<footer class="site-foot">
+  <div class="wrap foot-inner">
+    <div class="foot-brand">
+      {{ partial "mark.html" }}
+      <p>code after dark<span>{{ site.Params.description }}</span></p>
+    </div>
+    <nav aria-label="Elsewhere">
+      <ul class="foot-links">
+        {{- range site.Params.links }}
+        <li><a href="{{ .url }}"{{ if hasPrefix .url "http" }} rel="me noopener"{{ end }}>{{ .name }}</a></li>
+        {{- end }}
+        {{- with site.Home.OutputFormats.Get "rss" }}
+        <li><a href="{{ .RelPermalink }}">RSS</a></li>
+        {{- end }}
+      </ul>
+    </nav>
+    <p class="foot-note">© {{ now.Year }} {{ site.Params.author }}. No trackers, no comments.</p>
+  </div>
+</footer>
