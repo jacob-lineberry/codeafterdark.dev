@@ -1,0 +1,6 @@
+{{- /* A post's moment, as data: the moon that night, the date, and the hour it went up.
+       Takes dict "page", and "short" for the archive (no year, no hour). */ -}}
+{{- $p := .page -}}
+{{- $n := partial "night.html" $p.Date -}}
+<span class="when" title="{{ $n.name }}, {{ $n.lit }}% lit">{{ partial "moon.html" $n }}<time datetime="{{ $p.Date.Format "2006-01-02T15:04:05-07:00" }}">{{ if .short }}{{ $p.Date.Format "Jan 2" }}{{ else }}{{ $p.Date.Format site.Params.dateFormat }}, {{ $p.Date.Format "3:04 pm" }}{{ end }}</time></span>
+{{- /* chomp */ -}}

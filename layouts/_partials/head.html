@@ -9,11 +9,12 @@
 <meta name="author" content="{{ site.Params.author }}">
 <link rel="canonical" href="{{ .Permalink }}">
 <meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#10111C">
+<meta name="theme-color" content="#110e19">
 {{- if or .Draft (eq hugo.Environment "development") }}
 <meta name="robots" content="noindex">
 {{- end }}
-<link rel="icon" href="{{ "favicon.svg" | relURL }}" type="image/svg+xml">
+{{- $favicon := resources.Get "favicon.svg" | resources.ExecuteAsTemplate "favicon.svg" (dict "ground" "#110e19" "moon" "#ffb061") }}
+<link rel="icon" href="{{ $favicon.RelPermalink }}" type="image/svg+xml">
 {{- with .OutputFormats.Get "rss" }}
 <link rel="alternate" type="application/rss+xml" href="{{ .RelPermalink }}" title="{{ site.Title }}">
 {{- else }}
@@ -21,9 +22,10 @@
 <link rel="alternate" type="application/rss+xml" href="{{ .RelPermalink }}" title="{{ site.Title }}">
 {{- end }}
 {{- end }}
-<link rel="preload" href="{{ "fonts/anybody-normal.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="{{ "fonts/source-serif-4-normal.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
-{{- $css := slice (resources.Get "css/fonts.css") (resources.Get "css/main.css") (resources.Get "css/syntax.css") | resources.Concat "css/site.css" }}
+<link rel="preload" href="{{ "fonts/figtree-normal.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{ "fonts/maple-mono-400.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
+{{- $css := slice (resources.Get "css/fonts.css") (resources.Get "css/main.css") (resources.Get "css/syntax.css") }}
+{{- $css = $css | resources.Concat "css/site.css" }}
 {{- if hugo.IsProduction }}{{ $css = $css | minify | fingerprint }}{{ end }}
 <link rel="stylesheet" href="{{ $css.RelPermalink }}"{{ with $css.Data.Integrity }} integrity="{{ . }}"{{ end }}>
 {{ partial "opengraph.html" . }}

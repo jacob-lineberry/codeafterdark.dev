@@ -1,1 +1,4 @@
-<h{{ .Level }} id="{{ .Anchor }}"{{ with .Attributes.class }} class="{{ . }}"{{ end }}>{{ .Text }}<a class="anchor" href="#{{ .Anchor }}" aria-label="Link to “{{ .PlainText }}”">#</a></h{{ .Level }}>
+{{- /* Post headings carry their own link, a # that shows on hover. It is hidden from screen
+       readers so the heading's name stays its text; the contents link here too. */ -}}
+<h{{ .Level }} id="{{ .Anchor }}"{{ with .Attributes.class }} class="{{ . }}"{{ end }}>{{ if and (ge .Level 2) (le .Level 3) }}<a class="hash" href="#{{ .Anchor }}" aria-hidden="true" tabindex="-1">#</a>{{ end }}{{ .Text }}</h{{ .Level }}>
+{{- /* chomp */ -}}

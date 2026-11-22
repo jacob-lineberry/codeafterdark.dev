@@ -1,18 +1,18 @@
-{{- /* One post in a list. Context: dict page, compact (bool). */ -}}
+{{- /* One post in a list. Context: dict page, compact (bool), level (heading level, default 3). */ -}}
 {{- $p := .page -}}
-{{- $f := partial "format.html" $p -}}
-<li class="row{{ with $f.data }} h-{{ .hue }}{{ end }}">
-  <time datetime="{{ $p.Date.Format "2006-01-02" }}">{{ $p.Date.Format "Jan 2" }} <span>{{ $p.Date.Format "2006" }}</span></time>
-  <div class="row-body">
-    <h3 class="row-title"><a href="{{ $p.RelPermalink }}">{{ $p.Title }}</a></h3>
-    {{- if not .compact }}
-    {{- with $p.Description | default $p.Summary }}
-    <p class="row-sum">{{ . | plainify | htmlUnescape | truncate 200 }}</p>
-    {{- end }}
-    {{- end }}
-  </div>
-  <p class="row-meta">
-    {{- with $f.data }}<span class="fmt"><i></i>{{ .name }}</span>{{ end -}}
-    <span>{{ $p.ReadingTime }} min</span>
-  </p>
+{{- $h := .level | default 3 -}}
+{{- if .compact }}
+<li class="post-row">
+  {{ partial "when.html" (dict "page" $p "short" true) }}
+  <h{{ $h }}><a href="{{ $p.RelPermalink }}">{{ $p.Title }}</a></h{{ $h }}>
+  <span class="mins">{{ $p.ReadingTime }} min</span>
 </li>
+{{- else }}
+<li class="post-row">
+  <h{{ $h }}><a href="{{ $p.RelPermalink }}">{{ $p.Title }}</a></h{{ $h }}>
+  {{- with $p.Description | default $p.Summary }}
+  <p class="summary">{{ . | plainify | htmlUnescape | truncate 200 }}</p>
+  {{- end }}
+  <p class="meta">{{ partial "when.html" (dict "page" $p) }}<span>{{ $p.ReadingTime }} min read</span>{{ with $p.GetTerms "tags" }}<span class="tags">{{ partial "tags.html" $p }}</span>{{ end }}</p>
+</li>
+{{- end }}

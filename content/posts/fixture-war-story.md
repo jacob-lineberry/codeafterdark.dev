@@ -4,7 +4,6 @@ draft = true
 date = '2026-11-12T02:40:00-05:00'
 title = 'The MTU mismatch that only broke one region'
 description = 'Health checks were green and small requests were fine. Big TLS responses died in a tunnel, and one ping flag found out why.'
-formats = ['war-story']
 tags = ['networking', 'aws', 'tls']
 +++
 

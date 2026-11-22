@@ -1,42 +1,42 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" font-family="JetBrains Mono, ui-monospace, monospace">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" font-family="Maple Mono, ui-monospace, monospace">
   <!-- DESIGN FIXTURE: synthetic diagram drawn for the kitchen-sink fixture post. -->
-  <rect width="800" height="420" rx="8" fill="#15172A"/>
-  <g stroke="#3A3E5C" stroke-width="1.5" fill="none">
+  <rect width="800" height="420" rx="8" fill="#100e15"/>
+  <g stroke="#4a4458" stroke-width="1.5" fill="none">
     <path d="M400 92 L190 300"/>
     <path d="M400 92 L610 300"/>
     <path d="M190 300 L610 300"/>
   </g>
-  <g stroke="#43C3D8" stroke-width="2.5" fill="none" stroke-dasharray="6 6">
+  <g stroke="#b4abd6" stroke-width="2.5" fill="none" stroke-dasharray="6 6">
     <path d="M400 92 L190 300"/>
     <path d="M400 92 L610 300"/>
     <path d="M190 300 L610 300"/>
   </g>
-  <g stroke="#262940" stroke-width="1.5">
+  <g stroke="#34303f" stroke-width="1.5">
     <path d="M400 92 L320 34"/><path d="M400 92 L480 34"/>
     <path d="M190 300 L90 250"/><path d="M190 300 L110 370"/>
     <path d="M610 300 L710 250"/><path d="M610 300 L690 370"/>
   </g>
-  <g fill="#10111C" stroke="#43C3D8" stroke-width="2">
+  <g fill="#1b1923" stroke="#b4abd6" stroke-width="2">
     <rect x="345" y="70" width="110" height="44" rx="4"/>
     <rect x="135" y="278" width="110" height="44" rx="4"/>
     <rect x="555" y="278" width="110" height="44" rx="4"/>
   </g>
-  <g fill="#EEE7D7" font-size="13" text-anchor="middle" font-weight="600">
+  <g fill="#ece6ef" font-size="13" text-anchor="middle" font-weight="600">
     <text x="400" y="97">us-east-1</text>
     <text x="190" y="305">eu-west-1</text>
     <text x="610" y="305">ap-south-1</text>
   </g>
-  <g fill="#1B1E33" stroke="#3A3E5C">
+  <g fill="#34303f" stroke="#4a4458">
     <rect x="280" y="18" width="80" height="28" rx="3"/><rect x="440" y="18" width="80" height="28" rx="3"/>
     <rect x="40" y="236" width="80" height="28" rx="3"/><rect x="60" y="356" width="80" height="28" rx="3"/>
     <rect x="680" y="236" width="80" height="28" rx="3"/><rect x="660" y="356" width="80" height="28" rx="3"/>
   </g>
-  <g fill="#A39EB6" font-size="11" text-anchor="middle">
+  <g fill="#b6adbf" font-size="11" text-anchor="middle">
     <text x="320" y="36">vpc app</text><text x="480" y="36">vpc data</text>
     <text x="80" y="254">vpc app</text><text x="100" y="374">vpc db</text>
     <text x="720" y="254">vpc app</text><text x="700" y="374">vpc edge</text>
   </g>
-  <g fill="#43C3D8" font-size="11" text-anchor="middle">
+  <g fill="#b4abd6" font-size="11" text-anchor="middle">
     <text x="270" y="186" transform="rotate(-45 270 186)">peering</text>
     <text x="530" y="186" transform="rotate(45 530 186)">peering</text>
     <text x="400" y="292">peering</text>

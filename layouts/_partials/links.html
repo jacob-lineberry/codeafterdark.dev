@@ -1,0 +1,7 @@
+{{- /* params.links, then the feed, as list items. */ -}}
+{{- range site.Params.links }}
+<li><a href="{{ .url }}"{{ if hasPrefix .url "http" }} rel="me noopener"{{ end }}>{{ .name | lower }}</a></li>
+{{- end }}
+{{- with site.Home.OutputFormats.Get "rss" }}
+<li><a href="{{ .RelPermalink }}">rss</a></li>
+{{- end }}

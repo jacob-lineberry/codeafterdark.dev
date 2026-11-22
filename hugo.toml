@@ -20,6 +20,8 @@ minifyOutput = true
 description = 'Code, cloud, and late-night thoughts.'
 author = 'Jacob Lineberry'
 mainSections = ['posts']
+# The home page's second line: "<author> writes about <writesAbout>."
+writesAbout = 'cloud infrastructure, platform engineering and networking'
 dateFormat = 'Jan 2, 2006'
 rssLimit = 20
 keywords = ['DevOps', 'Platform engineering', 'Cloud', 'Kubernetes', 'Architecture', 'Networking', 'CI/CD']
@@ -28,8 +30,12 @@ keywords = ['DevOps', 'Platform engineering', 'Cloud', 'Kubernetes', 'Architectu
 
 # Where "Suggest an edit" links point.
 editURL = 'https://github.com/jacob-lineberry/codeafterdark.dev/edit/main/content/'
+# Where the "history" link and the rev hash in each post's memo row point.
+historyURL = 'https://github.com/jacob-lineberry/codeafterdark.dev/commits/main/content/'
+commitURL = 'https://github.com/jacob-lineberry/codeafterdark.dev/commit/'
 
-# Footer links. No analytics, comments or share widgets: see PRODUCT.md.
+# Links: the row under the subtitle on the home page, in this order (rss is added at the
+# end). No analytics, comments or share widgets: see PRODUCT.md.
 [[params.links]]
 name = 'GitHub'
 url = 'https://github.com/jacob-lineberry'
@@ -41,6 +47,11 @@ url = 'https://www.linkedin.com/in/jacoblineberry/'
 [[params.links]]
 name = 'Email'
 url = 'mailto:jacob@codeafterdark.dev'
+
+# Discord, when there is an invite link: uncomment and fill in the URL.
+# [[params.links]]
+# name = 'Discord'
+# url = 'https://discord.gg/...'
 
 [markup]
 defaultMarkdownHandler = 'goldmark'
@@ -86,14 +97,10 @@ posts = '/:year/:slug/'
 [permalinks.term]
 tags = '/tags/:slug/'
 categories = '/categories/:slug/'
-formats = '/formats/:slug/'
 
-# "formats" colour-keys every post: deep-dive, war-story, note, essay.
-# Names and colours live in data/formats.toml.
 [taxonomies]
 category = 'categories'
 tag = 'tags'
-format = 'formats'
 
 [[menus.main]]
 name = 'Posts'
@@ -109,11 +116,6 @@ weight = 20
 name = 'About'
 url = '/about/'
 weight = 30
-
-[[menus.main]]
-name = 'Search'
-url = '/search/'
-weight = 40
 
 [outputs]
 home = ['HTML', 'RSS', 'JSON']
