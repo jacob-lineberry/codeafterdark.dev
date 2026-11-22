@@ -71,8 +71,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      pages: write
-      id-token: write
+      pages: write # publish the Pages deployment
+      id-token: write # OIDC token that deploy-pages uses to verify the deployment
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
