@@ -1,32 +1,10 @@
-# General
-.DS_Store
-__MACOSX/
-.AppleDouble
-.LSOverride
-Icon[
-]
-
-# Cursor
-.cursorignore
-.cursorindexingignore
-
-# VSCode
-.vscode/*
-
-# Built Visual Studio Code Extensions
-*.vsix
-
-# Prettier
-.prettierignore
-.prettierrc
-
 # Hugo
 .hugo_build.lock
 public/
 resources/
 node_modules/
 
-# Agent and design tool state (Claude Code, Impeccable); not site source
+# Local agent and design tool state (Claude Code, Impeccable), not site source
 .claude/
 .impeccable/
 PRODUCT.md

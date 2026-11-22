@@ -1,4 +1,4 @@
-name: Deploy to codeafterdark.dev
+name: deploy
 
 on:
   push:
@@ -24,7 +24,7 @@ env:
 
 jobs:
   build:
-    name: Build
+    name: build
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -66,14 +66,14 @@ jobs:
           path: public
 
   deploy:
-    name: Deploy
+    name: deploy
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      pages: write
-      id-token: write
+      pages: write # publish the Pages deployment
+      id-token: write # OIDC token that deploy-pages uses to verify the deployment
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
