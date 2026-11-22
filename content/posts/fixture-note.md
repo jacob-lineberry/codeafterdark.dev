@@ -4,7 +4,6 @@ draft = true
 date = '2026-11-15T21:05:00-05:00'
 title = 'jq can read Terraform plans if you ask it nicely'
 description = 'One line that turns a plan into a list of resources that will be destroyed.'
-formats = ['note']
 tags = ['terraform', 'jq']
 +++
 

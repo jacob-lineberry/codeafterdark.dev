@@ -1,45 +1,46 @@
+{{- /* The end of a post: when it was written and under which moon, the posts either side,
+       related posts, and where to suggest an edit. Takes dict "page" and "night". */ -}}
 {{- $p := .page }}
+{{- $n := .night }}
 {{- $posts := where site.RegularPages "Section" "posts" }}
 {{- $newer := first 1 (where $posts "Date" "gt" $p.Date).ByDate }}
 {{- $older := first 1 (where $posts "Date" "lt" $p.Date).ByDate.Reverse }}
-{{- $related := first 3 (site.RegularPages.Related $p) }}
-<footer class="post-end wrap">
-  <div class="end-line">
-    {{- with $p.File }}
-    <a class="edit" href="{{ site.Params.editURL }}{{ .Path }}">Suggest an edit on GitHub</a>
-    {{- end }}
-    {{- with $p.Lastmod }}{{ if gt (sub .Unix $p.Date.Unix) 86400 }}
-    <span>Updated <time datetime="{{ .Format "2006-01-02" }}">{{ .Format site.Params.dateFormat }}</time></span>
-    {{- end }}{{ end }}
-  </div>
+{{- /* Related leaves out the posts the pager already links to. */}}
+{{- $related := first 3 (complement $newer $older (site.RegularPages.Related $p)) }}
+<footer class="post-end">
+  <p class="signed">{{ partial "moon.html" $n }}<span>Written at <b>{{ $p.Date.Format "3:04 pm" }}</b> on {{ $p.Date.Format site.Params.dateFormat }}, under a {{ $n.name }}{{ if not (strings.HasSuffix $n.name "moon") }} moon{{ end }}.</span></p>
 
   {{- if or $newer $older }}
-  <nav class="pager" aria-label="Previous and next posts">
+  <nav class="pager" aria-label="Older and newer posts">
     {{- range $older }}
-    {{- $f := partial "format.html" . }}
-    <a class="pager-cell older{{ with $f.data }} h-{{ .hue }}{{ end }}" href="{{ .RelPermalink }}" rel="prev">
-      <span class="pager-label">Older</span>
-      <span class="pager-title">{{ .Title }}</span>
-    </a>
-    {{- else }}<span class="pager-cell"></span>{{ end }}
+    <a class="older" href="{{ .RelPermalink }}" rel="prev"><small>Older post</small><span>{{ .Title }}</span></a>
+    {{- end }}
     {{- range $newer }}
-    {{- $f := partial "format.html" . }}
-    <a class="pager-cell newer{{ with $f.data }} h-{{ .hue }}{{ end }}" href="{{ .RelPermalink }}" rel="next">
-      <span class="pager-label">Newer</span>
-      <span class="pager-title">{{ .Title }}</span>
-    </a>
+    <a class="newer" href="{{ .RelPermalink }}" rel="next"><small>Newer post</small><span>{{ .Title }}</span></a>
     {{- end }}
   </nav>
   {{- end }}
 
   {{- with $related }}
   <section class="related" aria-labelledby="related-h">
-    <h2 class="section-h" id="related-h">Related</h2>
-    <ol class="rows compact">
+    <h2 id="related-h">Related</h2>
+    <ol>
       {{- range . }}
-      {{ partial "post-row.html" (dict "page" . "compact" true) }}
+      <li><a href="{{ .RelPermalink }}">{{ .Title }}</a><p class="meta">{{ partial "when.html" (dict "page" .) }}</p></li>
       {{- end }}
     </ol>
   </section>
   {{- end }}
+
+  <p class="edit">
+    {{- with $p.File }}
+    <a href="{{ site.Params.editURL }}{{ .Path }}">Suggest an edit</a>
+    {{- with site.Params.historyURL }}
+    <a href="{{ . }}{{ $p.File.Path }}">History</a>
+    {{- end }}
+    {{- end }}
+    {{- with $p.GitInfo }}{{ with site.Params.commitURL }}
+    <a class="rev" href="{{ . }}{{ $p.GitInfo.Hash }}" title="The commit this version of the post comes from">rev {{ $p.GitInfo.AbbreviatedHash }}</a>
+    {{- end }}{{ end }}
+  </p>
 </footer>

@@ -1,15 +1,27 @@
 {{ define "main" }}
-<section class="intro wrap">
-  <h1 class="display intro-title">Code, cloud, and late-night thoughts.</h1>
-  <p class="intro-sub">Notes on cloud infrastructure, platform engineering and networking, by {{ site.Params.author }}.</p>
-  {{ partial "format-key.html" . }}
+{{- $posts := where site.RegularPages "Section" "in" site.Params.mainSections }}
+{{- /* The room at 2am, the site's line, who writes it, where else to find them, then the
+       posts. The room's first frames come from data/scenes.json (scripts/scenes.mjs);
+       site.js redraws whichever one shows with tonight's moon. */}}
+<div class="room">
+  <pre class="art" data-mode="home" data-room="home" aria-hidden="true">{{ hugo.Data.scenes.home | safeHTML }}</pre>
+  <pre class="art" data-mode="phone" data-room="phone" aria-hidden="true">{{ hugo.Data.scenes.phone | safeHTML }}</pre>
+  {{ partial "pause.html" }}
+</div>
+<section class="intro" aria-labelledby="hello">
+  <h1 id="hello">{{ replace site.Params.description "late-night" `<span class="nw">late-night</span>` | safeHTML }}</h1>
+  <p>{{ site.Params.author }} writes about {{ site.Params.writesAbout }}.</p>
+  <nav aria-label="Elsewhere">
+    <ul class="links">
+      {{- partial "links.html" . }}
+    </ul>
+  </nav>
 </section>
 
-<section class="wrap list-section" aria-labelledby="latest">
-  <h2 id="latest" class="section-h">Latest</h2>
-  {{- $posts := where site.RegularPages "Section" "in" site.Params.mainSections }}
+<section class="home-list" aria-labelledby="latest">
+  <h2 class="vh" id="latest">Latest posts</h2>
   {{- with $posts }}
-  <ol class="rows lead">
+  <ol class="posts">
     {{- range first 12 .ByDate.Reverse }}
     {{ partial "post-row.html" (dict "page" .) }}
     {{- end }}

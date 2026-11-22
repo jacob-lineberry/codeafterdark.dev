@@ -1,21 +1,12 @@
 {{ define "main" }}
-{{- $fmt := "" }}
-{{- if eq .Data.Plural "formats" }}{{ $fmt = index hugo.Data.formats (.Data.Term | urlize) }}{{ end }}
-<header class="page-head wrap{{ with $fmt }} h-{{ .hue }}{{ end }}">
-  {{- with $fmt }}
-  <h1 class="display page-title">{{ .plural }}</h1>
-  {{ partial "strip.html" .slug }}
-  <p class="page-sub">{{ .blurb }}</p>
-  {{- else }}
-  <h1 class="display page-title"><span class="hash">#</span>{{ .Title | lower }}</h1>
-  <p class="page-sub">{{ len .Pages }} {{ cond (eq (len .Pages) 1) "post" "posts" }} tagged {{ .Title | lower }}.</p>
-  {{- end }}
-</header>
-
-<div class="wrap">
-  <ol class="rows">
+<div class="col">
+  <header class="page-head">
+    <h1><span class="hash" aria-hidden="true">#</span>{{ .Title | lower }}</h1>
+    <p class="page-sub">{{ len .Pages }} {{ cond (eq (len .Pages) 1) "post" "posts" }} tagged {{ .Title | lower }}. <a class="more" href="{{ .Parent.RelPermalink }}">all {{ .Data.Plural | lower }}</a></p>
+  </header>
+  <ol class="posts">
     {{- range .Pages.ByDate.Reverse }}
-    {{ partial "post-row.html" (dict "page" .) }}
+    {{ partial "post-row.html" (dict "page" . "level" 2) }}
     {{- end }}
   </ol>
 </div>

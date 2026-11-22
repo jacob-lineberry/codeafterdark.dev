@@ -6,17 +6,38 @@
 {{- if in $termLangs $lang -}}
 {{- $label := cond (in (slice "log" "logs") $lang) "Log" (cond (eq $lang "output") "Output" "Terminal") -}}
 {{- with .Attributes.title }}{{ $label = . }}{{ end -}}
-{{- $body := .Inner | htmlEscape -}}
-{{- $body = $body | replaceRE `(?m)^(\$|#|&gt;|PS&gt;) ` `<span class="p">$1</span> ` -}}
-{{- $body = $body | replaceRE `(?mi)^(.*\b(?:error|fatal|failed|panic|denied|refused)\b.*)$` `<span class="x">$1</span>` -}}
-{{- $body = $body | replaceRE `(?m)^(.*\b(?:WARN|WARNING)\b.*)$` `<span class="w">$1</span>` -}}
+{{- /* Commands (a prompt line and any lines it continues with a trailing \) are bright, and
+       their prompt can't be selected or copied. Output is dim; warnings and errors are tinted. */ -}}
+{{- $lines := slice -}}
+{{- $cont := false -}}
+{{- $prompt := "" -}}
+{{- range split (.Inner | htmlEscape) "\n" -}}
+  {{- $ln := . -}}
+  {{- $m := findRESubmatch `^(\$|#|&gt;|PS&gt;) (.*)$` . 1 -}}
+  {{- if $m -}}
+    {{- $ln = printf `<span class="p">%s </span><span class="cmd">%s</span>` (index $m 0 1) (index $m 0 2) -}}
+    {{- $prompt = index $m 0 1 -}}
+    {{- $cont = hasSuffix . "\\" -}}
+  {{- else if $cont -}}
+    {{- $ln = printf `<span class="cmd">%s</span>` . -}}
+    {{- $cont = hasSuffix . "\\" -}}
+  {{- else if findRE `(?i)\b(?:error|fatal|failed|panic|denied|refused)\b` . -}}
+    {{- $ln = printf `<span class="x">%s</span>` . -}}
+  {{- else if findRE `\b(?:WARN|WARNING)\b` . -}}
+    {{- $ln = printf `<span class="w">%s</span>` . -}}
+  {{- end -}}
+  {{- $lines = $lines | append $ln -}}
+{{- end -}}
+{{- $body := delimit $lines "\n" -}}
+{{- /* A block with commands ends at a fresh prompt, the cursor waiting. Not copied. */ -}}
+{{- with $prompt }}{{ $body = printf "%s\n%s" $body (printf `<span class="p" aria-hidden="true">%s </span><span class="caret" aria-hidden="true"></span>` .) }}{{ end -}}
 <figure class="term">
-  <figcaption><span>{{ $label }}</span><button class="copy" type="button" hidden>Copy</button></figcaption>
+  <figcaption><span class="label">{{ $label | lower }}</span><button class="copy" type="button" hidden>copy</button></figcaption>
   <pre tabindex="0"><code>{{ $body | safeHTML }}</code></pre>
 </figure>
 {{- else -}}
 <figure class="code">
-  <figcaption><span>{{ with .Attributes.title }}{{ . }}{{ else }}{{ $lang | default "text" }}{{ end }}</span><button class="copy" type="button" hidden>Copy</button></figcaption>
+  <figcaption><span class="label">{{ with .Attributes.title }}{{ . }}{{ else }}{{ $lang | default "text" }}{{ end }}</span><button class="copy" type="button" hidden>copy</button></figcaption>
   {{ transform.Highlight .Inner ($lang | default "text") .Options }}
 </figure>
 {{- end -}}

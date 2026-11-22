@@ -1,0 +1,11 @@
+{{- /* A 16px moon at a phase. Takes the dict from night.html. The same shape as moonPath()
+       in assets/js/room.js. */ -}}
+{{- $f := .f -}}
+<svg class="moon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle class="moon-dark" cx="8" cy="8" r="7"/>
+{{- if and (ge $f 0.0339) (lt $f 0.9661) }}
+{{- $rx := mul 7 (math.Abs (math.Cos (mul 2 math.Pi $f))) }}
+{{- $wax := le $f 0.5 }}
+{{- $sweep := cond $wax (cond (lt $f 0.25) 0 1) (cond (gt $f 0.75) 1 0) }}
+<path class="moon-lit" d="M8 1A7 7 0 0 {{ cond $wax 1 0 }} 8 15A{{ printf "%.2f" $rx }} 7 0 0 {{ $sweep }} 8 1Z"/>
+{{- end }}</svg>
+{{- /* chomp */ -}}

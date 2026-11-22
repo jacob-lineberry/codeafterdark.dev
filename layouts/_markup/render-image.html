@@ -9,7 +9,7 @@
 {{- $img := printf `<img src="%s" alt="%s" loading="lazy" decoding="async"%s>` $src .PlainText (cond (gt $w 0) (printf ` width="%d" height="%d"` $w $h) "") -}}
 {{- if .IsBlock -}}
 <figure class="fig">
-  {{ $img | safeHTML }}
+  <div class="fig-wrap">{{ $img | safeHTML }}</div>
   {{- with .Title }}
   <figcaption>{{ . | markdownify }}</figcaption>
   {{- end }}

@@ -2,9 +2,16 @@
        A custom title works too:  > [!TIP] TL;DR  */ -}}
 {{- if eq .Type "alert" -}}
 {{- $t := .AlertType | lower -}}
-{{- $names := dict "note" "Note" "tip" "Tip" "important" "Important" "warning" "Warning" "caution" "Caution" -}}
+{{- $icons := dict
+  "note" `<circle cx="8" cy="8" r="6.2"/><path d="M8 7.3v3.6M8 5.1v.1"/>`
+  "tip" `<path d="M6 12.5h4M6.6 14.5h2.8M8 1.6a4.4 4.4 0 0 0-2.6 8c.4.3.6.8.6 1.3V11h4v-.1c0-.5.2-1 .6-1.3A4.4 4.4 0 0 0 8 1.6z"/>`
+  "important" `<path d="M2.5 3.5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v6.5a1 1 0 0 1-1 1H7l-3 2.5V11h-.5a1 1 0 0 1-1-1z"/><path d="M8 5v2.6M8 9.2v.1"/>`
+  "warning" `<path d="M7.1 2.6 1.6 12.2a1 1 0 0 0 .9 1.5h11a1 1 0 0 0 .9-1.5L8.9 2.6a1 1 0 0 0-1.8 0z"/><path d="M8 6.2v3M8 11.3v.1"/>`
+  "caution" `<path d="M5.4 1.8h5.2l3.6 3.6v5.2l-3.6 3.6H5.4l-3.6-3.6V5.4z"/><path d="M8 5v3.4M8 10.8v.1"/>`
+-}}
+{{- /* The label is the kind; a custom title follows it when it says something new. */ -}}
 <aside class="callout c-{{ $t }}">
-  <p class="callout-h">{{ with .AlertTitle }}{{ . }}{{ else }}{{ index $names $t | default ($t | title) }}{{ end }}</p>
+  <p class="callout-h"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">{{ index $icons $t | default (index $icons "note") | safeHTML }}</svg>{{ $t | strings.FirstUpper }}{{ with .AlertTitle }}{{ if ne (lower .) $t }}: {{ . }}{{ end }}{{ end }}</p>
   {{ .Text }}
 </aside>
 {{- else -}}

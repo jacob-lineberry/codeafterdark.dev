@@ -1,19 +1,21 @@
 {{ define "main" }}
 {{- $posts := where site.RegularPages "Section" "in" site.Params.mainSections }}
 {{- $isArchive := eq .Section "archives" }}
-<header class="page-head wrap">
-  <h1 class="display page-title">{{ if $isArchive }}Archive{{ else }}{{ .Title }}{{ end }}</h1>
-  <p class="page-sub">
-    {{- if $isArchive }}{{ len $posts }} {{ cond (eq (len $posts) 1) "post" "posts" }}, newest first.{{ else }}{{ with .Description }}{{ . }}{{ end }}{{ end -}}
-  </p>
-</header>
+<div class="col">
+  <header class="page-head">
+    <h1>{{ if $isArchive }}Archive{{ else }}{{ .Title }}{{ end }}</h1>
+    {{- if $isArchive }}
+    <p class="page-sub">{{ len $posts }} {{ cond (eq (len $posts) 1) "post" "posts" }}, newest first.</p>
+    {{- else }}{{ with .Description }}
+    <p class="page-sub">{{ . }}</p>
+    {{- end }}{{ end }}
+  </header>
 
-<div class="wrap">
   {{- if $isArchive }}
   {{- range $posts.GroupByDate "2006" }}
   <section class="year" aria-labelledby="y-{{ .Key }}">
-    <h2 class="year-h" id="y-{{ .Key }}">{{ .Key }}</h2>
-    <ol class="rows compact">
+    <h2 class="year-h" id="y-{{ .Key }}">{{ .Key }}<span>{{ len .Pages }} {{ cond (eq (len .Pages) 1) "post" "posts" }}</span></h2>
+    <ol class="posts compact">
       {{- range .Pages }}
       {{ partial "post-row.html" (dict "page" . "compact" true) }}
       {{- end }}
@@ -24,9 +26,9 @@
   {{- end }}
   {{- else }}
   {{- with .Pages }}
-  <ol class="rows">
+  <ol class="posts">
     {{- range .ByDate.Reverse }}
-    {{ partial "post-row.html" (dict "page" .) }}
+    {{ partial "post-row.html" (dict "page" . "level" 2) }}
     {{- end }}
   </ol>
   {{- else }}

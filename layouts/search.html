@@ -1,15 +1,18 @@
 {{ define "main" }}
-<header class="page-head wrap">
-  <h1 class="display page-title">Search</h1>
-  <p class="page-sub">Titles, tags and full text of every post.</p>
-</header>
-<div class="wrap search">
-  <form class="search-box" role="search" action="{{ "search/" | relURL }}" method="get">
-    <label for="q" class="sr-only">Search posts</label>
-    <input id="q" name="q" type="search" placeholder="Try “terraform” or “mtu”" autocomplete="off" spellcheck="false" data-index="{{ "index.json" | relURL }}">
-  </form>
-  <p class="search-status" id="search-status" aria-live="polite"></p>
-  <ol class="rows compact" id="search-results"></ol>
+<div class="col">
+  <header class="page-head">
+    <h1>Search</h1>
+    <p class="page-sub">Titles, tags and the full text of every post.</p>
+  </header>
+  <div class="launcher">
+    <form class="prompt" role="search" action="{{ "search/" | relURL }}" method="get">
+      <label for="q"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg><span class="vh">Search</span></label>
+      <input id="q" name="q" type="search" placeholder="terraform, mtu, jq…" autocomplete="off" spellcheck="false" aria-describedby="search-status" aria-controls="search-results" data-index="{{ "index.json" | relURL }}">
+    </form>
+    <p class="search-status" id="search-status" aria-live="polite">Type to search.</p>
+    <ol class="results" id="search-results" aria-label="Results"></ol>
+  </div>
+  <p class="search-hint"><kbd>/</kbd> focuses search · <kbd>↓</kbd> <kbd>↑</kbd> move through results · <kbd>enter</kbd> opens the first one</p>
   <noscript><p class="empty">Search needs JavaScript. Every post is also listed in the <a href="{{ "archives/" | relURL }}">archive</a>.</p></noscript>
 </div>
 {{ end }}

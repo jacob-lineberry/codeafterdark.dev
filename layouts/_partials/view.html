@@ -1,0 +1,7 @@
+{{- /* The view from the window on one night: that night's moon over the skyline, from
+       data/scenes.json. Takes dict "night" (from night.html) and "label" (the caption). */ -}}
+<figure class="view">
+  <pre class="art" data-room="view" data-phase="{{ .night.f }}" aria-hidden="true">{{ index hugo.Data.scenes.view .night.view | safeHTML }}</pre>
+  <figcaption><span>{{ .label }}</span>{{ partial "pause.html" }}</figcaption>
+</figure>
+{{- /* chomp */ -}}

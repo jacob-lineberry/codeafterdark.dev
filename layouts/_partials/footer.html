@@ -1,19 +1,5 @@
+{{- /* One quiet line, and the moon tonight (site.js works it out from the reader's clock). */ -}}
 <footer class="site-foot">
-  <div class="wrap foot-inner">
-    <div class="foot-brand">
-      {{ partial "mark.html" }}
-      <p>code after dark<span>{{ site.Params.description }}</span></p>
-    </div>
-    <nav aria-label="Elsewhere">
-      <ul class="foot-links">
-        {{- range site.Params.links }}
-        <li><a href="{{ .url }}"{{ if hasPrefix .url "http" }} rel="me noopener"{{ end }}>{{ .name }}</a></li>
-        {{- end }}
-        {{- with site.Home.OutputFormats.Get "rss" }}
-        <li><a href="{{ .RelPermalink }}">RSS</a></li>
-        {{- end }}
-      </ul>
-    </nav>
-    <p class="foot-note">© {{ now.Year }} {{ site.Params.author }}. No trackers, no comments.</p>
-  </div>
+  <p>{{ site.Title }} · no trackers, no comments</p>
+  <p class="tonight" hidden><svg class="moon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle class="moon-dark" cx="8" cy="8" r="7"/><path class="moon-lit" d=""/></svg><span></span></p>
 </footer>

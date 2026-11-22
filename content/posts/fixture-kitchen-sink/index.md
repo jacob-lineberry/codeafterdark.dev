@@ -5,8 +5,9 @@ draft = true
 date = '2026-11-18T23:10:00-05:00'
 title = 'Designing a multi-region Transit Gateway mesh without losing your weekend'
 description = 'A worked example of every element a post can carry: code, terminal output, diagrams, tables, callouts and footnotes.'
-formats = ['deep-dive']
 tags = ['aws', 'networking', 'terraform']
+# Placeholder: shows the optional "listening to" strip.
+listening = 'Artist – Track title from an album with a long name'
 +++
 
 > [!NOTE] Design fixture

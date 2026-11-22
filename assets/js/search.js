@@ -1,21 +1,25 @@
 // Client-side search over /index.json with Fuse.js (self-hosted, no third parties).
+// Works like a launcher: type, arrow down through results, enter opens the first hit.
 
 const input = document.getElementById("q");
 const list = document.getElementById("search-results");
 const status = document.getElementById("search-status");
+const say = (text) => {
+  status.textContent = text;
+};
 
 const esc = (s) =>
   String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
-function row(item) {
-  const hue = item.hue ? ` h-${esc(item.hue)}` : "";
-  const fmt = item.format ? `<span class="fmt"><i></i>${esc(item.format)}</span>` : "";
-  return `<li class="row${hue}">
-    <time datetime="${esc(item.date)}">${esc(item.dateLabel)} <span>${esc(item.year)}</span></time>
-    <div class="row-body"><h3 class="row-title"><a href="${esc(item.permalink)}">${esc(item.title)}</a></h3>
-    <p class="row-sum">${esc(item.summary)}</p></div>
-    <p class="row-meta">${fmt}<span>${esc(item.minutes)} min</span></p>
-  </li>`;
+function row(item, i) {
+  const tags = (item.tags || [])
+    .map((t) => `<span class="tag"><span class="th" aria-hidden="true">#</span>${esc(String(t).toLowerCase())}</span>`)
+    .join("");
+  return `<li${i === 0 ? " data-selected" : ""}><a href="${esc(item.permalink)}">
+    <span class="r-title">${esc(item.title)}</span>
+    <span class="r-sum">${esc(item.summary)}</span>
+    <span class="meta"><time datetime="${esc(item.date)}">${esc(item.dateLabel)}, ${esc(item.year)}</time><span>${esc(item.minutes)} min read</span>${tags ? `<span class="tags">${tags}</span>` : ""}</span>
+  </a></li>`;
 }
 
 async function init() {
@@ -26,7 +30,7 @@ async function init() {
     if (!res.ok) throw new Error(res.status);
     data = await res.json();
   } catch {
-    status.textContent = "The search index didn't load. Try the archive instead.";
+    say("The search index didn't load. Try the archive instead.");
     return;
   }
 
@@ -42,6 +46,7 @@ async function init() {
     minMatchCharLength: 2,
   });
 
+  let hits = [];
   const run = () => {
     const q = input.value.trim();
     const url = new URL(location.href);
@@ -50,15 +55,15 @@ async function init() {
     history.replaceState(null, "", url);
 
     if (q.length < 2) {
+      hits = [];
       list.innerHTML = "";
-      status.textContent = q ? "Keep typing…" : `${data.length} ${data.length === 1 ? "post" : "posts"} to search.`;
+      say(q ? "Keep typing…" : `${data.length} ${data.length === 1 ? "post" : "posts"} to search.`);
       return;
     }
-    const hits = fuse.search(q, { limit: 30 });
-    list.innerHTML = hits.map((h) => row(h.item)).join("");
-    status.textContent = hits.length
-      ? `${hits.length} ${hits.length === 1 ? "result" : "results"} for “${q}”.`
-      : `Nothing matches “${q}”. Try a broader word, or browse the archive.`;
+    hits = fuse.search(q, { limit: 30 });
+    list.innerHTML = hits.map((h, i) => row(h.item, i)).join("");
+    if (hits.length) say(`${hits.length} ${hits.length === 1 ? "result" : "results"} for “${q}”.`);
+    else say(`Nothing matches “${q}”. Try a broader word, or browse the archive.`);
   };
 
   let t;
@@ -68,7 +73,39 @@ async function init() {
   });
   input.form.addEventListener("submit", (e) => {
     e.preventDefault();
+    clearTimeout(t);
     run();
+    if (hits.length) location.href = hits[0].item.permalink;
+  });
+
+  // Arrow keys move between the input and the result links.
+  const links = () => [...list.querySelectorAll("a")];
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowDown" && links().length) {
+      e.preventDefault();
+      links()[0].focus();
+    }
+  });
+  list.addEventListener("keydown", (e) => {
+    const items = links();
+    const i = items.indexOf(document.activeElement);
+    if (i < 0) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      items[Math.min(i + 1, items.length - 1)].focus();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (i === 0) input.focus();
+      else items[i - 1].focus();
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      input.focus();
+    }
+  });
+  list.addEventListener("focusin", (e) => {
+    list.querySelectorAll("li").forEach((li) => li.removeAttribute("data-selected"));
+    const li = e.target.closest("li");
+    if (li) li.setAttribute("data-selected", "");
   });
 
   const initial = new URLSearchParams(location.search).get("q");

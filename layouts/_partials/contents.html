@@ -1,0 +1,47 @@
+{{- /* A post's contents: its h2s, and the h3s under each. Shown when there are at least
+       three. Beside the text on wide screens (the lamp follows the section you're reading);
+       above it, folded, on narrow ones. */ -}}
+{{- $items := partial "inline/headings.html" .Fragments.Headings }}
+{{- if ge (len $items) 3 }}
+<nav class="toc" aria-labelledby="toc-h">
+  <details open>
+    <summary id="toc-h">Contents</summary>
+    <ol>
+      {{- range $items }}
+      <li{{ if not .top }} class="sub"{{ end }}><a href="#{{ .id }}">{{ .title | safeHTML }}</a></li>
+      {{- end }}
+    </ol>
+  </details>
+</nav>
+{{- end }}
+
+{{- define "_partials/inline/headings.html" }}
+{{- /* Flattens the heading tree to h2s and h3s in order; "top" marks the h2s (or an h3
+       that comes before any h2). */}}
+{{- $out := slice }}
+{{- $seenTop := false }}
+{{- range . }}
+  {{- if and .ID (eq .Level 2) }}
+    {{- $out = $out | append (dict "id" .ID "title" .Title "top" true) }}
+  {{- end }}
+  {{- range .Headings }}
+    {{- if and .ID (eq .Level 2) }}
+      {{- $out = $out | append (dict "id" .ID "title" .Title "top" true) }}
+    {{- else if and .ID (eq .Level 3) }}
+      {{- $out = $out | append (dict "id" .ID "title" .Title "top" false) }}
+    {{- end }}
+    {{- range .Headings }}
+      {{- if and .ID (eq .Level 3) }}
+        {{- $out = $out | append (dict "id" .ID "title" .Title "top" false) }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- /* An h3 before any h2 has nothing to hang from: draw it at the top level. */}}
+{{- $fixed := slice }}
+{{- range $out }}
+  {{- if .top }}{{ $seenTop = true }}{{ end }}
+  {{- $fixed = $fixed | append (cond (or .top $seenTop) . (merge . (dict "top" true))) }}
+{{- end }}
+{{- return $fixed }}
+{{- end }}

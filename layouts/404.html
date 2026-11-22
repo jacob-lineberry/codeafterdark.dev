@@ -1,12 +1,20 @@
 {{ define "main" }}
-<header class="page-head wrap lost">
-  <h1 class="display page-title">Nothing lives at this address.</h1>
-  {{ partial "strip.html" "" }}
-  <p class="page-sub">The link may be old, or the post may have moved. Try one of these instead:</p>
+<div class="col lost">
+  <header class="page-head">
+    <h1>Nothing lives at this address.</h1>
+    <p class="page-sub">The link may be old, or the post may have moved. Try one of these instead:</p>
+  </header>
   <ul class="lost-links">
-    <li><a href="{{ "/" | relURL }}">Latest posts</a></li>
-    <li><a href="{{ "archives/" | relURL }}">The archive</a></li>
-    <li><a href="{{ "search/" | relURL }}">Search</a></li>
+    {{- range site.Menus.main }}
+    {{- if ne .URL "/about/" }}
+    <li><a href="{{ .URL | relURL }}">{{ .Name | lower }}</a></li>
+    {{- end }}
+    {{- end }}
+    {{- with site.GetPage "/search" }}
+    <li><a href="{{ .RelPermalink }}">search</a></li>
+    {{- end }}
   </ul>
-</header>
+  {{- /* the view on a new moon: nothing out there either */}}
+  {{ partial "view.html" (dict "night" (dict "f" 0.0 "view" 0) "label" "a new moon: nothing out there either") }}
+</div>
 {{ end }}

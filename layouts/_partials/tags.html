@@ -1,0 +1,2 @@
+{{- /* A page's tags as #links. */ -}}
+{{- range .GetTerms "tags" }}<a class="tag" href="{{ .RelPermalink }}"><span class="th" aria-hidden="true">#</span>{{ .LinkTitle | lower }}</a>{{ end -}}
