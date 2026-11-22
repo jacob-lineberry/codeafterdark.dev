@@ -17,7 +17,8 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
-  # Bump both together: the checksum is hugo_${HUGO_VERSION}_linux-amd64.tar.gz in the release's checksums file
+  # Bump both together: the checksum is hugo_${HUGO_VERSION}_linux-amd64.tar.gz in the release's checksums file.
+  # Keep mise.toml on the same version for local builds (`mise use hugo@<version>`).
   HUGO_VERSION: 0.170.1
   HUGO_SHA256: 841a5462853aefc9942e4de1e8a5d75584b6a5181941e6ad3f1d745190e03cd8
 
