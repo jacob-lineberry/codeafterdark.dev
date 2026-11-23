@@ -6,7 +6,7 @@
 <article class="post">
   <header class="phead">
     <p class="meta">
-      {{- partial "when.html" (dict "page" .) }}
+      {{- partial "when.html" (dict "page" . "hour" true) }}
       <span>{{ .ReadingTime }} min read</span>
       {{- with .Lastmod }}{{ if gt (sub .Unix $.Date.Unix) 86400 }}
       <span>updated <time datetime="{{ .Format "2006-01-02" }}">{{ .Format "Jan 2" }}</time></span>

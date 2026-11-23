@@ -24,7 +24,6 @@
 <section class="home-list" aria-labelledby="latest">
   <div class="list-head">
     <h2 id="latest">latest</h2>
-    <span>times are when each post was written</span>
   </div>
   {{- with $posts }}
   <ol class="posts">
@@ -32,7 +31,10 @@
     {{ partial "post-row.html" (dict "page" .) }}
     {{- end }}
   </ol>
-  <p class="more">Every post, by year, is in the <a href="{{ "archives/" | relURL }}">archive</a>.</p>
+  {{- /* only when the list above doesn't hold them all; the menu has the archive too */}}
+  {{- if gt (len .) 12 }}
+  <p class="more"><a href="{{ "archives/" | relURL }}">Older posts</a></p>
+  {{- end }}
   {{- else }}
   <p class="empty">Nothing published yet. The first posts are on their way: <a href="{{ "index.xml" | relURL }}">subscribe by RSS</a> to catch them.</p>
   {{- end }}
