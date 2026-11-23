@@ -1,0 +1,32 @@
+# Miami Rice 4am
+[colors.primary]
+background = "#1d2432"
+foreground = "#ece2e6"
+
+[colors.cursor]
+cursor = "#67d3d6"
+text = "#1d2432"
+
+[colors.selection]
+background = "#444b58"
+text = "#ece2e6"
+
+[colors.normal]
+black = "#2c3342"
+red = "#e38e7b"
+green = "#96ba84"
+yellow = "#df9f4b"
+blue = "#a0c1f5"
+magenta = "#ee8ab2"
+cyan = "#67d3d6"
+white = "#b9bcd1"
+
+[colors.bright]
+black = "#9a9cb7"
+red = "#f49e8a"
+green = "#a5ca93"
+yellow = "#f0af5c"
+blue = "#b4d1ff"
+magenta = "#fe9cc3"
+cyan = "#78e3e6"
+white = "#ece2e6"

@@ -1,5 +1,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+{{- /* The palette lives in theme/miami-rice.json; assets/css/tokens.css is generated from it. */ -}}
+{{- $theme := os.ReadFile "theme/miami-rice.json" | transform.Unmarshal }}
+{{- $grounds := dict "midnight" $theme.flavours.midnight.ground "2am" (index $theme.flavours "2am").ground "4am" (index $theme.flavours "4am").ground }}
 {{- $title := site.Title }}
 {{- if not .IsHome }}{{ $title = printf "%s · %s" .Title site.Title }}{{ end }}
 <title>{{ $title }}</title>
@@ -9,11 +12,11 @@
 <meta name="author" content="{{ site.Params.author }}">
 <link rel="canonical" href="{{ .Permalink }}">
 <meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#110e19">
+<meta name="theme-color" content="{{ $theme.flavours.midnight.ground }}">
 {{- if or .Draft (eq hugo.Environment "development") }}
 <meta name="robots" content="noindex">
 {{- end }}
-{{- $favicon := resources.Get "favicon.svg" | resources.ExecuteAsTemplate "favicon.svg" (dict "ground" "#110e19" "moon" "#ffb061") }}
+{{- $favicon := resources.Get "favicon.svg" | resources.ExecuteAsTemplate "favicon.svg" (dict "ground" $theme.flavours.midnight.ground "moon" $theme.accents.flamingo) }}
 <link rel="icon" href="{{ $favicon.RelPermalink }}" type="image/svg+xml">
 {{- with .OutputFormats.Get "rss" }}
 <link rel="alternate" type="application/rss+xml" href="{{ .RelPermalink }}" title="{{ site.Title }}">
@@ -22,9 +25,30 @@
 <link rel="alternate" type="application/rss+xml" href="{{ .RelPermalink }}" title="{{ site.Title }}">
 {{- end }}
 {{- end }}
-<link rel="preload" href="{{ "fonts/figtree-normal.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="{{ "fonts/maple-mono-400.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
-{{- $css := slice (resources.Get "css/fonts.css") (resources.Get "css/main.css") (resources.Get "css/syntax.css") }}
+<link rel="preload" href="{{ "fonts/hepta-slab-latin.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{ "fonts/recursive-ui-latin.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{ "fonts/spectral-400-latin.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{ "fonts/recursive-mono-latin.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
+{{- /* The flavour of the night: the reader's local hour picks midnight (22:00-01:59, and the default
+       with no script or in daylight), 2am (02:00-03:59) or 4am (04:00-05:59). ?flavour=2am pins one
+       for next time, ?flavour=clock goes back to the clock. Runs before the stylesheet paints. */ -}}
+<script>
+(function () {
+  try {
+    var d = document.documentElement, ok = { midnight: 1, "2am": 1, "4am": 1 }, grounds = {{ $grounds | jsonify | safeJS }};
+    var q = new URLSearchParams(location.search).get("flavour"), h = new Date().getHours();
+    var f = h >= 2 && h < 4 ? "2am" : h >= 4 && h < 6 ? "4am" : "midnight";
+    if (q === "clock") localStorage.removeItem("flavour");
+    else if (ok[q]) localStorage.setItem("flavour", q);
+    var saved = localStorage.getItem("flavour");
+    if (ok[saved]) f = saved;
+    if (f !== "midnight") d.setAttribute("data-flavour", f);
+    var m = document.querySelector("meta[name=theme-color]");
+    if (m) m.setAttribute("content", grounds[f]);
+  } catch (e) {}
+})();
+</script>
+{{- $css := slice (resources.Get "css/tokens.css") (resources.Get "css/fonts.css") (resources.Get "css/main.css") (resources.Get "css/scene.css") (resources.Get "css/syntax.css") }}
 {{- $css = $css | resources.Concat "css/site.css" }}
 {{- if hugo.IsProduction }}{{ $css = $css | minify | fingerprint }}{{ end }}
 <link rel="stylesheet" href="{{ $css.RelPermalink }}"{{ with $css.Data.Integrity }} integrity="{{ . }}"{{ end }}>

@@ -1,48 +1,52 @@
-/* Chroma syntax colours (Hugo emits classes: noClasses = false), from the room's lights on
-   the sunk ground: lamp-amber keywords, screen-green strings, orchid functions, moon-blue
-   numbers and constants, lavender types, and comments in the faint text colour, italic.
-   The --sx-* tokens live in main.css. */
+/* Chroma syntax colours (Hugo emits classes: noClasses = false). Miami Rice's rules, the same
+   in the blog, the terminal and the TUIs: pink keywords (what a thing is), turquoise names (what
+   you act on), orchid for the language's own vocabulary (builtins and predeclared types), palm
+   strings, marigold numbers and constants, a lilac scaffold for punctuation and comments.
+   Chroma cannot tell a declaration from a call or colour a user-defined type, so neither is
+   attempted. The --sx-* tokens are generated into tokens.css. */
 
 .chroma { color: var(--text); background: transparent; }
 .chroma .line { display: flex; }
 .chroma .cl { display: block; flex: 1; }
-.chroma .hl { display: block; margin-inline: -1.25rem; padding-inline: 1.25rem; background: color-mix(in srgb, var(--struct) 10%, transparent); }
-.chroma .lnt, .chroma .ln { margin-right: 1rem; color: var(--faint); user-select: none; -webkit-user-select: none; }
+.chroma .hl { display: block; margin-inline: -1.25rem; padding-inline: 1.25rem; background: color-mix(in srgb, var(--brand) 10%, transparent); }
+.chroma .lnt, .chroma .ln { margin-right: 1rem; color: var(--muted); user-select: none; -webkit-user-select: none; }
 .chroma .lntd { vertical-align: top; padding: 0; margin: 0; border: 0; }
 .chroma .lntable { border-spacing: 0; padding: 0; margin: 0; border: 0; }
 
-/* Comments: Maple Mono's italic is joined-up handwriting, so they read as notes */
-.chroma :is(.c, .ch, .cm, .c1, .cs, .cpf) { color: var(--sx-c); font-style: italic; }
-.chroma .cp { color: var(--sx-t); }
+/* Comments read as notes, in italic */
+.chroma :is(.c, .ch, .cm, .c1, .cs, .cpf) { color: var(--sx-comment); font-style: italic; }
+.chroma .cp { color: var(--sx-builtin); }
 
 /* Keywords */
-.chroma :is(.k, .kd, .kn, .kp, .kr, .kv) { color: var(--sx-k); }
-.chroma .kt { color: var(--sx-t); }
-.chroma .kc { color: var(--sx-n); }
+.chroma :is(.k, .kd, .kn, .kp, .kr, .kv) { color: var(--sx-keyword); }
+.chroma .kt { color: var(--sx-type); }
+.chroma .kc { color: var(--sx-constant); }
 
 /* Names */
-.chroma :is(.nf, .fm) { color: var(--sx-f); }
-.chroma .nx { color: var(--sx-v); }
-.chroma :is(.nb, .bp, .nc, .ne) { color: var(--sx-t); }
-.chroma :is(.n, .na, .nt, .nn, .nl, .nv, .vc, .vg, .vi, .vm) { color: var(--sx-a); }
-.chroma :is(.no, .nd) { color: var(--sx-n); }
+.chroma :is(.nf, .fm, .na) { color: var(--sx-function); }
+.chroma .nx { color: var(--sx-identifier); }
+.chroma :is(.nb, .bp) { color: var(--sx-builtin); }
+.chroma :is(.nc, .ne) { color: var(--sx-type); }
+.chroma .nt { color: var(--sx-keyword); }
+.chroma :is(.n, .nn, .nl, .nv, .vc, .vg, .vi, .vm) { color: var(--sx-identifier); }
+.chroma :is(.no, .nd) { color: var(--sx-constant); }
 
 /* Literals */
-.chroma :is(.s, .sa, .sb, .sc, .dl, .sd, .s1, .s2, .sh, .ss, .l, .ld) { color: var(--sx-s); }
-.chroma :is(.se, .si, .sx, .sr, .x) { color: var(--sx-e); }
-.chroma :is(.m, .mb, .mf, .mh, .mi, .il, .mo) { color: var(--sx-n); }
+.chroma :is(.s, .sa, .sb, .sc, .dl, .sd, .s1, .s2, .sh, .ss, .l, .ld) { color: var(--sx-string); }
+.chroma :is(.se, .si, .sx, .sr, .x) { color: var(--sx-constant); }
+.chroma :is(.m, .mb, .mf, .mh, .mi, .il, .mo) { color: var(--sx-number); }
 
 /* Operators and punctuation */
-.chroma :is(.o, .ow) { color: var(--sx-o); }
-.chroma .p { color: var(--sx-p); }
+.chroma :is(.o, .ow) { color: var(--sx-punctuation); }
+.chroma .p { color: var(--sx-punctuation); }
 
 /* Generic: diffs, prompts, output */
-.chroma .gd { color: var(--err); background: color-mix(in srgb, var(--err) 12%, transparent); }
-.chroma .gi { color: var(--ok); background: color-mix(in srgb, var(--ok) 12%, transparent); }
-.chroma :is(.gh, .gu) { color: var(--struct); font-weight: 600; }
-.chroma .gp { color: var(--struct); user-select: none; -webkit-user-select: none; }
-.chroma .go { color: var(--dim); }
-.chroma :is(.gr, .gt) { color: var(--err); }
+.chroma .gd { color: var(--removed); background: color-mix(in srgb, var(--removed) 12%, transparent); }
+.chroma .gi { color: var(--added); background: color-mix(in srgb, var(--added) 12%, transparent); }
+.chroma :is(.gh, .gu) { color: var(--brand); font-weight: 600; }
+.chroma .gp { color: var(--brand); user-select: none; -webkit-user-select: none; }
+.chroma .go { color: var(--soft); }
+.chroma :is(.gr, .gt) { color: var(--err-text); }
 .chroma .ge { font-style: italic; }
 .chroma .gs { font-weight: 600; }
-.chroma .err { color: var(--err); }
+.chroma .err { color: var(--err-text); }

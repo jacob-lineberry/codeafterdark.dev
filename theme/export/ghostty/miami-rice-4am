@@ -1,0 +1,23 @@
+# Miami Rice 4am
+background = #1d2432
+foreground = #ece2e6
+cursor-color = #67d3d6
+cursor-text = #1d2432
+selection-background = #444b58
+selection-foreground = #ece2e6
+palette = 0=#2c3342
+palette = 1=#e38e7b
+palette = 2=#96ba84
+palette = 3=#df9f4b
+palette = 4=#a0c1f5
+palette = 5=#ee8ab2
+palette = 6=#67d3d6
+palette = 7=#b9bcd1
+palette = 8=#9a9cb7
+palette = 9=#f49e8a
+palette = 10=#a5ca93
+palette = 11=#f0af5c
+palette = 12=#b4d1ff
+palette = 13=#fe9cc3
+palette = 14=#78e3e6
+palette = 15=#ece2e6

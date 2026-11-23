@@ -30,6 +30,23 @@
   </div>
   {{ partial "post-end.html" (dict "page" . "night" $n) }}
 </article>
+{{- else if .Params.view }}
+{{- /* A page with the window beside it (about): the same two columns as a post, with the
+       view as it is tonight. */}}
+<article class="post">
+  <header class="phead">
+    <h1>{{ .Title }}</h1>
+    {{- with .Description }}
+    <p class="lede">{{ . }}</p>
+    {{- end }}
+  </header>
+  <div class="side">
+    {{ partial "view.html" (dict "label" "the view from the desk, tonight") }}
+  </div>
+  <div class="prose" id="prose">
+    {{ .Content }}
+  </div>
+</article>
 {{- else }}
 <article class="col">
   <header class="page-head">

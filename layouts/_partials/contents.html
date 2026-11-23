@@ -1,5 +1,5 @@
 {{- /* A post's contents: its h2s, and the h3s under each. Shown when there are at least
-       three. Beside the text on wide screens (the lamp follows the section you're reading);
+       three. Beside the text on wide screens (the section you're reading is lit);
        above it, folded, on narrow ones. */ -}}
 {{- $items := partial "inline/headings.html" .Fragments.Headings }}
 {{- if ge (len $items) 3 }}

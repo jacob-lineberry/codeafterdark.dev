@@ -13,6 +13,6 @@
   {{- with $p.Description | default $p.Summary }}
   <p class="summary">{{ . | plainify | htmlUnescape | truncate 200 }}</p>
   {{- end }}
-  <p class="meta">{{ partial "when.html" (dict "page" $p) }}<span>{{ $p.ReadingTime }} min read</span>{{ with $p.GetTerms "tags" }}<span class="tags">{{ partial "tags.html" $p }}</span>{{ end }}</p>
+  <p class="meta">{{ partial "when.html" (dict "page" $p) }}{{ with $p.GetTerms "tags" }}<span class="tags">{{ partial "tags.html" $p }}</span>{{ end }}</p>
 </li>
 {{- end }}

@@ -1,16 +1,19 @@
 {{ define "main" }}
 {{- $posts := where site.RegularPages "Section" "in" site.Params.mainSections }}
-{{- /* The room at 2am, the site's line, who writes it, where else to find them, then the
-       posts. The room's first frames come from data/scenes.json (scripts/scenes.mjs);
-       site.js redraws whichever one shows with tonight's moon. */}}
+{{- /* Layout L1, one centred axis: the room, the wordmark, the tagline, who writes it, where else
+       to find them, then the posts in a narrow column. The room is drawn ahead of time into
+       data/scenes.json (scripts/scenes.mjs) with the moon as it was when the site was built;
+       site.js turns the moon to tonight's. */}}
+{{- $scenes := hugo.Data.scenes }}
+{{- $n := partial "night.html" now }}
 <div class="room">
-  <pre class="art" data-mode="home" data-room="home" aria-hidden="true">{{ hugo.Data.scenes.home | safeHTML }}</pre>
-  <pre class="art" data-mode="phone" data-room="phone" aria-hidden="true">{{ hugo.Data.scenes.phone | safeHTML }}</pre>
+  <div class="frame">{{ $scenes.home.head | safeHTML }}<g class="moon" data-tonight>{{ index $scenes.moons $n.view | safeHTML }}</g>{{ $scenes.home.tail | safeHTML }}</div>
   {{ partial "pause.html" }}
 </div>
 <section class="intro" aria-labelledby="hello">
-  <h1 id="hello">{{ replace site.Params.description "late-night" `<span class="nw">late-night</span>` | safeHTML }}</h1>
-  <p>{{ site.Params.author }} writes about {{ site.Params.writesAbout }}.</p>
+  <h1 id="hello" class="wordmark">{{ site.Title }}</h1>
+  <p class="tagline">{{ replace (strings.TrimSuffix "." (site.Params.description | lower)) "late-night" `<span class="nw">late-night</span>` | safeHTML }}</p>
+  <p class="about">{{ site.Params.author }} writes about {{ site.Params.writesAbout }}.</p>
   <nav aria-label="Elsewhere">
     <ul class="links">
       {{- partial "links.html" . }}
@@ -19,16 +22,17 @@
 </section>
 
 <section class="home-list" aria-labelledby="latest">
-  <h2 class="vh" id="latest">Latest posts</h2>
+  <div class="list-head">
+    <h2 id="latest">latest</h2>
+    <span>times are when each post was written</span>
+  </div>
   {{- with $posts }}
   <ol class="posts">
     {{- range first 12 .ByDate.Reverse }}
     {{ partial "post-row.html" (dict "page" .) }}
     {{- end }}
   </ol>
-  {{- if gt (len $posts) 12 }}
-  <a class="more" href="{{ "archives/" | relURL }}">Every post, by year</a>
-  {{- end }}
+  <p class="more">Every post, by year, is in the <a href="{{ "archives/" | relURL }}">archive</a>.</p>
   {{- else }}
   <p class="empty">Nothing published yet. The first posts are on their way: <a href="{{ "index.xml" | relURL }}">subscribe by RSS</a> to catch them.</p>
   {{- end }}

@@ -1,5 +1,5 @@
 {{- /* What was playing while it was written: `listening = 'Artist – Track'` in a post's front
-       matter. Optional; nothing shows without it. A long name scrolls (site.js), under the
-       page's pause control. */ -}}
-<p class="np"><span class="np-icon" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false" fill="currentColor"><path d="M4.5 2.8v10.4L13 8z"/></svg></span><span class="np-label">listening to</span><span class="np-track"><span>{{ . }}</span></span></p>
+       matter. Optional; nothing shows without it. A long name is cut short with an ellipsis
+       (the full name is in the title); it never scrolls. */ -}}
+<p class="np"><span class="np-icon" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false" fill="currentColor"><path d="M4.5 2.8v10.4L13 8z"/></svg></span><span class="np-label">listening to</span><span class="np-track" title="{{ . }}">{{ . }}</span></p>
 {{- /* chomp */ -}}

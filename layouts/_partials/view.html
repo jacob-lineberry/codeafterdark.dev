@@ -1,7 +1,12 @@
-{{- /* The view from the window on one night: that night's moon over the skyline, from
-       data/scenes.json. Takes dict "night" (from night.html) and "label" (the caption). */ -}}
+{{- /* The view from the window on one night: that night's moon over Miami, from
+       data/scenes.json. Takes dict "night" (from night.html) and "label" (the caption).
+       Without "night" it is the view tonight: site.js turns the moon to the reader's. */ -}}
+{{- $scenes := hugo.Data.scenes }}
 <figure class="view">
-  <pre class="art" data-room="view" data-phase="{{ .night.f }}" aria-hidden="true">{{ index hugo.Data.scenes.view .night.view | safeHTML }}</pre>
+  <div class="frame">{{ $scenes.view.head | safeHTML }}
+    {{- with .night }}<g class="moon">{{ index $scenes.moons .view | safeHTML }}</g>
+    {{- else }}{{ $n := partial "night.html" now }}<g class="moon" data-tonight>{{ index $scenes.moons $n.view | safeHTML }}</g>
+    {{- end }}{{ $scenes.view.tail | safeHTML }}</div>
   <figcaption><span>{{ .label }}</span>{{ partial "pause.html" }}</figcaption>
 </figure>
 {{- /* chomp */ -}}

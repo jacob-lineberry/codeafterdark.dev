@@ -61,6 +61,20 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "spoke" {
 }
 ```
 
+Adding the third region is one change to the hub list:
+
+```diff
+ module "hub" {
+   for_each = toset([
+     "us-east-1",
+     "eu-west-1",
++    "ap-southeast-2",
+   ])
+-  asn_base = 64512
++  asn_base = 64600
+ }
+```
+
 ### Checking the routes
 
 After an apply, ask each hub what it thinks the world looks like:
