@@ -1,9 +1,12 @@
-{{- /* The top bar: the moon and the name, the main menu as words, then search ("/" jumps
-       there) and rss as icons. */ -}}
+{{- /* The top bar. Inside the site: the moon and the name, the menu as words, search as a word
+       with its "/" hint, and an rss icon. The home page (layout L1) has no brand, since the
+       wordmark sits under the room: the menu and search are centred on one line. */ -}}
 {{- $here := .RelPermalink }}
 {{- $inPosts := and .IsPage (eq .Section "posts") }}
-<header class="top">
+<header class="top{{ if .IsHome }} top--home{{ end }}">
+  {{- if not .IsHome }}
   <a class="brand" href="{{ "/" | relURL }}"{{ if .IsHome }} aria-current="page"{{ end }}>{{ partial "mark.html" }}code after dark</a>
+  {{- end }}
   <nav aria-label="Main">
     <ul class="top-links">
       {{- range site.Menus.main }}
@@ -16,10 +19,10 @@
   </nav>
   <div class="tools">
     {{- with site.GetPage "/search" }}
-    <a class="tool" href="{{ .RelPermalink }}" aria-label="Search" aria-keyshortcuts="/"{{ if eq $here .RelPermalink }} aria-current="page"{{ end }}><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg><kbd aria-hidden="true">/</kbd></a>
+    <a class="tool tool-word" href="{{ .RelPermalink }}" aria-keyshortcuts="/"{{ if eq $here .RelPermalink }} aria-current="page"{{ end }}>search<kbd aria-hidden="true">/</kbd></a>
     {{- end }}
-    {{- with site.Home.OutputFormats.Get "rss" }}
+    {{- with site.Home.OutputFormats.Get "rss" }}{{ if not $.IsHome }}
     <a class="tool" href="{{ .RelPermalink }}" aria-label="RSS feed"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3a10 10 0 0 1 10 10M3 7.5A5.5 5.5 0 0 1 8.5 13"/><circle cx="3.6" cy="12.4" r="1" fill="currentColor" stroke="none"/></svg></a>
-    {{- end }}
+    {{- end }}{{ end }}
   </div>
 </header>

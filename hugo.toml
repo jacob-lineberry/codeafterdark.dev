@@ -21,10 +21,10 @@ description = 'Code, cloud, and late-night thoughts.'
 author = 'Jacob Lineberry'
 mainSections = ['posts']
 # The home page's second line: "<author> writes about <writesAbout>."
-writesAbout = 'cloud infrastructure, platform engineering and networking'
+writesAbout = 'distributed systems, Go, Linux and the projects that happen after hours'
 dateFormat = 'Jan 2, 2006'
 rssLimit = 20
-keywords = ['DevOps', 'Platform engineering', 'Cloud', 'Kubernetes', 'Architecture', 'Networking', 'CI/CD']
+keywords = ['Go', 'Distributed systems', 'Production engineering', 'Linux', 'Kubernetes', 'gRPC', 'AWS']
 # Default social card. Add static/images/og-default.png (1200x630) to enable it.
 # images = ['/images/og-default.png']
 

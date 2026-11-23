@@ -1,0 +1,32 @@
+# Miami Rice Midnight
+[colors.primary]
+background = "#18172c"
+foreground = "#ece2e6"
+
+[colors.cursor]
+cursor = "#67d3d6"
+text = "#18172c"
+
+[colors.selection]
+background = "#3d3d52"
+text = "#ece2e6"
+
+[colors.normal]
+black = "#26263c"
+red = "#e38e7b"
+green = "#96ba84"
+yellow = "#df9f4b"
+blue = "#a0c1f5"
+magenta = "#ee8ab2"
+cyan = "#67d3d6"
+white = "#b9bcd1"
+
+[colors.bright]
+black = "#9a9cb7"
+red = "#f49e8a"
+green = "#a5ca93"
+yellow = "#f0af5c"
+blue = "#b4d1ff"
+magenta = "#fe9cc3"
+cyan = "#78e3e6"
+white = "#ece2e6"

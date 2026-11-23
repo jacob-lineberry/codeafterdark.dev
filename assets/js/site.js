@@ -1,5 +1,17 @@
 // code after dark: progressive enhancements. The site works without this file.
-import { draw, html, moonLit, moonName, moonPath, moonPhase, windowsOf } from "./room.js";
+import { moonLit, moonName, moonPath, moonPhase, moonSVG } from "./room.js";
+
+// One polite live region, so a screen reader hears what a button did.
+let live;
+function announce(text) {
+  if (!live) {
+    live = Object.assign(document.createElement("p"), { className: "vh" });
+    live.setAttribute("aria-live", "polite");
+    document.body.append(live);
+  }
+  live.textContent = "";
+  setTimeout(() => { live.textContent = text; }, 50);
+}
 
 // Copy buttons. A terminal copies only its commands (no prompts, no output); source code
 // and output-only blocks copy everything a reader would select.
@@ -26,9 +38,11 @@ function initCopy() {
         await navigator.clipboard.writeText(text);
         btn.textContent = "copied";
         btn.dataset.state = "done";
+        announce(cmds.length ? "Commands copied" : "Code copied");
       } catch {
         btn.textContent = "copy failed";
         btn.dataset.state = "error";
+        announce("Copy failed. Select the code and copy it by hand.");
       }
       clearTimeout(timer);
       timer = setTimeout(() => {
@@ -79,46 +93,38 @@ function initOverflow() {
   });
 }
 
-// The night's small life: windows across the street light up and go dark, the antenna
-// blinks, a long track name scrolls. One pause control stops all of it, and is remembered.
-// Without JavaScript, or with reduced motion asked for, the room starts still.
+// The night's small life: windows across the street light up and go dark, the beacon on the
+// hotel roof blinks, the caret blinks on the monitor, the steam drifts and the cat's zzz rise.
+// One pause control stops all of it, and is remembered. Without JavaScript, or with reduced
+// motion asked for, the room starts still.
 function initNight() {
   const root = document.documentElement;
-  let paused = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let paused = reduced.matches;
   try {
     const saved = localStorage.getItem("cad-paused");
     if (saved !== null) paused = saved === "1";
   } catch {}
 
+  // the room was drawn with the moon of the day the site was built; show tonight's
   const now = moonPhase(Date.now());
-  const rooms = [...document.querySelectorAll("pre[data-room]")].map((pre) => ({
-    pre,
-    name: pre.dataset.room,
-    phase: pre.dataset.phase ? Number(pre.dataset.phase) : now,
-    flip: new Set(),
-  }));
-  const paint = (r) => { r.pre.innerHTML = html(draw(r.name, { phase: r.phase, flip: r.flip })); };
-  // the home room shows tonight's moon, not the one it was built with
-  rooms.filter((r) => !r.pre.dataset.phase).forEach(paint);
+  document.querySelectorAll(".scene .moon[data-tonight]").forEach((g) => { g.innerHTML = moonSVG(now); });
 
-  // a long track name scrolls, carrying a second copy so the loop is seamless
-  document.querySelectorAll(".np-track").forEach((box) => {
-    const span = box.firstElementChild;
-    if (!span || span.scrollWidth <= box.clientWidth) return;
-    const text = span.textContent;
-    const copy = (hidden) => Object.assign(document.createElement("span"), { textContent: text, ...(hidden && { ariaHidden: "true" }) });
-    span.replaceChildren(copy(false), copy(true));
-    box.classList.add("scroll");
-  });
+  const rooms = [...document.querySelectorAll("svg.scene")].map((svg) => ({ svg, windows: [...svg.querySelectorAll(".w")] }));
+  // a window's lit state comes from the hour (scene.css); a flip overrides it
+  const isLit = (w) => getComputedStyle(w).display !== "none";
+  const flip = (w) => { w.style.display = isLit(w) ? "none" : "inline"; };
 
+  let away = null; // the room after dark, while it runs (see below)
   const buttons = [...document.querySelectorAll(".pause")];
   const set = (p) => {
     paused = p;
     root.classList.toggle("motion", !p);
     buttons.forEach((b) => {
       b.dataset.state = p ? "paused" : "playing";
-      b.querySelector("span").textContent = p ? "play" : "pause";
+      b.querySelector("span").textContent = p ? "play motion" : "pause motion";
     });
+    if (p) rest();
   };
   buttons.forEach((b) => {
     b.hidden = false;
@@ -128,25 +134,65 @@ function initNight() {
     });
   });
   set(paused);
+  // asking for less motion mid-visit stops the room, whatever was chosen before
+  reduced.addEventListener("change", (e) => { if (e.matches) set(true); });
 
   // a window across the street, every few seconds, never on a beat; only rooms on screen
   const seen = new Set();
   if ("IntersectionObserver" in window) {
     const io = new IntersectionObserver((es) => es.forEach((e) => (e.isIntersecting ? seen.add(e.target) : seen.delete(e.target))));
-    rooms.forEach((r) => io.observe(r.pre));
+    rooms.forEach((r) => io.observe(r.svg));
   }
+  const pick = (a) => a[Math.floor(Math.random() * a.length)];
   const tick = () => {
     if (!paused && !document.hidden) {
-      rooms.filter((r) => seen.has(r.pre) && r.pre.offsetParent).forEach((r) => {
-        const n = windowsOf(r.name).length;
-        const i = Math.floor(Math.random() * n);
-        if (!r.flip.delete(i)) r.flip.add(i);
-        paint(r);
-      });
+      rooms.filter((r) => seen.has(r.svg) && r.windows.length && r !== away?.r).forEach((r) => flip(pick(r.windows)));
     }
     setTimeout(tick, 2600 + Math.random() * 3400);
   };
   if (rooms.length) setTimeout(tick, 2000);
+
+  // After dark: when the home room has been left alone for a while, it comes alive a little
+  // more. More windows light across the street, the cat's tail twitches, and now and then a
+  // star falls behind the palm. It is only in the picture, never over text, and any input ends
+  // it. It never starts while paused, with reduced motion, or on a post.
+  const AWAY_MS = 90000;
+  let last = Date.now();
+  function rest() {
+    if (!away) return;
+    clearInterval(away.timer);
+    away.lit.forEach(flip);
+    away.star?.classList.remove("go");
+    root.classList.remove("away");
+    away = null;
+  }
+  ["pointermove", "pointerdown", "keydown", "wheel", "touchstart", "scroll"].forEach((type) =>
+    window.addEventListener(type, () => { last = Date.now(); rest(); }, { passive: true, capture: true }));
+  document.addEventListener("visibilitychange", () => { if (document.hidden) rest(); });
+  const home = rooms.find((r) => r.svg.dataset.room === "home");
+  const star = home?.svg.querySelector(".falling");
+  star?.addEventListener("animationend", () => star.classList.remove("go"));
+  if (home)
+    setInterval(() => {
+      if (away || paused || document.hidden || reduced.matches || Date.now() - last < AWAY_MS || !seen.has(home.svg)) return;
+      let n = 0;
+      away = { r: home, lit: [], star, timer: 0 };
+      root.classList.add("away");
+      // twice a second: a window every second and a half, until about two in three are lit;
+      // a star every fifteen seconds
+      away.timer = setInterval(() => {
+        n++;
+        if (n % 3 === 0) {
+          const dark = home.windows.filter((w) => !isLit(w));
+          if (dark.length > home.windows.length * 0.35) {
+            const w = pick(dark);
+            flip(w);
+            away.lit.push(w);
+          }
+        }
+        if (star && n % 30 === 8) star.classList.add("go");
+      }, 500);
+    }, 5000);
 
   // the moon tonight, in the footer
   document.querySelectorAll(".tonight").forEach((el) => {
@@ -156,7 +202,7 @@ function initNight() {
   });
 }
 
-// Contents: the lamp follows the section you're reading. On narrow screens the list folds.
+// Contents: the section you're reading is lit. On narrow screens the list folds.
 function initContents() {
   const toc = document.querySelector(".toc");
   if (!toc) return;

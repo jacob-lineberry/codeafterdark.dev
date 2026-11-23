@@ -1,55 +1,29 @@
 ---
+title: "About"
+description: "I'm Jacob Lineberry. This is where I write things down after the workday ends."
 date: 2025-01-01
-title: "~/about.md"
-draft: false
+view: true
 showToc: false
-TocOpen: false
-hidemeta: true
-comments: false
-disableShare: true
-hideSummary: true
-searchHidden: true
-ShowReadingTime: false
-ShowBreadCrumbs: false
-ShowPostNavLinks: false
-ShowWordCount: false
 ---
 
-## $ `whoami`
+I'm a software engineer at Zscaler, working on production engineering and distributed systems. Most days that means Go services talking gRPC over mTLS, queues on SQS, and all of it running on EKS.
 
-I'm Jacob Lineberry and I work as a Cloud Engineer at Chewy. I build platform tooling and infrastructure for engineering teams.
+## What this site is
 
-## $ `cat ~/README.md`
+Code after dark is where I write things down once the workday is over, usually late, with music on and the window open.
 
-I focus on AWS automation, multi-region networking, developer platforms, and scaling infrastructure.
+Expect coding projects, notes on Linux, things distributed systems have taught me the hard way, and now and then something about AI. Some posts will be long write-ups. Some will be a few lines I didn't want to lose.
 
-Before Chewy, I led cloud migrations and built platform engineering practices at a major telecom. I started out in networking, which still shapes how I think about system design.
+Everything here comes from something I built, broke or debugged myself. There are no trackers and no comments.
 
-Open to talk platform engineering, cloud architecture, or weird infra edge cases — <jacob@codeafterdark.dev>
+## How I got here
 
----
+Before Zscaler I was a cloud engineer at Chewy, building platform tooling and infrastructure for engineering teams. Before that I led cloud migrations and built platform engineering practices at a major telecom.
 
-## $ `ls -la ~/tech_stack`
+I started out in networking, and it still shapes how I think about system design.
 
-```markdown
-drwxr-xr-x  cloud/
-├── aws/             # Multi-account architecture, automation
-├── gcp/             # Multi-cloud familiarity
-└── terraform/       # Infrastructure as Code
+## Say hello
 
-drwxr-xr-x  languages/
-├── python*          # Automation, tooling
-├── go*              # CLIs, services
-└── bash*            # Scripting glue
+If a post helped, or got something wrong, I'd like to hear about it.
 
-drwxr-xr-x  platform/
-├── kubernetes/      # Orchestration
-├── jenkins/         # CI/CD
-├── backstage/       # Developer portal
-└── github-actions/  # Workflow automation
-
-drwxr-xr-x  observability/
-├── dynatrace/       # APM
-├── datadog/         # Metrics
-├── splunk/          # Logs
-└── opentelemetry/   # Tracing
+{{< elsewhere >}}

@@ -1,0 +1,127 @@
+{
+  "name": "Miami Rice",
+  "tagline": "making the terminal cozy",
+  "inspiration": "Miami nights, 1987, through a nostalgic lens (the Polaroid grade)",
+  "$about": "Single source of truth. Edit here, then run `node scripts/theme.mjs` to regenerate assets/css/tokens.css and theme/export/*. Palette locked 2026-11-23 (rounds 32-34); evidence in .impeccable/research/terminal-themes/FINDINGS.md rules 28-35.",
+  "accents": {
+    "flamingo": "#fe9cc3",
+    "azalea": "#ee8ab2",
+    "orchid": "#c796e9",
+    "periwinkle": "#a0c1f5",
+    "turquoise": "#67d3d6",
+    "palm": "#96ba84",
+    "marigold": "#df9f4b",
+    "coral": "#e38e7b"
+  },
+  "neutrals": {
+    "text": "#ece2e6",
+    "soft": "#b9bcd1",
+    "subtle": "#9a9cb7"
+  },
+  "flavours": {
+    "midnight": {
+      "hour": "12am",
+      "label": "Midnight",
+      "note": "violet-indigo, the neon coming on",
+      "ground": "#18172c",
+      "surface": "#1f1f34",
+      "overlay": "#26263c",
+      "hlLow": "#222238",
+      "hlMed": "#3d3d52",
+      "hlHigh": "#4e4e62",
+      "muted": "#727289",
+      "glow": "flamingo"
+    },
+    "2am": {
+      "hour": "2am",
+      "label": "2am",
+      "note": "deep navy, the darkest hour",
+      "ground": "#051022",
+      "surface": "#0b172a",
+      "overlay": "#121e32",
+      "hlLow": "#0e1a2d",
+      "hlMed": "#283447",
+      "hlHigh": "#3a4557",
+      "muted": "#687589",
+      "glow": "orchid"
+    },
+    "4am": {
+      "hour": "4am",
+      "label": "4am",
+      "note": "dusk slate, the sky starting to pale",
+      "ground": "#1d2432",
+      "surface": "#252c3a",
+      "overlay": "#2c3342",
+      "hlLow": "#282f3e",
+      "hlMed": "#444b58",
+      "hlHigh": "#565c68",
+      "muted": "#6a758a",
+      "glow": "periwinkle"
+    }
+  },
+  "roles": {
+    "brand": "flamingo",
+    "action": "turquoise",
+    "keyword": "azalea",
+    "vocabulary": "orchid",
+    "success": "palm",
+    "string": "palm",
+    "added": "palm",
+    "number": "marigold",
+    "warning": "marigold",
+    "modified": "marigold",
+    "error": "coral",
+    "removed": "coral",
+    "info": "periwinkle",
+    "path": "periwinkle",
+    "secondary": "soft",
+    "comment": "subtle",
+    "punctuation": "subtle"
+  },
+  "syntax": {
+    "keyword": "azalea",
+    "declaration": "azalea",
+    "function": "turquoise",
+    "builtin": "orchid",
+    "type": "orchid",
+    "string": "palm",
+    "number": "marigold",
+    "constant": "marigold",
+    "identifier": "text",
+    "punctuation": "subtle",
+    "comment": "subtle"
+  },
+  "ansi": {
+    "black": "overlay",
+    "red": "coral",
+    "green": "palm",
+    "yellow": "marigold",
+    "blue": "periwinkle",
+    "magenta": "azalea",
+    "cyan": "turquoise",
+    "white": "soft",
+    "brightBlack": "subtle",
+    "brightRed": "coral+",
+    "brightGreen": "palm+",
+    "brightYellow": "marigold+",
+    "brightBlue": "periwinkle+",
+    "brightMagenta": "flamingo",
+    "brightCyan": "turquoise+",
+    "brightWhite": "text",
+    "$about": "'+' = same hue, lightness +.05. Orchid has no ANSI slot (it is the language-vocabulary colour in editors and the TUI's untracked colour)."
+  },
+  "terminal": {
+    "background": "ground",
+    "foreground": "text",
+    "cursor": "turquoise",
+    "cursorText": "ground",
+    "selectionBackground": "hlMed",
+    "selectionForeground": "text"
+  },
+  "flavourClock": {
+    "$about": "Which flavour the blog shows by the reader's local hour; midnight is the default (no JS, daytime).",
+    "midnight": "22:00-01:59 and the default",
+    "2am": "02:00-03:59",
+    "4am": "04:00-05:59"
+  }
+}

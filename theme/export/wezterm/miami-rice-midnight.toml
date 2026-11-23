@@ -1,0 +1,14 @@
+# Miami Rice Midnight
+[metadata]
+name = "Miami Rice Midnight"
+
+[colors]
+foreground = "#ece2e6"
+background = "#18172c"
+cursor_bg = "#67d3d6"
+cursor_fg = "#18172c"
+cursor_border = "#67d3d6"
+selection_bg = "#3d3d52"
+selection_fg = "#ece2e6"
+ansi = ["#26263c", "#e38e7b", "#96ba84", "#df9f4b", "#a0c1f5", "#ee8ab2", "#67d3d6", "#b9bcd1"]
+brights = ["#9a9cb7", "#f49e8a", "#a5ca93", "#f0af5c", "#b4d1ff", "#fe9cc3", "#78e3e6", "#ece2e6"]

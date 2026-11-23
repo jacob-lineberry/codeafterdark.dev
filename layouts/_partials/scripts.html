@@ -5,6 +5,7 @@
 <script type="module">
   import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs";
   const css = getComputedStyle(document.documentElement);
+  // Mermaid cannot parse color-mix(), so read only the tokens that resolve to plain hex.
   const v = (n) => css.getPropertyValue(n).trim();
   mermaid.initialize({
     startOnLoad: true,
@@ -12,29 +13,29 @@
     securityLevel: "strict",
     themeVariables: {
       darkMode: true,
-      background: v("--well"),
-      fontFamily: "Maple Mono, ui-monospace, monospace",
+      background: v("--surface"),
+      fontFamily: "Recursive Mono, ui-monospace, monospace",
       fontSize: "14px",
-      primaryColor: v("--bar"),
+      primaryColor: v("--overlay"),
       primaryTextColor: v("--text"),
-      primaryBorderColor: v("--struct"),
-      secondaryColor: v("--well"),
-      tertiaryColor: v("--bg"),
-      lineColor: v("--struct-dim"),
-      textColor: v("--dim"),
-      clusterBkg: v("--bg"),
+      primaryBorderColor: v("--brand"),
+      secondaryColor: v("--surface"),
+      tertiaryColor: v("--ground"),
+      lineColor: v("--subtle"),
+      textColor: v("--soft"),
+      clusterBkg: v("--ground"),
       clusterBorder: v("--line"),
-      edgeLabelBackground: v("--well"),
-      noteBkgColor: v("--bar"),
+      edgeLabelBackground: v("--surface"),
+      noteBkgColor: v("--overlay"),
       noteTextColor: v("--text"),
-      noteBorderColor: v("--warn"),
-      actorBkg: v("--bar"),
-      actorBorder: v("--struct"),
+      noteBorderColor: v("--warning"),
+      actorBkg: v("--overlay"),
+      actorBorder: v("--brand"),
       actorTextColor: v("--text"),
-      actorLineColor: v("--line"),
-      signalColor: v("--dim"),
+      actorLineColor: v("--muted"),
+      signalColor: v("--soft"),
       signalTextColor: v("--text"),
-      sequenceNumberColor: v("--well")
+      sequenceNumberColor: v("--surface")
     }
   });
 </script>
