@@ -48,8 +48,9 @@ function rects(px) {
 }
 
 /** The drawing of `S` inside `crop` (pixels; y0 even and y1 odd, so the crop falls on cell rows).
-    Returns { head, tail }: the moon's <g> goes between them. */
+    Returns { head, tail }: the moon's <g> goes between them (inside a move by S.dx, if any). */
 export function render(S, reg, { room, crop = { x0: 0, x1: PW - 1, y0: 0, y1: PH - 1 }, bloom = false, falling = false }) {
+  const dx = S.dx ?? 0;   // how far framed() moved the drawing: the moon and the falling star follow it
   const inCrop = (x, y) => x >= crop.x0 && x <= crop.x1 && y >= crop.y0 && y <= crop.y1;
   const K = Array.from({ length: PH }, (_, y) => Array.from({ length: PW }, (_, x) => pixelKey(S, x, y)));
   const C = S.cls.map((r) => r.slice());
@@ -78,7 +79,7 @@ export function render(S, reg, { room, crop = { x0: 0, x1: PW - 1, y0: 0, y1: PH
   const tail = [...byKey].map(([k, px]) => `<path class="${reg.cls(k)} tail-up" d="${rects(px)}"/>`).join("");
   // a falling star: three pixels on a slant, sliding down the sky in pixel steps (see main.css)
   const star = falling
-    ? `<g transform="translate(${8 * U} ${6 * U})"><g class="falling"><path class="${reg.cls("fall0")}" d="${rects([[0, 0]])}"/><path class="${reg.cls("fall1")}" d="${rects([[-1, 0], [-2, -1]])}"/><path class="${reg.cls("fall2")}" d="${rects([[-3, -1], [-4, -2]])}"/></g></g>`
+    ? `<g transform="translate(${(8 + dx) * U} ${6 * U})"><g class="falling"><path class="${reg.cls("fall0")}" d="${rects([[0, 0]])}"/><path class="${reg.cls("fall1")}" d="${rects([[-1, 0], [-2, -1]])}"/><path class="${reg.cls("fall2")}" d="${rects([[-3, -1], [-4, -2]])}"/></g></g>`
     : "";
 
   // characters: one <text> per row, colour and class, every glyph placed on its own cell
@@ -101,8 +102,8 @@ export function render(S, reg, { room, crop = { x0: 0, x1: PW - 1, y0: 0, y1: PH
   const defs = bloom && screen.length
     ? `<defs><filter id="${fid}" x="-5%" y="-20%" width="110%" height="140%"><feGaussianBlur stdDeviation="1.4" result="b"/><feComponentTransfer in="b" result="s"><feFuncA type="linear" slope="0.85"/></feComponentTransfer><feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`
     : "";
-  const head = `<svg class="scene" data-room="${room}" viewBox="${vb.join(" ")}" aria-hidden="true" focusable="false">${defs}<g shape-rendering="crispEdges">${paths(back)}`;
-  const tailOut = `${star}${paths(front)}${wins}${tail}</g>` +
+  const head = `<svg class="scene" data-room="${room}" viewBox="${vb.join(" ")}" aria-hidden="true" focusable="false">${defs}<g shape-rendering="crispEdges">${paths(back)}${dx ? `<g transform="translate(${dx * U} 0)">` : ""}`;
+  const tailOut = `${dx ? "</g>" : ""}${star}${paths(front)}${wins}${tail}</g>` +
     (plain.length || screen.length
       ? `<g class="chars" font-family="'Recursive Mono', ui-monospace, monospace" font-size="${FS}">${plain.join("")}` +
         (screen.length ? `<g${bloom ? ` filter="url(#${fid})"` : ""}>${screen.join("")}</g>` : "") + `</g>`

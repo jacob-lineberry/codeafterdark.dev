@@ -1,6 +1,7 @@
-{{- /* A post's moment, as data: the moon that night, the date, and the hour it went up.
-       Takes dict "page", and "short" for the archive (no year, no hour). */ -}}
+{{- /* A post's moment, as data: the moon that night and the date. Takes dict "page";
+       "hour" adds the hour it went up (a post's own header), "short" drops the year (the
+       archive). */ -}}
 {{- $p := .page -}}
 {{- $n := partial "night.html" $p.Date -}}
-<span class="when" title="{{ $n.name }}, {{ $n.lit }}% lit">{{ partial "moon.html" $n }}<time datetime="{{ $p.Date.Format "2006-01-02T15:04:05-07:00" }}">{{ if .short }}{{ $p.Date.Format "Jan 2" }}{{ else }}{{ $p.Date.Format site.Params.dateFormat }} <span class="hr">{{ $p.Date.Format "3:04 pm" }}</span>{{ end }}</time></span>
+<span class="when" title="{{ $n.name }}, {{ $n.lit }}% lit">{{ partial "moon.html" $n }}<time datetime="{{ $p.Date.Format "2006-01-02T15:04:05-07:00" }}">{{ if .short }}{{ $p.Date.Format "Jan 2" }}{{ else }}{{ $p.Date.Format site.Params.dateFormat }}{{ with .hour }} <span class="hr">{{ $p.Date.Format "3:04 pm" }}</span>{{ end }}{{ end }}</time></span>
 {{- /* chomp */ -}}

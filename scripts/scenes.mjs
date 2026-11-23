@@ -8,14 +8,15 @@
 // The drawing is in scripts/room/; the moon's maths in assets/js/room.js, which site.js shares to
 // show the reader tonight's moon.
 import { writeFileSync } from "node:fs";
-import { scene, colours, FLAVOURS, HOURS } from "./room/scene.mjs";
+import { scene, framed, colours, FLAVOURS, HOURS } from "./room/scene.mjs";
 import { registry, render } from "./room/svg.mjs";
 import { moonSVG } from "../assets/js/room.js";
 
 export const VIEWS = 30;
 const reg = registry();
 const scenes = {
-  home: render(scene(), reg, { room: "home", bloom: true, falling: true }),
+  // three pixels right, so the room's weight sits on the page's centre line; the desk's ends fade out
+  home: render(framed(scene(), { dx: 3, fade: 4 }), reg, { room: "home", bloom: true, falling: true }),
   // the window, its frame (solid: the alternate-pixel posts are busy this close) and the sill,
   // with nothing in front: 46 x 36 pixels
   view: render(scene({ things: false, frame: 0.4 }), reg, { room: "view", crop: { x0: 1, x1: 46, y0: 4, y1: 39 } }),

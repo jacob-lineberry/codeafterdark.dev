@@ -184,13 +184,13 @@ export function scene({ things = true, frame = 0.5 } = {}) {
   for (const [x0, x1, top] of blocks) {
     for (let y = top; y <= WIN.y1; y++) for (let x = x0; x <= x1; x++) glow(x, y, "city");
     for (let y = top + 2; y <= WIN.y1 - 1; y += 2) for (let x = x0 + 1; x <= x1 - 1; x += 2) {
-      const u = R(), a = R(), b = R();
-      slots.push({ x, y, u, key: "win-" + (a < 0.72 ? "marigold" : b < 0.6 ? "flamingo" : "turquoise") });
+      // every lit window is the same warm marigold; the draws stay so the same windows light
+      const u = R();
+      R(); R();
+      slots.push({ x, y, u, key: "win-marigold" });
     }
   }
-  // the deco hotel's neon: a flamingo line along its roof, a turquoise one down its face, a red beacon
-  for (let x = 14; x <= 19; x++) glow(x, 24, "neonP");
-  for (let y = 26; y <= 33; y++) glow(19, y, "neonT");
+  // the deco hotel: no neon, so the room's teal and pink come only from the screen; just its red beacon
   glow(16, 22, "beacon", "beacon");
   glow(16, 23, "city");
   // a palm in front of the city, its crown against the haze. Drawn as shapes and rasterised by
@@ -370,6 +370,25 @@ export function pixelKey(S, x, y) {
   return `${m}.${q(S.It[y][x], LEVELS[m] ?? 5)}.${q(S.Iw[y][x], 3)}`;
 }
 
+/** The room as it sits on the home page. The drawing moves dx pixels right inside its frame, so
+    its weight (the window and the moon on the left, the screen on the right) balances on the
+    page's centre line, and the columns it uncovers repeat its left edge. Then the desk's two
+    ends dither into the dark over `fade` pixels, so the room has no hard sides; only the desk
+    fades, never what stands on it. Keys are fixed before the move, so no dither pattern in the
+    drawing changes. render() moves the moon and the falling star by S.dx too. */
+export function framed(S, { dx = 0, fade = 0 } = {}) {
+  const K = Array.from({ length: PH }, (_, y) => Array.from({ length: PW }, (_, x) => pixelKey(S, x, y)));
+  const move = (row) => [...Array(dx).fill(row[0]), ...row.slice(0, PW - dx)];
+  const emit = K.map(move), cls = S.cls.map(move);
+  const desk = /^(deskT|deskBack|lip|deskF)\./;
+  for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) {
+    const d = Math.min(x, PW - 1 - x);
+    if (d < fade && desk.test(emit[y][x]) && bayer(x, y) > (d + 0.5) / fade) { emit[y][x] = "wall.0.0"; cls[y][x] = ""; }
+  }
+  const at = (o) => ({ ...o, x: o.x + dx });
+  return { ...S, emit, cls, dx, glyphs: S.glyphs.map((g) => ({ ...g, c: g.c + dx })), windows: S.windows.map(at), tail: S.tail.map(at) };
+}
+
 /** Every key's colour in one flavour, as hex. */
 export function colours(flavour, keys) {
   const P = palette(flavour), H = HOURS[flavour], M = materials(P), g = P.ground;
@@ -377,9 +396,11 @@ export function colours(flavour, keys) {
   const sky = (b) => mix(g, P[H.sky[b][0]], H.sky[b][1]);
   const E = {
     city, palm: lift(chroma(g, 0.7), -0.07),
-    neonP: mix(g, P.flamingo, 0.9), neonT: mix(g, P.turquoise, 0.8), beacon: mix(g, P.coral, 0.95),
+    // the beacon is an aircraft light, so a true red: coral, the palette's red, reads salmon as
+    // one pixel, so this is coral taken deeper and redder, oklch(0.64 0.2 27)
+    beacon: [0.64, 0.2 * Math.cos((27 * Math.PI) / 180), 0.2 * Math.sin((27 * Math.PI) / 180)],
     glass0: mix(g, P.turquoise, 0.105), glass1: mix(g, P.turquoise, 0.13), led: mix(g, P.palm, 0.95),
-    "win-marigold": mix(city, P.marigold, 0.62), "win-flamingo": mix(city, P.flamingo, 0.62), "win-turquoise": mix(city, P.turquoise, 0.62),
+    "win-marigold": mix(city, P.marigold, 0.62),
     tabBg: mix(g, P.turquoise, 0.78), modeBg: P.flamingo, curBg: P.turquoise,
     steam0: mix(g, P.soft, 0.7), steam1: mix(g, P.soft, 0.52), steam2: mix(g, P.soft, 0.36),
     fall0: P.text, fall1: mix(sky(1), P.periwinkle, 0.62), fall2: mix(sky(1), P.periwinkle, 0.3),

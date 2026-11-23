@@ -168,9 +168,9 @@ kbd {
   pointer-events: none;
 }
 .room::after {
-  left: 38%;
+  left: 40.5%;
   top: -6%;
-  width: 62%;
+  width: 59.5%;
   height: 125%;
   background: radial-gradient(closest-side, color-mix(in srgb, var(--turquoise) 12%, transparent), transparent);
 }
@@ -193,7 +193,7 @@ kbd {
 .scene .chars { font-variant-ligatures: none; font-feature-settings: "calt" 0, "liga" 0; }
 /* a phone gets the middle of the room: the moon, the cat, the screen, the mug */
 @media (max-width: 640px) {
-  .room .scene { width: calc(100% * 120 / 94); max-width: none; margin-left: calc(100% * -20 / 94); }
+  .room .scene { width: calc(100% * 120 / 94); max-width: none; margin-left: calc(100% * -23 / 94); }
   .room::after { left: 26%; width: 74%; }
 }
 
@@ -238,17 +238,19 @@ kbd {
 .pause[hidden] { display: none; }
 .pause svg { width: 12px; height: 12px; }
 .pause[data-state="paused"] .i-pause, .pause[data-state="playing"] .i-play { display: none; }
-/* top right, on the dark wall above the monitor, clear of the drawing */
-.room .pause { position: absolute; right: var(--gutter); top: 0; }
-/* on a phone, on the desk's faded front edge, clear of the screen's halo */
-@media (max-width: 640px) { .room .pause { top: auto; bottom: 0; } }
+/* bottom right, on the desk's faded front edge, clear of the drawing */
+.room .pause { position: absolute; right: var(--gutter); bottom: 0; }
 
 /* ---- home ---------------------------------------------------------------------------- */
 
 .intro { max-width: 46rem; margin: 1.75rem auto 0; padding: 0 var(--gutter); text-align: center; }
 .wordmark {
   margin: 0;
-  font: 800 clamp(2rem, 9.5vw, 4rem)/1.05 var(--display);
+  /* the ink spans the post column exactly (36rem, or the screen less its gutters): the
+     wordmark's ink is about 8.72 times its size wide, and its "c" sits a hair inside the
+     box, so it moves back by that hair to centre the ink rather than the box */
+  font: 800 min(4.115rem, (100vw - 2 * var(--gutter)) / 8.72)/1.05 var(--display);
+  translate: -0.015em 0;
   letter-spacing: -0.012em;
   color: var(--brand);
 }
