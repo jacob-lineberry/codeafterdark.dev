@@ -1,12 +1,29 @@
 {{- /* Standalone images become figures; the Markdown title becomes the caption:
-       ![Alt text](diagram.svg "Caption shown under the figure") */ -}}
+       ![Alt text](diagram.svg "Caption shown under the figure")
+       Every image in the post's folder carries its size, so the page keeps its place while it
+       loads. An SVG's size is its root's width and height; one with only a viewBox has no size
+       of its own and fills the figure, so the viewBox gives it its shape and it is marked to
+       fill. */ -}}
 {{- $src := .Destination -}}
-{{- $w := 0 }}{{ $h := 0 -}}
+{{- $w := 0 }}{{ $h := 0 }}{{ $fill := false -}}
 {{- with .Page.Resources.Get .Destination -}}
 {{- $src = .RelPermalink -}}
-{{- if ne .MediaType.SubType "svg" }}{{ $w = .Width }}{{ $h = .Height }}{{ end -}}
+{{- if ne .MediaType.SubType "svg" }}{{ $w = .Width }}{{ $h = .Height -}}
+{{- else -}}
+{{- $root := "" }}{{ with findRE `<svg\b[^>]*>` .Content 1 }}{{ $root = index . 0 }}{{ end -}}
+{{- $n := `="\s*([0-9]+(?:\.[0-9]+)?)(?:px)?\s*"` -}}
+{{- $sw := findRESubmatch (print `\swidth` $n) $root 1 -}}
+{{- $sh := findRESubmatch (print `\sheight` $n) $root 1 -}}
+{{- $vb := findRESubmatch `\sviewBox="\s*-?[0-9.]+[\s,]+-?[0-9.]+[\s,]+([0-9.]+)[\s,]+([0-9.]+)\s*"` $root 1 -}}
+{{- if and $sw $sh -}}
+{{- $w = index $sw 0 1 | float | math.Round | int }}{{ $h = index $sh 0 1 | float | math.Round | int -}}
+{{- else if and $vb $.IsBlock -}}
+{{- $w = index $vb 0 1 | float | math.Round | int }}{{ $h = index $vb 0 2 | float | math.Round | int }}{{ $fill = true -}}
 {{- end -}}
-{{- $img := printf `<img src="%s" alt="%s" loading="lazy" decoding="async"%s>` $src .PlainText (cond (gt $w 0) (printf ` width="%d" height="%d"` $w $h) "") -}}
+{{- end -}}
+{{- end -}}
+{{- $size := cond (gt $w 0) (printf ` width="%d" height="%d"` $w $h) "" -}}
+{{- $img := printf `<img src="%s" alt="%s"%s loading="lazy" decoding="async"%s>` $src .PlainText (cond $fill ` class="fill"` "") $size -}}
 {{- if .IsBlock -}}
 <figure class="fig">
   <div class="fig-wrap">{{ $img | safeHTML }}</div>

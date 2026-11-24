@@ -20,7 +20,7 @@
       </ul>
     </nav>
     {{- with site.GetPage "/search" }}
-    <a class="tool tool-word" href="{{ .RelPermalink }}" aria-keyshortcuts="/"{{ if eq $here .RelPermalink }} aria-current="page"{{ end }}>search<kbd aria-hidden="true">/</kbd></a>
+    <a class="tool tool-word" href="{{ .RelPermalink }}" aria-keyshortcuts="/"{{ if eq $here .RelPermalink }} aria-current="page"{{ end }}>search</a>
     {{- end }}
   </div>
   {{- with site.Home.OutputFormats.Get "rss" }}{{ if not $.IsHome }}
