@@ -9,7 +9,7 @@
       {{- partial "when.html" (dict "page" .) }}
       <span>{{ .ReadingTime }} min read</span>
       {{- with .Lastmod }}{{ if gt (sub .Unix $.Date.Unix) 86400 }}
-      <span>updated <time datetime="{{ .Format "2006-01-02" }}">{{ .Format "Jan 2" }}</time></span>
+      <span class="updated">updated <time datetime="{{ .Format "2006-01-02" }}">{{ .Format site.Params.dateFormat }}</time></span>
       {{- end }}{{ end }}
     </p>
     <h1>{{ .Title }}</h1>

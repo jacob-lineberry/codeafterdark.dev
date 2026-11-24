@@ -29,6 +29,36 @@ export const HOURS = {
 };
 const SKY_EDGES = [WIN.y0, 14, 21, 26, 30, WIN.y1 + 1];
 const skyBand = (y) => SKY_EDGES.findIndex((e, i) => y >= e && y < SKY_EDGES[i + 1]);
+// where each band's middle row falls, and a row's place between them: 0 (the top band) to 4
+const SKY_MID = SKY_EDGES.slice(0, -1).map((e, i) => (e + SKY_EDGES[i + 1] - 1) / 2);
+const skyAt = (y) => {
+  if (y <= SKY_MID[0]) return 0;
+  for (let i = 0; i < 4; i++) if (y <= SKY_MID[i + 1]) return i + (y - SKY_MID[i]) / (SKY_MID[i + 1] - SKY_MID[i]);
+  return 4;
+};
+/** The sky's colour key at a pixel, in one of four styles:
+    "bands"   the five colours, flat, each meeting the next on one row;
+    "seams"   the same five, with two rows of ordered dither where one band meets the next;
+    "dither"  the same five, as one ordered-dither gradient, flat only at each band's middle;
+    "shades"  nine colours (the five and the halfway shade between each pair), as one finer
+              ordered-dither gradient. */
+function skyKey(x, y, style) {
+  const b = skyBand(y);
+  if (style === "seams") {
+    if (b < 4 && y === SKY_EDGES[b + 1] - 1 && bayer(x, y) < 1 / 3) return "sky" + (b + 1);
+    if (b > 0 && y === SKY_EDGES[b] && bayer(x, y) < 1 / 3) return "sky" + (b - 1);
+    return "sky" + b;
+  }
+  if (style === "dither") {
+    const t = skyAt(y), lo = Math.floor(t);
+    return "sky" + (t - lo > bayer(x, y) ? Math.min(4, lo + 1) : lo);
+  }
+  if (style === "shades") {
+    const t = skyAt(y) * 2, lo = Math.floor(t), k = t - lo > bayer(x, y) ? Math.min(8, lo + 1) : lo;
+    return k % 2 ? "sky" + (k - 1) / 2 + "h" : "sky" + k / 2;
+  }
+  return "sky" + b;
+}
 
 // the code on the screen: [role, text] runs per row, in Miami Rice's own syntax colours
 const CODE = [
@@ -149,8 +179,13 @@ function materials(P) {
 
 /** The room's structure, the same for every flavour. With things false it is only the wall,
     the window and the desk: what the window view shows, with nothing in front of the glass.
-    frame: the window light on the frame's side posts; at .5 they catch it in alternate pixels. */
-export function scene({ things = true, frame = 0.5 } = {}) {
+    frame: the window light on the frame's side posts; at .5 they catch it in alternate pixels.
+    city: how the street is lit. windows "marigold" (every one the same warm light) or "mixed"
+    (marigold with some flamingo and turquoise); neon, the hotel's flamingo roof line and
+    turquoise sign; beacon "red" or "coral". The default is the quiet city of PR #6.
+    sky: how the sky's bands meet (see skyKey); nine shades, finely dithered, unless asked. */
+export function scene({ things = true, frame = 0.5, city = {}, sky = "shades" } = {}) {
+  const { windows = "marigold", neon = false, beacon = "red" } = city;
   const R = rng(1987);
   const grid = (v) => Array.from({ length: PH }, () => Array(PW).fill(v));
   // mat: material name; emit: an emissive key instead; cls: an extra class (for motion)
@@ -176,22 +211,27 @@ export function scene({ things = true, frame = 0.5 } = {}) {
   // ---- the window: a single plain pane onto Miami, 1987 ----
   for (let y = WIN.y0 - 1; y <= WIN.y1; y++) { set(WIN.x0 - 1, y, "frame", 0, frame); set(WIN.x1 + 1, y, "frame", null, frame); }
   for (let x = WIN.x0 - 1; x <= WIN.x1 + 1; x++) set(x, WIN.y0 - 1, "frame", null, 0.35);
-  // the sky in flat bands; the moon is its own layer (see moonPixels in assets/js/room.js)
-  for (let y = WIN.y0; y <= WIN.y1; y++) for (let x = WIN.x0; x <= WIN.x1; x++) glow(x, y, "sky" + skyBand(y));
+  // the sky, its bands blended (skyKey); the moon is its own layer (see moonPixels in assets/js/room.js)
+  for (let y = WIN.y0; y <= WIN.y1; y++) for (let x = WIN.x0; x <= WIN.x1; x++) glow(x, y, skyKey(x, y, sky));
   // the skyline: art-deco blocks, low, so the horizon glows above them
   const blocks = [[4, 7, 31], [8, 11, 28], [12, 13, 31], [14, 19, 24], [20, 23, 29], [24, 28, 27], [29, 31, 31], [32, 37, 26], [38, 40, 29], [41, 43, 31]];
   const slots = [];
   for (const [x0, x1, top] of blocks) {
     for (let y = top; y <= WIN.y1; y++) for (let x = x0; x <= x1; x++) glow(x, y, "city");
     for (let y = top + 2; y <= WIN.y1 - 1; y += 2) for (let x = x0 + 1; x <= x1 - 1; x += 2) {
-      // every lit window is the same warm marigold; the draws stay so the same windows light
-      const u = R();
-      R(); R();
-      slots.push({ x, y, u, key: "win-marigold" });
+      // the same draws either way, so the same windows light whatever their colour
+      const u = R(), a = R(), b = R();
+      const hue = windows === "mixed" ? (a < 0.72 ? "marigold" : b < 0.6 ? "flamingo" : "turquoise") : "marigold";
+      slots.push({ x, y, u, key: "win-" + hue });
     }
   }
-  // the deco hotel: no neon, so the room's teal and pink come only from the screen; just its red beacon
-  glow(16, 22, "beacon", "beacon");
+  // the deco hotel: its neon, a flamingo line along its roof and a turquoise one down its face,
+  // and the beacon on top
+  if (neon) {
+    for (let x = 14; x <= 19; x++) glow(x, 24, "neonP");
+    for (let y = 26; y <= 33; y++) glow(19, y, "neonT");
+  }
+  glow(16, 22, beacon === "coral" ? "beacon-coral" : "beacon", "beacon");
   glow(16, 23, "city");
   // a palm in front of the city, its crown against the haze. Drawn as shapes and rasterised by
   // coverage (6 x 6 samples a pixel), so the fronds come out as clean tapered arcs with a ragged
@@ -328,8 +368,8 @@ export function scene({ things = true, frame = 0.5 } = {}) {
   // ---- stars, as characters; none too near the moon, wherever it is that hour ----
   for (const [c, r, ch, k] of [[6, 3, ".", 0.7], [11, 5, "+", 0.6], [21, 3, ".", 0.5], [26, 7, ".", 0.55], [38, 4, "+", 0.75], [41, 9, ".", 0.6], [19, 9, ".", 0.45], [35, 10, ".", 0.4]]) {
     // only where the window is dark: the upper sky, or a dark shape against it
-    const y = r * 2, dark = (k) => /^(sky[0-2]|palm|city)$/.test(k ?? "");
-    if (!dark(S.emit[y][c]) || !dark(S.emit[y + 1][c])) continue;
+    const y = r * 2, dark = (k, yy) => /^(palm|city)$/.test(k ?? "") || (/^sky/.test(k ?? "") && skyBand(yy) <= 2);
+    if (!dark(S.emit[y][c], y) || !dark(S.emit[y + 1][c], y + 1)) continue;
     const hide = FLAVOURS.filter((f) => Math.hypot(c - HOURS[f].moon[0], y - HOURS[f].moon[1]) < 7);
     text(c, r, ch, "star" + Math.round(k * 100), ["star", ...hide.map((f) => "h-" + f)].join(" "));
   }
@@ -400,7 +440,8 @@ export function colours(flavour, keys) {
     // one pixel, so this is coral taken deeper and redder, oklch(0.64 0.2 27)
     beacon: [0.64, 0.2 * Math.cos((27 * Math.PI) / 180), 0.2 * Math.sin((27 * Math.PI) / 180)],
     glass0: mix(g, P.turquoise, 0.105), glass1: mix(g, P.turquoise, 0.13), led: mix(g, P.palm, 0.95),
-    "win-marigold": mix(city, P.marigold, 0.62),
+    "win-marigold": mix(city, P.marigold, 0.62), "win-flamingo": mix(city, P.flamingo, 0.62), "win-turquoise": mix(city, P.turquoise, 0.62),
+    neonP: mix(g, P.flamingo, 0.9), neonT: mix(g, P.turquoise, 0.8), "beacon-coral": mix(g, P.coral, 0.95),
     tabBg: mix(g, P.turquoise, 0.78), modeBg: P.flamingo, curBg: P.turquoise,
     steam0: mix(g, P.soft, 0.7), steam1: mix(g, P.soft, 0.52), steam2: mix(g, P.soft, 0.36),
     fall0: P.text, fall1: mix(sky(1), P.periwinkle, 0.62), fall2: mix(sky(1), P.periwinkle, 0.3),
@@ -412,6 +453,7 @@ export function colours(flavour, keys) {
     "moon-dark": mix(sky(skyBand(H.moon[1])), P.periwinkle, 0.1), "moon-halo": P.periwinkle,
   };
   for (let b = 0; b < 5; b++) E["sky" + b] = sky(b);
+  for (let b = 0; b < 4; b++) E["sky" + b + "h"] = mix(sky(b), sky(b + 1), 0.5);
   const out = {};
   for (const k of keys) {
     let c = E[k];

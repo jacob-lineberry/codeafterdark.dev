@@ -11,6 +11,8 @@ const say = (text) => {
 const esc = (s) =>
   String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
+// One result, set like a post in the home page's list (layouts/_partials/post-row.html). The
+// moon is the site's own drawing, made at build time (layouts/home.json), so it goes in as is.
 function row(item, i) {
   const tags = (item.tags || [])
     .map((t) => `<span class="tag"><span class="th" aria-hidden="true">#</span>${esc(String(t).toLowerCase())}</span>`)
@@ -18,7 +20,7 @@ function row(item, i) {
   return `<li${i === 0 ? " data-selected" : ""}><a href="${esc(item.permalink)}">
     <span class="r-title">${esc(item.title)}</span>
     <span class="r-sum">${esc(item.summary)}</span>
-    <span class="meta"><time datetime="${esc(item.date)}">${esc(item.dateLabel)}, ${esc(item.year)}</time><span>${esc(item.minutes)} min read</span>${tags ? `<span class="tags">${tags}</span>` : ""}</span>
+    <span class="meta"><span class="when" title="${esc(item.night)}">${item.moon}<time datetime="${esc(item.date)}">${esc(item.dateLabel)}</time></span><span>${esc(item.minutes)} min read</span>${tags ? `<span class="tags">${tags}</span>` : ""}</span>
   </a></li>`;
 }
 
@@ -63,7 +65,13 @@ async function init() {
     hits = fuse.search(q, { limit: 30 });
     list.innerHTML = hits.map((h, i) => row(h.item, i)).join("");
     if (hits.length) say(`${hits.length} ${hits.length === 1 ? "result" : "results"} for “${q}”.`);
-    else say(`Nothing matches “${q}”. Try a broader word, or browse the archive.`);
+    else {
+      say(`Nothing matches “${q}”. Try a broader word, or browse the `);
+      const a = document.createElement("a");
+      a.href = status.dataset.archive;
+      a.textContent = "archive";
+      status.append(a, ".");
+    }
   };
 
   let t;
