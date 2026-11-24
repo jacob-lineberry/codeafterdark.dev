@@ -1,11 +1,15 @@
 {{- $index := slice -}}
+{{- /* The search index (assets/js/search.js). Each post carries its date as every list shows
+       it, and the moon that night, drawn here so a result matches the post lists. */ -}}
 {{- range where site.RegularPages "Section" "in" site.Params.mainSections -}}
+{{- $n := partial "night.html" .Date -}}
 {{- $index = $index | append (dict
   "title" .Title
   "permalink" .RelPermalink
-  "date" (.Date.Format "2006-01-02")
-  "dateLabel" (.Date.Format "Jan 2")
-  "year" (.Date.Format "2006")
+  "date" (.Date.Format "2006-01-02T15:04:05-07:00")
+  "dateLabel" (.Date.Format site.Params.dateFormat)
+  "night" (printf "%s, %v%% lit" $n.name $n.lit)
+  "moon" (partial "moon.html" $n)
   "minutes" .ReadingTime
   "summary" (.Description | default (.Summary | plainify | htmlUnescape) | truncate 200)
   "content" (.Plain | htmlUnescape | truncate 5000)
