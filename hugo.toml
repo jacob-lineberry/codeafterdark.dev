@@ -20,8 +20,8 @@ minifyOutput = true
 description = 'Code, cloud, and late-night thoughts.'
 author = 'Jacob Lineberry'
 mainSections = ['posts']
-# The home page's second line: "<author> writes about <writesAbout>."
-writesAbout = 'distributed systems, Go, Linux and the projects that happen after hours'
+# The home page's line under the tagline, in Markdown; the name links to the about page.
+intro = 'Hi, I’m [Jacob](/about/). This is where I write about Go, the terminal, distributed systems, and the network underneath it all.'
 dateFormat = 'Jan 2, 2006'
 rssLimit = 20
 keywords = ['Go', 'Distributed systems', 'Production engineering', 'Linux', 'Kubernetes', 'gRPC', 'AWS']
@@ -34,24 +34,26 @@ editURL = 'https://github.com/jacob-lineberry/codeafterdark.dev/edit/main/conten
 historyURL = 'https://github.com/jacob-lineberry/codeafterdark.dev/commits/main/content/'
 commitURL = 'https://github.com/jacob-lineberry/codeafterdark.dev/commit/'
 
-# Links: the row under the subtitle on the home page, in this order (rss is added at the
-# end). No analytics, comments or share widgets: see PRODUCT.md.
+# Links: the row under the intro on the home page, at the end of every post and on the about
+# page, in this order: the work, then the ways to reach me, the professional profile last.
+# Each has its icon (layouts/_partials/icon.html) and its name as the label. The feed has
+# its own link (subscribe.html). No analytics, comments or share widgets: see PRODUCT.md.
 [[params.links]]
 name = 'GitHub'
 url = 'https://github.com/jacob-lineberry'
 
 [[params.links]]
-name = 'LinkedIn'
-url = 'https://www.linkedin.com/in/jacoblineberry/'
-
-[[params.links]]
 name = 'Email'
 url = 'mailto:jacob@codeafterdark.dev'
 
-# Discord, when there is an invite link: uncomment and fill in the URL.
-# [[params.links]]
-# name = 'Discord'
-# url = 'https://discord.gg/...'
+# Discord: an invite that never expires.
+[[params.links]]
+name = 'Discord'
+url = 'https://discord.gg/ECkxVNADnq'
+
+[[params.links]]
+name = 'LinkedIn'
+url = 'https://www.linkedin.com/in/jacoblineberry/'
 
 [markup]
 defaultMarkdownHandler = 'goldmark'

@@ -1,0 +1,4 @@
+{{- /* The feed, offered as what it is for: beside the list of posts, and at the end of each. */ -}}
+{{- with site.Home.OutputFormats.Get "rss" -}}
+<a class="sub" href="{{ .RelPermalink }}">{{ partial "icon.html" "rss" }}<span>subscribe by rss</span></a>
+{{- end -}}

@@ -158,8 +158,12 @@ kbd {
   margin: 0 auto;
   padding: 0 var(--gutter);
 }
-/* the screen's light spills past the picture onto the page and under the line below it, and
-   the haze from the window, faintly, on the left (never behind a post) */
+/* the screen's light spills past the picture onto the page, and a fainter wash of it falls
+   down past the desk toward the title; the haze from the window, faintly, on the left (never
+   behind a post). The picture leaves its unlit wall undrawn, so this light runs on behind it
+   without an edge. --screen is where the monitor sits across the room, --wash how strong the
+   light toward the title is. Each ellipse fades out inside the box, which never reaches past
+   the room's right side (that would scroll the page sideways). */
 .room::after,
 .room::before {
   content: "";
@@ -167,12 +171,15 @@ kbd {
   z-index: -1;
   pointer-events: none;
 }
+.room {
+  --screen: 70%;
+  --wash: 11%;
+}
 .room::after {
-  left: 40.5%;
-  top: -6%;
-  width: 59.5%;
-  height: 125%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--turquoise) 12%, transparent), transparent);
+  inset: -30% 0 -42%;
+  background:
+    radial-gradient(29.5% 36% at var(--screen) 50%, color-mix(in srgb, var(--turquoise) 12%, transparent), transparent),
+    radial-gradient(40% 25% at calc(var(--screen) - 14%) 74%, color-mix(in srgb, var(--turquoise) var(--wash), transparent), transparent);
 }
 .room::before {
   left: -6%;
@@ -194,7 +201,12 @@ kbd {
 /* a phone gets the middle of the room: the moon, the cat, the screen, the mug */
 @media (max-width: 640px) {
   .room .scene { width: calc(100% * 120 / 94); max-width: none; margin-left: calc(100% * -23 / 94); }
-  .room::after { left: 26%; width: 74%; }
+  .room { --screen: 62%; }
+  /* the crop cuts through the window and the desk, so its sides fade into the page */
+  .room .frame {
+    mask-image: linear-gradient(to right, transparent, #000 1.5rem, #000 calc(100% - 1.5rem), transparent), linear-gradient(to bottom, #000 86%, transparent);
+    mask-composite: intersect;
+  }
 }
 
 /* The room's small life, while <html> has .motion (site.js): the caret blinks, the beacon on the
@@ -255,12 +267,27 @@ kbd {
   color: var(--brand);
 }
 .tagline { margin: 0.7rem 0 0; font: italic 400 1.35rem/1.4 var(--serif); color: var(--text); }
-.intro .about { margin: 1rem auto 0; max-width: 30rem; font-family: var(--serif); font-size: 1.15rem; line-height: 1.55; color: var(--soft); }
+.intro .about { margin: 1rem auto 0; max-width: 30rem; font-family: var(--serif); font-size: 1.15rem; line-height: 1.55; color: var(--soft); text-wrap: balance; }
+.intro .about a { color: var(--text-hi); text-decoration-color: var(--line); }
+.intro .about a:hover { color: var(--action); text-decoration-color: var(--action); }
 .links { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.3rem 1.5rem; list-style: none; margin: 1rem 0 0; padding: 0; }
-.links a { display: inline-block; padding: 0.2rem 0; color: var(--soft); text-decoration-color: var(--line); }
+.links a { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.2rem 0; color: var(--soft); text-decoration-color: var(--line); }
 .links a:hover { color: var(--action); text-decoration-color: var(--action); }
-/* the same row inside a page's text (the elsewhere shortcode) */
-.prose .links { padding: 0; }
+/* four links need about 24rem in one row; on a narrower screen they sit two by two, in
+   columns, rather than three and one on its own (centred on the home page, on the text's
+   left edge on the about page) */
+@media (max-width: 440px) {
+  .intro .links, .prose .links { display: grid; grid-template-columns: repeat(2, max-content); column-gap: 2rem; }
+  .intro .links { justify-content: center; }
+}
+/* the icon beside each label (icon.html): the underline runs under the label only */
+.links .icon, .sub .icon { flex: none; width: 16px; height: 16px; }
+/* "subscribe by rss" (subscribe.html): quieter than the links, the feed's own invitation */
+.sub { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--subtle); text-decoration-color: var(--line); }
+.sub:hover { color: var(--action); text-decoration-color: var(--action); }
+.sub .icon { width: 14px; height: 14px; }
+/* the same row inside a page's text (the elsewhere shortcode), on the text's own left edge */
+.prose .links { justify-content: flex-start; padding: 0; }
 .prose .links li { margin: 0; }
 
 .posts { list-style: none; margin: 0; padding: 0; }
@@ -300,7 +327,6 @@ kbd {
 .when { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--soft); }
 .when .moon { width: 13px; height: 13px; }
 .when time { text-transform: lowercase; }
-.when .hr { color: var(--marigold); }
 .post-row .meta .tags { gap: 0; }
 .post-row .meta .tag .th { display: none; }
 .post-row .meta .tag + .tag::before { content: "·" / ""; margin: 0 0.6rem; color: var(--subtle); }
@@ -733,7 +759,7 @@ kbd {
 .post-end { margin-top: 4rem; }
 .signed {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.9rem;
   margin: 0;
   padding: 1.2rem 0;
@@ -743,8 +769,10 @@ kbd {
   line-height: 1.55;
   color: var(--soft);
 }
-.signed .moon { width: 26px; height: 26px; }
-.signed b { color: var(--text-hi); font-weight: 600; }
+.signed .moon { flex: none; width: 26px; height: 26px; margin-top: 0.05rem; }
+.signed p { margin: 0; }
+/* under the byline, where else to find the writer, then the feed */
+.signed .links { justify-content: flex-start; gap: 0.2rem 1.25rem; margin-top: 0.5rem; font-size: 0.9rem; }
 .pager { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.6rem; }
 .pager a { display: block; padding: 0.2rem 0; text-decoration: none; }
 .pager small { display: block; font-size: 0.82rem; color: var(--subtle); }

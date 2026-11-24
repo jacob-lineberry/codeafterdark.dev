@@ -62,6 +62,10 @@ export function render(S, reg, { room, crop = { x0: 0, x1: PW - 1, y0: 0, y1: PH
   }
   const back = new Map(), front = new Map();
   for (let y = crop.y0; y <= crop.y1; y++) for (let x = crop.x0; x <= crop.x1; x++) {
+    // the unlit wall is the page's own ground in every flavour, so it isn't drawn: the page, and
+    // the light the page throws behind the picture (main.css), show through, and the picture
+    // has no edge of its own
+    if (K[y][x] === "wall.0.0" && !C[y][x]) continue;
     const k = K[y][x], layer = k.startsWith("sky") ? back : front, id = `${k}|${C[y][x]}`;
     (layer.get(id) || layer.set(id, []).get(id)).push([x, y]);
   }
