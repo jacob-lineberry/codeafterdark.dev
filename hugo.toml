@@ -11,6 +11,8 @@ buildFuture = false
 buildExpired = false
 pygmentsUseClasses = true
 summaryLength = 40
+# List titles as written ("tags", "aws"): the site's own titles are lowercase, like its name
+capitalizeListTitles = false
 
 [minify]
 disableXML = true
@@ -25,8 +27,9 @@ intro = 'Hi, I’m [Jacob](/about/). This is where I write about Go, the termina
 dateFormat = 'Jan 2, 2006'
 rssLimit = 20
 keywords = ['Go', 'Distributed systems', 'Production engineering', 'Linux', 'Kubernetes', 'gRPC', 'AWS']
-# Default social card. Add static/images/og-default.png (1200x630) to enable it.
-# images = ['/images/og-default.png']
+# The card a shared link shows (1200 x 630): the room and the wordmark, drawn by
+# scripts/card.py from the site itself. A post can name its own with `images` in front matter.
+images = ['/images/card.png']
 
 # Where "Suggest an edit" links point.
 editURL = 'https://github.com/jacob-lineberry/codeafterdark.dev/edit/main/content/'
@@ -98,10 +101,9 @@ posts = '/:year/:slug/'
 
 [permalinks.term]
 tags = '/tags/:slug/'
-categories = '/categories/:slug/'
 
+# Tags only: posts are grouped by what they are about, not into categories
 [taxonomies]
-category = 'categories'
 tag = 'tags'
 
 [[menus.main]]
@@ -119,8 +121,13 @@ name = 'About'
 url = '/about/'
 weight = 30
 
+# One feed, the home page's, of every post (layouts/home.rss.xml); the lists have no feeds
+# of their own, so a reader can't subscribe to one that stays empty
 [outputs]
 home = ['HTML', 'RSS', 'JSON']
+section = ['HTML']
+taxonomy = ['HTML']
+term = ['HTML']
 
 [privacy.youtube]
 privacyEnhanced = true

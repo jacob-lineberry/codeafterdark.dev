@@ -1,3 +1,7 @@
 # typos reads the hex in @font-face unicode-range values (U+0100-02BA) as words
 [default]
 extend-ignore-re = ["U\\+[0-9A-Fa-f]+(-[0-9A-Fa-f]+)?"]
+
+# third-party code, copied in unchanged (static/vendor/*/README.md)
+[files]
+extend-exclude = ["static/vendor/"]

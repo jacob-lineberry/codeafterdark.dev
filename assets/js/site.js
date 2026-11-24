@@ -208,7 +208,11 @@ function initContents() {
   if (!toc) return;
   const details = toc.querySelector("details");
   const wide = window.matchMedia("(min-width: 1121px)");
-  const fold = () => { details.open = wide.matches; };
+  // wide, the list is always open, so its heading is no button: out of the tab order
+  const fold = () => {
+    details.open = wide.matches;
+    details.querySelector("summary").tabIndex = wide.matches ? -1 : 0;
+  };
   fold();
   wide.addEventListener("change", fold);
   details.querySelector("summary").addEventListener("click", (e) => { if (wide.matches) e.preventDefault(); });

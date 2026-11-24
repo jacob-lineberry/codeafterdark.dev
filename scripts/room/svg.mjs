@@ -1,11 +1,11 @@
 // The room as SVG, the way a modern terminal draws a half-block picture: the blocks are geometry
 // (pixel-exact, no font needed, no seams between rows) and everything else is Recursive Mono on
 // an 8 x 16 cell. Fills are classes, not colours: assets/css/scene.css colours each class for each
-// flavour, so one drawing serves the whole night and needs no JavaScript.
+// hour of the night, so one drawing serves the whole night.
 //
 // Layers, back to front: the sky; the moon (inserted by the template or by site.js, between
 // `head` and `tail`); a falling star (home only); the room; the street's windows; the characters.
-import { PW, PH, pixelKey } from "./scene.mjs";
+import { PW, PH, WIN, pixelKey } from "./scene.mjs";
 
 const U = 8, FS = 13.333, BASE = 12.67;
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -62,7 +62,7 @@ export function render(S, reg, { room, crop = { x0: 0, x1: PW - 1, y0: 0, y1: PH
   }
   const back = new Map(), front = new Map();
   for (let y = crop.y0; y <= crop.y1; y++) for (let x = crop.x0; x <= crop.x1; x++) {
-    // the unlit wall is the page's own ground in every flavour, so it isn't drawn: the page, and
+    // the unlit wall is the page's own ground at every hour, so it isn't drawn: the page, and
     // the light the page throws behind the picture (main.css), show through, and the picture
     // has no edge of its own
     if (K[y][x] === "wall.0.0" && !C[y][x]) continue;
@@ -102,12 +102,14 @@ export function render(S, reg, { room, crop = { x0: 0, x1: PW - 1, y0: 0, y1: PH
   }
 
   const vb = [crop.x0 * U, crop.y0 * U, (crop.x1 - crop.x0 + 1) * U, (crop.y1 - crop.y0 + 1) * U];
-  const fid = `${room}-bloom`;
-  const defs = bloom && screen.length
-    ? `<defs><filter id="${fid}" x="-5%" y="-20%" width="110%" height="140%"><feGaussianBlur stdDeviation="1.4" result="b"/><feComponentTransfer in="b" result="s"><feFuncA type="linear" slope="0.85"/></feComponentTransfer><feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`
+  const fid = `${room}-bloom`, gid = `${room}-glass`;
+  // the moon is only ever seen through the glass, wherever it stands on its path
+  const glass = `<clipPath id="${gid}"><rect x="${WIN.x0 * U}" y="${WIN.y0 * U}" width="${(WIN.x1 - WIN.x0 + 1) * U}" height="${(WIN.y1 - WIN.y0 + 1) * U}"/></clipPath>`;
+  const filter = bloom && screen.length
+    ? `<filter id="${fid}" x="-5%" y="-20%" width="110%" height="140%"><feGaussianBlur stdDeviation="1.4" result="b"/><feComponentTransfer in="b" result="s"><feFuncA type="linear" slope="0.85"/></feComponentTransfer><feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`
     : "";
-  const head = `<svg class="scene" data-room="${room}" viewBox="${vb.join(" ")}" aria-hidden="true" focusable="false">${defs}<g shape-rendering="crispEdges">${paths(back)}${dx ? `<g transform="translate(${dx * U} 0)">` : ""}`;
-  const tailOut = `${dx ? "</g>" : ""}${star}${paths(front)}${wins}${tail}</g>` +
+  const head = `<svg class="scene" data-room="${room}" viewBox="${vb.join(" ")}" aria-hidden="true" focusable="false"><defs>${glass}${filter}</defs><g shape-rendering="crispEdges">${paths(back)}${dx ? `<g transform="translate(${dx * U} 0)">` : ""}<g clip-path="url(#${gid})">`;
+  const tailOut = `</g>${dx ? "</g>" : ""}${star}${paths(front)}${wins}${tail}</g>` +
     (plain.length || screen.length
       ? `<g class="chars" font-family="'Recursive Mono', ui-monospace, monospace" font-size="${FS}">${plain.join("")}` +
         (screen.length ? `<g${bloom ? ` filter="url(#${fid})"` : ""}>${screen.join("")}</g>` : "") + `</g>`

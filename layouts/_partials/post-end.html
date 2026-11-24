@@ -24,17 +24,17 @@
   {{- if or $newer $older }}
   <nav class="pager" aria-label="Older and newer posts">
     {{- range $older }}
-    <a class="older" href="{{ .RelPermalink }}" rel="prev"><small>Older post</small><span>{{ .Title }}</span></a>
+    <a class="older" href="{{ .RelPermalink }}" rel="prev"><small>older post</small><span>{{ .Title }}</span></a>
     {{- end }}
     {{- range $newer }}
-    <a class="newer" href="{{ .RelPermalink }}" rel="next"><small>Newer post</small><span>{{ .Title }}</span></a>
+    <a class="newer" href="{{ .RelPermalink }}" rel="next"><small>newer post</small><span>{{ .Title }}</span></a>
     {{- end }}
   </nav>
   {{- end }}
 
   {{- with $related }}
   <section class="related" aria-labelledby="related-h">
-    <h2 id="related-h">Related</h2>
+    <h2 id="related-h">related</h2>
     <ol>
       {{- range . }}
       <li><a href="{{ .RelPermalink }}">{{ .Title }}</a><p class="meta">{{ partial "when.html" (dict "page" .) }}</p></li>
@@ -45,9 +45,9 @@
 
   <p class="edit">
     {{- with $p.File }}
-    <a href="{{ site.Params.editURL }}{{ .Path }}">Suggest an edit</a>
+    <a href="{{ site.Params.editURL }}{{ .Path }}">suggest an edit</a>
     {{- with site.Params.historyURL }}
-    <a href="{{ . }}{{ $p.File.Path }}">History</a>
+    <a href="{{ . }}{{ $p.File.Path }}">history</a>
     {{- end }}
     {{- end }}
     {{- with $p.GitInfo }}{{ with site.Params.commitURL }}

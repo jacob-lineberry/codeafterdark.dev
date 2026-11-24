@@ -34,7 +34,7 @@
   </ol>
   {{- /* only when the list above doesn't hold them all; the menu has the archive too */}}
   {{- if gt (len .) 12 }}
-  <p class="more"><a href="{{ "archives/" | relURL }}">Older posts</a></p>
+  <p class="more"><a href="{{ "archives/" | relURL }}">older posts</a></p>
   {{- end }}
   {{- else }}
   <p class="empty">Nothing published yet. The first posts are on their way: <a href="{{ "index.xml" | relURL }}">subscribe by RSS</a> to catch them.</p>

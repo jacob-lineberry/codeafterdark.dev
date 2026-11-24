@@ -5,11 +5,17 @@
    "Recursive" pinned to MONO 0 for the interface, "Recursive Mono" pinned to MONO 1 for code,
    the characters in the room and tabular data. Two instances because Chrome ignores a font-variation-settings
    descriptor in @font-face, so one file could not be both through the font shorthand. Each family
-   has a latin and a latin-ext file; the browser fetches latin-ext only when a page needs it. */
+   has a latin and a latin-ext file; the browser fetches latin-ext only when a page needs it.
+   Every file is then cut down to what the pages use: its cmap holds only its unicode-range, glyph
+   names are gone, and the OpenType features no page asks for are dropped with the glyphs only they
+   reach: frac/numr/dnom, pnum, tnum and the locl forms for other languages. Kerning, marks, ccmp,
+   rvrn, liga and calt stay. tabular-nums still works where it is used: Spectral's figures are
+   tabular by default, and Recursive is tabular throughout. Hepta Slab's weight axis starts at
+   200, its default, so 200-900 renders exactly as the full font did. */
 @font-face {
   font-family: "Hepta Slab";
   font-style: normal;
-  font-weight: 100 900;
+  font-weight: 200 900;
   font-display: swap;
   src: url("/fonts/hepta-slab-latin-ext.woff2") format("woff2");
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
@@ -17,7 +23,7 @@
 @font-face {
   font-family: "Hepta Slab";
   font-style: normal;
-  font-weight: 100 900;
+  font-weight: 200 900;
   font-display: swap;
   src: url("/fonts/hepta-slab-latin.woff2") format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;

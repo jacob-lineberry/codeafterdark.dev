@@ -5,12 +5,13 @@
 // lands on it (It, 0..1), how much window light (Iw, 0..1), or that it gives off its own light
 // (an emissive key). Real characters sit on cells too: the code on the CRT, the stars, the cat's
 // zzz, the steam. Nothing here is a colour yet. A pixel resolves to a key, and colours() turns
-// every key into a colour for each flavour, so one drawing serves all three hours of the night.
+// every key into a colour for each hour, so one drawing serves the whole night. Every hour is
+// painted from the midnight palette; only the sky, the window's light, the moon and the street
+// change.
 import { palette, mix, lift, chroma, hexOf } from "./color.mjs";
 import { bayer } from "../../assets/js/room.js";
 
 export const PW = 120, PH = 60;
-export const FLAVOURS = ["midnight", "2am", "4am"];
 const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
 const rng = (s) => () => (s = (s * 16807) % 2147483647) / 2147483647;
 
@@ -21,12 +22,34 @@ export const WIN = { x0: 4, x1: 43, y0: 5, y1: 36 };        // the window's glas
 const DESK = { top: 43, lip: 50 };
 const CAT = { x: 33, y: 35 };
 
-// The hours. The moon sinks through the night, the street goes to sleep, the haze changes colour.
+// The hours. The moon sinks through the night, the street goes to sleep, the haze over the city
+// changes colour. sky is five bands from the top of the window down, each an accent mixed into
+// the midnight ground; glow is the colour of the window's light on the sill, the frame and the cat.
 export const HOURS = {
-  midnight: { moon: [31, 12], lit: 0.55, clock: "12:47 am", sky: [["periwinkle", 0.07], ["orchid", 0.13], ["orchid", 0.22], ["flamingo", 0.32], ["flamingo", 0.44]] },
-  "2am": { moon: [35, 17], lit: 0.28, clock: " 2:13 am", sky: [["periwinkle", 0.05], ["orchid", 0.1], ["orchid", 0.17], ["azalea", 0.25], ["azalea", 0.34]] },
-  "4am": { moon: [38, 24], lit: 0.1, clock: " 4:06 am", sky: [["orchid", 0.09], ["periwinkle", 0.17], ["periwinkle", 0.27], ["periwinkle", 0.38], ["coral", 0.36]] },
+  midnight: { moon: [31, 12], lit: 0.55, clock: "12:47 am", glow: "flamingo", sky: [["periwinkle", 0.07], ["orchid", 0.13], ["orchid", 0.22], ["flamingo", 0.32], ["flamingo", 0.44]] },
+  // the darkest hour: the haze over the city deepens to magenta
+  "2am": { moon: [35, 17], lit: 0.28, clock: " 2:13 am", glow: "azalea", sky: [["orchid", 0.06], ["orchid", 0.12], ["azalea", 0.2], ["azalea", 0.29], ["flamingo", 0.37]] },
+  // first light: still night overhead, coral and marigold coming up behind the towers
+  "4am": { moon: [38, 24], lit: 0.1, clock: " 4:06 am", glow: "coral", sky: [["orchid", 0.1], ["orchid", 0.18], ["flamingo", 0.28], ["coral", 0.38], ["marigold", 0.44]] },
 };
+export const TIMES = Object.keys(HOURS);
+
+// The moon's path through the night. It crosses the window from left to right, at these columns
+// at 22:00, 0:00, 2:00, 4:00 and 6:00 (the middle three are the hours' own places), and its
+// height is one curve through the three hours' places: it tops out before midnight, then sinks
+// faster and faster until it sets behind the towers at dawn. head.html moves it along this path
+// by the reader's clock, a pixel at a time.
+export const MOON_X = [28, 31, 35, 38, 41];
+export function moonPath() {
+  const [p, q, r] = TIMES.map((h) => HOURS[h].moon), x0 = p[0];
+  if (MOON_X.slice(1, 4).join() !== [p[0], q[0], r[0]].join()) throw new Error("MOON_X must pass through the hours' moons");
+  const u1 = q[0] - x0, u2 = r[0] - x0, a = p[1];
+  const c = ((r[1] - a) / u2 - (q[1] - a) / u1) / (u2 - u1), b = (q[1] - a) / u1 - c * u1;
+  return { x: MOON_X, x0, y: [a, +b.toFixed(5), +c.toFixed(5)], stars: STARS.map(([col, row]) => [col, row * 2]), clear: STAR_CLEAR };
+}
+// the stars, as [column, row, glyph, brightness]; one within STAR_CLEAR pixels of the moon hides
+export const STARS = [[6, 3, ".", 0.7], [11, 5, "+", 0.6], [21, 3, ".", 0.5], [26, 7, ".", 0.55], [38, 4, "+", 0.75], [41, 9, ".", 0.6], [19, 9, ".", 0.45], [35, 10, ".", 0.4]];
+export const STAR_CLEAR = 7;
 const SKY_EDGES = [WIN.y0, 14, 21, 26, 30, WIN.y1 + 1];
 const skyBand = (y) => SKY_EDGES.findIndex((e, i) => y >= e && y < SKY_EDGES[i + 1]);
 // where each band's middle row falls, and a row's place between them: 0 (the top band) to 4
@@ -134,10 +157,10 @@ const PLANT = [
 const LEVELS = { wall: 3 };
 const FIXED = new Set(["cat", "catRimT", "catRimT2", "catRimP", "catRimP2", "catEye", "catPink", "leafG", "leafD", "stem"]);
 
-/** Every material for one flavour: its dark base and what it becomes in full screen light (teal)
-    and in full window light (pink, the flavour's own glow). */
-function materials(P) {
-  const g = P.ground, turq = P.turquoise, pink = P.glow;
+/** Every material at one hour: its dark base and what it becomes in full screen light (teal)
+    and in full window light (that hour's glow). */
+function materials(P, H) {
+  const g = P.ground, turq = P.turquoise, pink = P[H.glow];
   const M = {};
   const mat = (k, base, tealK, pinkK, tealTo = turq, pinkTo = pink) => (M[k] = { base, teal: mix(base, tealTo, tealK), pink: mix(base, pinkTo, pinkK) });
   const fixed = (k, c) => (M[k] = { base: c, teal: c, pink: c });
@@ -177,7 +200,7 @@ function materials(P) {
   return M;
 }
 
-/** The room's structure, the same for every flavour. With things false it is only the wall,
+/** The room's structure, the same at every hour. With things false it is only the wall,
     the window and the desk: what the window view shows, with nothing in front of the glass.
     frame: the window light on the frame's side posts; at .5 they catch it in alternate pixels.
     city: how the street is lit. windows "marigold" (every one the same warm light) or "mixed"
@@ -361,18 +384,18 @@ export function scene({ things = true, frame = 0.5, city = {}, sky = "shades" } 
   const open = slots.filter((s) => S.emit[s.y][s.x] === "city");        // not behind the palm or the plant
   [...open].sort((a, b) => a.u - b.u).forEach((s, i, all) => { s.rank = i / all.length; });
   for (const s of open) {
-    s.hide = FLAVOURS.filter((f) => s.rank >= HOURS[f].lit);
+    s.hide = TIMES.filter((f) => s.rank >= HOURS[f].lit);
     S.windows.push(s);
   }
 
-  // ---- stars, as characters; none too near the moon, wherever it is that hour ----
-  for (const [c, r, ch, k] of [[6, 3, ".", 0.7], [11, 5, "+", 0.6], [21, 3, ".", 0.5], [26, 7, ".", 0.55], [38, 4, "+", 0.75], [41, 9, ".", 0.6], [19, 9, ".", 0.45], [35, 10, ".", 0.4]]) {
+  // ---- stars, as characters; each is st<n> by its place in STARS, so the page can hide the
+  // ones the moon passes (scenes.mjs, head.html) ----
+  STARS.forEach(([c, r, ch, k], n) => {
     // only where the window is dark: the upper sky, or a dark shape against it
     const y = r * 2, dark = (k, yy) => /^(palm|city)$/.test(k ?? "") || (/^sky/.test(k ?? "") && skyBand(yy) <= 2);
-    if (!dark(S.emit[y][c], y) || !dark(S.emit[y + 1][c], y + 1)) continue;
-    const hide = FLAVOURS.filter((f) => Math.hypot(c - HOURS[f].moon[0], y - HOURS[f].moon[1]) < 7);
-    text(c, r, ch, "star" + Math.round(k * 100), ["star", ...hide.map((f) => "h-" + f)].join(" "));
-  }
+    if (!dark(S.emit[y][c], y) || !dark(S.emit[y + 1][c], y + 1)) return;
+    text(c, r, ch, "star" + Math.round(k * 100), `star st${n}`);
+  });
 
   // ---- the screen's text; the clock is the hour's own ----
   CODE.forEach((runs, j) => {
@@ -381,9 +404,9 @@ export function scene({ things = true, frame = 0.5, city = {}, sky = "shades" } 
       const r = GLASS.y0 / 2 + j;
       const bg = { tab: "tabBg", mode: "modeBg", cur: "curBg" }[role] ?? null;
       if (s === "CLOCK") {
-        for (const f of FLAVOURS) {
+        for (const f of TIMES) {
           const t = HOURS[f].clock.padStart(GLASS.x1 - col);
-          const cls = ["screen", ...FLAVOURS.filter((o) => o !== f).map((o) => "h-" + o)].join(" ");
+          const cls = ["screen", ...TIMES.filter((o) => o !== f).map((o) => "h-" + o)].join(" ");
           [...t].forEach((ch, i) => { if (ch !== " ") text(col + i, r, ch, "sx-clock", cls); });
         }
         continue;
@@ -395,7 +418,7 @@ export function scene({ things = true, frame = 0.5, city = {}, sky = "shades" } 
   return S;
 }
 
-// ---- keys: what each pixel is, the same in every flavour ----
+// ---- keys: what each pixel is, the same at every hour ----
 
 /** The key of one pixel: its emissive key, or its material and posterised light. Light is cut
     into a few flat steps that dither only at their seams, the way pixel artists shade. */
@@ -429,9 +452,9 @@ export function framed(S, { dx = 0, fade = 0 } = {}) {
   return { ...S, emit, cls, dx, glyphs: S.glyphs.map((g) => ({ ...g, c: g.c + dx })), windows: S.windows.map(at), tail: S.tail.map(at) };
 }
 
-/** Every key's colour in one flavour, as hex. */
-export function colours(flavour, keys) {
-  const P = palette(flavour), H = HOURS[flavour], M = materials(P), g = P.ground;
+/** Every key's colour at one hour, as hex: the midnight palette under that hour's sky. */
+export function colours(hour, keys, hours = HOURS) {
+  const P = palette("midnight"), H = hours[hour], M = materials(P, H), g = P.ground;
   const city = lift(chroma(g, 0.8), -0.04);
   const sky = (b) => mix(g, P[H.sky[b][0]], H.sky[b][1]);
   const E = {

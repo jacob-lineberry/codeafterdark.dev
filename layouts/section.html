@@ -3,7 +3,7 @@
 {{- $isArchive := eq .Section "archives" }}
 <div class="col">
   <header class="page-head">
-    <h1>{{ if $isArchive }}Archive{{ else }}{{ .Title }}{{ end }}</h1>
+    <h1>{{ .Title | lower }}</h1>
     {{- if $isArchive }}
     <p class="page-sub">{{ len $posts }} {{ cond (eq (len $posts) 1) "post" "posts" }}, newest first.</p>
     {{- else }}{{ with .Description }}

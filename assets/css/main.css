@@ -1,9 +1,9 @@
 /* code after dark: Miami Rice.
-   Miami nights, 1987, cozy rather than harsh: three flavours of the night (midnight, 2am, 4am)
-   on one set of lights. Pink says what a thing is; turquoise says what you can act on (links,
-   focus, where you are, the caret); the status colours mean the same thing in the code, the
-   callouts and the terminal. The palette is generated into tokens.css from theme/miami-rice.json.
-   Dark only, on purpose. */
+   Miami nights, 1987, cozy rather than harsh: the midnight flavour, with a room whose sky
+   follows the reader's clock (midnight, 2am, 4am). Pink says what a thing is; turquoise says
+   what you can act on (links, focus, where you are, the caret); the status colours mean the
+   same thing in the code, the callouts and the terminal. The palette is generated into
+   tokens.css from theme/miami-rice.json. Dark only, on purpose. */
 
 :root {
   /* roles that only the stylesheet needs, derived from the generated palette */
@@ -19,6 +19,9 @@
   --mono: "Recursive Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
   --measure: 38rem;
   --aside: 22rem;
+  /* the column every list sits in, the home page's and the archive's alike (the wordmark's
+     ink spans it too) */
+  --column: 36rem;
   --gutter: max(1rem, env(safe-area-inset-left, 0px));
 }
 
@@ -32,7 +35,13 @@ html {
   scrollbar-color: var(--line) var(--ground);
   scroll-padding-top: 1.5rem;
 }
+/* a column the height of the window at least, so a short page's footer sits at the bottom;
+   the bar and the footer are as wide as they can be, up to their own max-width */
 body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
   margin: 0;
   background: var(--ground);
   color: var(--text);
@@ -42,6 +51,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   caret-color: var(--action);
 }
+main { flex: 1 0 auto; }
+.top, .site-foot { width: 100%; }
 ::selection { background: var(--hl-med); color: var(--text-hi); }
 :focus-visible { outline: 2px solid var(--action); outline-offset: 3px; border-radius: 2px; }
 a {
@@ -153,7 +164,7 @@ kbd {
 /* ---- the room: lofi pixel art as a terminal draws it (scripts/scenes.mjs) ------------ */
 
 /* Two square pixels to a character cell, in half-blocks; the colours are assets/css/scene.css,
-   one set per flavour. The moon is its own layer: site.js turns it to tonight's phase. */
+   one set per hour of the night. The moon is its own layer: site.js turns it to tonight's phase. */
 .room {
   position: relative;
   isolation: isolate;
@@ -287,6 +298,9 @@ kbd {
 .links .icon, .sub .icon { flex: none; width: 16px; height: 16px; }
 /* "subscribe by rss" (subscribe.html): quieter than the links, the feed's own invitation */
 .sub { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--subtle); text-decoration-color: var(--line); }
+/* small links in a line of data are taller to a finger than they look: the padding widens
+   the target and the negative margin gives the room back */
+.sub, .tag { padding-block: 0.3rem; margin-block: -0.3rem; }
 .sub:hover { color: var(--action); text-decoration-color: var(--action); }
 .sub .icon { width: 14px; height: 14px; }
 /* the same row inside a page's text (the elsewhere shortcode), on the text's own left edge */
@@ -294,7 +308,7 @@ kbd {
 .prose .links li { margin: 0; }
 
 .posts { list-style: none; margin: 0; padding: 0; }
-.home-list { max-width: calc(36rem + 2 * var(--gutter)); margin: 2.5rem auto 0; padding: 0 var(--gutter); }
+.home-list { max-width: calc(var(--column) + 2 * var(--gutter)); margin: 2.5rem auto 0; padding: 0 var(--gutter); }
 .list-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding-bottom: 0.7rem; border-bottom: 1px solid var(--line-soft); font: 0.78rem/1.4 var(--mono); color: var(--subtle); }
 .list-head h2 { margin: 0; font: 600 0.85rem/1.4 var(--mono); color: var(--text-hi); }
 .post-row { padding: 1.6rem 0; border-top: 1px solid var(--line-soft); }
@@ -341,28 +355,36 @@ kbd {
 .tag .th { opacity: 0.7; }
 .meta .tags { display: inline-flex; flex-wrap: wrap; gap: 0.3rem 0.9rem; }
 
-/* compact rows: the archive and the tag pages */
+/* compact rows (the archive): the date and the minutes on one line, the title under them
+   with the column's full width, as the home page's rows have it */
 .posts.compact .post-row {
   display: grid;
-  grid-template-columns: 7.5rem minmax(0, 1fr) auto;
-  gap: 0.2rem 1.2rem;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.2rem 0.6rem;
   align-items: baseline;
   padding: 0.75rem 0;
 }
-.posts.compact .when { font: 0.8rem/1.5 var(--mono); color: var(--subtle); }
-.posts.compact h3 { font-size: 1.08rem; line-height: 1.4; font-weight: 600; letter-spacing: 0; }
-.posts.compact .mins { font: 0.8rem/1.5 var(--mono); color: var(--subtle); }
+.posts.compact .when { grid-column: 1; grid-row: 1; font: 0.8rem/1.5 var(--mono); color: var(--subtle); }
+.posts.compact .mins { grid-column: 2; grid-row: 1; font: 0.8rem/1.5 var(--mono); color: var(--subtle); }
+.posts.compact .mins::before { content: "·" / ""; margin-right: 0.6rem; }
+.posts.compact h3 { grid-column: 1 / -1; grid-row: 2; font-size: 1.08rem; line-height: 1.4; font-weight: 600; letter-spacing: 0; }
 
 /* ---- pages that aren't posts ------------------------------------------------------- */
 
-.col { max-width: 46rem; margin: 2.5rem auto 0; padding: 0 var(--gutter); }
-.page-head h1 {
+.col { max-width: calc(var(--column) + 2 * var(--gutter)); margin: 2.5rem auto 0; padding: 0 var(--gutter); }
+/* A site page's title: lowercase, in the wordmark's face and pink, and still, so nothing
+   moves above what you came to read. Posts keep their titles as their writer set them. */
+.page-head h1, .phead h1.page-title {
   margin: 0;
   font: 800 clamp(2rem, 4.4vw, 2.75rem)/1.12 var(--display);
   letter-spacing: -0.015em;
   color: var(--brand);
 }
+/* a tag's page: the hash says it is a tag, quieter than the name */
 .page-head h1 .hash { color: var(--subtle); font-weight: 600; margin-right: 0.05em; }
+/* the about page is laid out as a post, which starts a rem higher: its title lines up with
+   the other pages' */
+.phead > .page-title:first-child { margin-top: 1rem; }
 .page-sub { margin: 0.7rem 0 0; font-family: var(--serif); font-size: 1.22rem; color: var(--soft); }
 .page-head + * { margin-top: 2.2rem; }
 .col > .prose { margin-top: 2rem; }
@@ -380,7 +402,7 @@ kbd {
 }
 .year-h span { font: 0.78rem/1 var(--mono); font-weight: 400; color: var(--subtle); }
 
-.terms { display: flex; flex-wrap: wrap; gap: 0.6rem; list-style: none; margin: 0; padding: 0; }
+.terms { display: flex; flex-wrap: wrap; gap: 0.6rem; list-style: none; margin-bottom: 0; padding: 0; }
 .terms a {
   display: inline-flex;
   align-items: baseline;
@@ -437,7 +459,7 @@ kbd {
 .results .meta .tag + .tag::before { content: "·" / ""; margin: 0 0.6rem; color: var(--subtle); }
 .search-hint { margin-top: 2rem; font-size: 0.88rem; color: var(--subtle); }
 /* the keys only help with a keyboard: not on a touch screen */
-@media (hover: none) { .search-hint { display: none; } }
+@media (hover: none) { .search-hint, .top kbd { display: none; } }
 
 /* 404 */
 .lost-links { display: flex; flex-wrap: wrap; gap: 0.4rem 1.6rem; list-style: none; padding: 0; }
@@ -459,7 +481,9 @@ kbd {
   padding: 0 var(--gutter);
 }
 .phead { grid-column: 1; }
-.side { grid-column: 2; grid-row: 1 / span 3; min-width: 0; }
+.side { grid-column: 2; grid-row: 1 / span 3; min-width: 0; display: flex; flex-direction: column; }
+/* the contents come first in the page; beside the text, the view is drawn above them */
+@media (min-width: 1121px) { .side .view { order: -1; } }
 .phead .meta { margin: 0; font-size: 0.85rem; }
 .phead h1 {
   margin: 0.7rem 0 0;
@@ -837,12 +861,13 @@ kbd {
     position: static;
     max-height: none;
     margin-top: 2.5rem;
-    padding: 0.9rem 1.1rem;
     border: 1px solid var(--line-soft);
     border-radius: 10px;
   }
-  .toc summary { margin: 0; cursor: pointer; font-size: 0.9rem; color: var(--soft); }
-  .toc[open] summary { margin-bottom: 0.7rem; }
+  /* the whole bar opens it, not just the word */
+  .toc summary { margin: 0; padding: 0.9rem 1.1rem; cursor: pointer; font-size: 0.9rem; color: var(--soft); }
+  .toc[open] summary { padding-bottom: 0.7rem; }
+  .toc ol { margin: 0 1.1rem 0.9rem; }
   .post > .prose { margin-top: 2.5rem; }
   /* one column: a reader arriving from search sees the contents before the view */
   .phead { order: 0; }
@@ -868,13 +893,10 @@ kbd {
 
   .pager { grid-template-columns: 1fr; }
   .pager .newer { grid-column: 1; text-align: left; }
-  /* the date and the minutes on one line, so the title has the full width under them */
-  .posts.compact .post-row { grid-template-columns: auto minmax(0, 1fr); column-gap: 0.6rem; }
-  .posts.compact .when { grid-column: 1; grid-row: 1; }
-  .posts.compact .mins { grid-column: 2; grid-row: 1; }
-  .posts.compact .mins::before { content: "·" / ""; margin-right: 0.6rem; }
-  .posts.compact h3 { grid-column: 1 / -1; grid-row: 2; }
   .prose .hash { display: none; }
+  /* a number hangs left of its line, and a phone's margin is too narrow to hold it */
+  .prose ol { padding-left: 2rem; }
+  .footnotes ol { padding-left: 1.75rem; }
 }
 /* short screens: a smaller room, so the first post still shows */
 @media (min-width: 641px) and (max-height: 820px) {

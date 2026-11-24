@@ -2,7 +2,7 @@
 <div class="col">
   <header class="page-head">
     <h1><span class="hash" aria-hidden="true">#</span>{{ .Title | lower }}</h1>
-    <p class="page-sub">{{ len .Pages }} {{ cond (eq (len .Pages) 1) "post" "posts" }} tagged {{ .Title | lower }}. <a class="more" href="{{ .Parent.RelPermalink }}">all {{ .Data.Plural | lower }}</a></p>
+    <p class="page-sub">{{ len .Pages }} {{ cond (eq (len .Pages) 1) "post" "posts" }} tagged {{ .Title | lower }}. <a href="{{ .Parent.RelPermalink }}">all {{ .Data.Plural | lower }}</a></p>
   </header>
   <ol class="posts">
     {{- range .Pages.ByDate.Reverse }}
