@@ -1,5 +1,7 @@
-{{- /* The end of a post: when it was written and under which moon, the posts either side,
-       related posts, and where to suggest an edit. Takes dict "page" and "night". */ -}}
+{{- /* The end of a post: who wrote it, on which day and under which moon, where else to find
+       them and how to follow along; then the posts either side, related posts, and where to
+       suggest an edit. Takes dict "page" and "night". Readers mostly arrive at a single post,
+       so this is where most of them learn who wrote it. */ -}}
 {{- $p := .page }}
 {{- $n := .night }}
 {{- $posts := where site.RegularPages "Section" "posts" }}
@@ -8,7 +10,16 @@
 {{- /* Related leaves out the posts the pager already links to. */}}
 {{- $related := first 3 (complement $newer $older (site.RegularPages.Related $p)) }}
 <footer class="post-end">
-  <p class="signed">{{ partial "moon.html" $n }}<span>Written at <b>{{ $p.Date.Format "3:04 pm" }}</b> on {{ $p.Date.Format site.Params.dateFormat }}, under a {{ $n.name }}{{ if not (strings.HasSuffix $n.name "moon") }} moon{{ end }}.</span></p>
+  <div class="signed">
+    {{ partial "moon.html" $n }}
+    <div>
+      <p>Written by {{ with site.GetPage "/about" }}<a href="{{ .RelPermalink }}" rel="author">{{ site.Params.author }}</a>{{ else }}{{ site.Params.author }}{{ end }} on {{ $p.Date.Format site.Params.dateFormat }}, under a {{ $n.name }}{{ if not (strings.HasSuffix $n.name "moon") }} moon{{ end }}.</p>
+      <ul class="links">
+        {{- partial "links.html" . }}
+        <li>{{ partial "subscribe.html" }}</li>
+      </ul>
+    </div>
+  </div>
 
   {{- if or $newer $older }}
   <nav class="pager" aria-label="Older and newer posts">

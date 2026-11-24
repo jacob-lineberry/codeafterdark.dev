@@ -35,82 +35,81 @@
 .scene .kw{fill:#3a3051}
 .scene .kx{fill:#593e59}
 .scene .ky{fill:#744e6b}
-.scene .kz{fill:#18172c}
-.scene .k10{fill:#20273b}
-.scene .k11{fill:#43354d}
-.scene .k12{fill:#654963}
-.scene .k13{fill:#29384b}
-.scene .k14{fill:#3b384a}
-.scene .k15{fill:#322f41}
-.scene .k16{fill:#090916}
-.scene .k17{fill:#305060}
-.scene .k18{fill:#272435}
-.scene .k19{fill:#56a5ad}
-.scene .k1a{fill:#21283c}
-.scene .k1b{fill:#232c40}
-.scene .k1c{fill:#ed4b43}
-.scene .k1d{fill:#0f0f1f}
-.scene .k1e{fill:#67d3d6}
-.scene .k1f{fill:#89987b}
-.scene .k1g{fill:#4a5a53}
-.scene .k1h{fill:#414d4c}
-.scene .k1i{fill:#fe9cc3}
-.scene .k1j{fill:#4c979d}
-.scene .k1k{fill:#704865}
-.scene .k1l{fill:#a66d8c}
-.scene .k1m{fill:#8f5a75}
-.scene .k1n{fill:#2d525b}
-.scene .k1o{fill:#8fb180}
-.scene .k1p{fill:#2e273d}
-.scene .k1q{fill:#111226}
-.scene .k1r{fill:#0d0c20}
-.scene .k1s{fill:#343443}
-.scene .k1t{fill:#2b2d3d}
-.scene .k1u{fill:#8d758d}
-.scene .k1v{fill:#8d6b85}
-.scene .k1w{fill:#8d617e}
-.scene .k1x{fill:#835861}
-.scene .k1y{fill:#705b73}
-.scene .k1z{fill:#201a27}
-.scene .k20{fill:#6d506a}
-.scene .k21{fill:#6e4b58}
-.scene .k22{fill:#5a4049}
-.scene .k23{fill:#414657}
-.scene .k24{fill:#72667c}
-.scene .k25{fill:#6a4561}
-.scene .k26{fill:#111024}
-.scene .k27{fill:#1e182e}
-.scene .k28{fill:#2b2137}
-.scene .k29{fill:#1c2437}
-.scene .k2a{fill:#212e41}
-.scene .k2b{fill:#26394b}
-.scene .k2c{fill:#383c4d}
-.scene .k2d{fill:#171a2e}
-.scene .k2e{fill:#262437}
-.scene .k2f{fill:#403349}
-.scene .k2g{fill:#384b5b}
-.scene .k2h{fill:#41606e}
-.scene .k2i{fill:#497581}
-.scene .k2j{fill:#2f3749}
-.scene .k2k{fill:#212f42}
-.scene .k2l{fill:#4c7684}
-.scene .k2m{fill:#263b4c}
-.scene .k2n{fill:#54909b}
-.scene .k2o{fill:#2c4657}
-.scene .k2p{fill:#5dabb3}
-.scene .k2q{fill:#484155}
-.scene .k2r{fill:#16192d}
-.scene .k2s{fill:#1b2437}
-.scene .k2t{fill:#2c2b41}
-.scene .k2u{fill:#483b53}
-.scene .k2v{fill:#504a60}
-.scene .k2w{fill:#3f5768}
-.scene .k2x{fill:#364154}
-.scene .k2y{fill:#486f7e}
-.scene .k2z{fill:#518793}
-.scene .k30{fill:#0e0d1f}
-.scene .k31{fill:#111325}
-.scene .k32{fill:#15192a}
+.scene .kz{fill:#20273b}
+.scene .k10{fill:#43354d}
+.scene .k11{fill:#654963}
+.scene .k12{fill:#29384b}
+.scene .k13{fill:#3b384a}
+.scene .k14{fill:#322f41}
+.scene .k15{fill:#090916}
+.scene .k16{fill:#305060}
+.scene .k17{fill:#272435}
+.scene .k18{fill:#56a5ad}
+.scene .k19{fill:#21283c}
+.scene .k1a{fill:#232c40}
+.scene .k1b{fill:#ed4b43}
+.scene .k1c{fill:#0f0f1f}
+.scene .k1d{fill:#67d3d6}
+.scene .k1e{fill:#89987b}
+.scene .k1f{fill:#4a5a53}
+.scene .k1g{fill:#414d4c}
+.scene .k1h{fill:#fe9cc3}
+.scene .k1i{fill:#4c979d}
+.scene .k1j{fill:#704865}
+.scene .k1k{fill:#a66d8c}
+.scene .k1l{fill:#8f5a75}
+.scene .k1m{fill:#2d525b}
+.scene .k1n{fill:#8fb180}
+.scene .k1o{fill:#2e273d}
+.scene .k1p{fill:#111226}
+.scene .k1q{fill:#0d0c20}
+.scene .k1r{fill:#343443}
+.scene .k1s{fill:#2b2d3d}
+.scene .k1t{fill:#8d758d}
+.scene .k1u{fill:#8d6b85}
+.scene .k1v{fill:#8d617e}
+.scene .k1w{fill:#835861}
+.scene .k1x{fill:#705b73}
+.scene .k1y{fill:#201a27}
+.scene .k1z{fill:#6d506a}
+.scene .k20{fill:#6e4b58}
+.scene .k21{fill:#5a4049}
+.scene .k22{fill:#414657}
+.scene .k23{fill:#72667c}
+.scene .k24{fill:#6a4561}
+.scene .k25{fill:#111024}
+.scene .k26{fill:#1e182e}
+.scene .k27{fill:#2b2137}
+.scene .k28{fill:#1c2437}
+.scene .k29{fill:#212e41}
+.scene .k2a{fill:#26394b}
+.scene .k2b{fill:#383c4d}
+.scene .k2c{fill:#171a2e}
+.scene .k2d{fill:#262437}
+.scene .k2e{fill:#403349}
+.scene .k2f{fill:#384b5b}
+.scene .k2g{fill:#41606e}
+.scene .k2h{fill:#497581}
+.scene .k2i{fill:#2f3749}
+.scene .k2j{fill:#212f42}
+.scene .k2k{fill:#4c7684}
+.scene .k2l{fill:#263b4c}
+.scene .k2m{fill:#54909b}
+.scene .k2n{fill:#2c4657}
+.scene .k2o{fill:#5dabb3}
+.scene .k2p{fill:#484155}
+.scene .k2q{fill:#16192d}
+.scene .k2r{fill:#1b2437}
+.scene .k2s{fill:#2c2b41}
+.scene .k2t{fill:#483b53}
+.scene .k2u{fill:#504a60}
+.scene .k2v{fill:#3f5768}
+.scene .k2w{fill:#364154}
+.scene .k2x{fill:#486f7e}
+.scene .k2y{fill:#518793}
+.scene .k2z{fill:#0e0d1f}
+.scene .k30{fill:#111325}
+.scene .k31{fill:#15192a}
 .scene .mn-lit{fill:#ece2e6}
 .scene .mn-crater{fill:#d4d8ec}
 .scene .mn-edge{fill:#dedce9}
@@ -153,82 +152,81 @@
 [data-flavour="2am"] .scene .kw{fill:#21243f}
 [data-flavour="2am"] .scene .kx{fill:#382c43}
 [data-flavour="2am"] .scene .ky{fill:#4c374f}
-[data-flavour="2am"] .scene .kz{fill:#051022}
-[data-flavour="2am"] .scene .k10{fill:#0c2032}
-[data-flavour="2am"] .scene .k11{fill:#2a2d49}
-[data-flavour="2am"] .scene .k12{fill:#474166}
-[data-flavour="2am"] .scene .k13{fill:#143142}
-[data-flavour="2am"] .scene .k14{fill:#273040}
-[data-flavour="2am"] .scene .k15{fill:#1e2737}
-[data-flavour="2am"] .scene .k16{fill:#01040d}
-[data-flavour="2am"] .scene .k17{fill:#1e4b59}
-[data-flavour="2am"] .scene .k18{fill:#141d2b}
-[data-flavour="2am"] .scene .k19{fill:#4ea3ab}
-[data-flavour="2am"] .scene .k1a{fill:#0c2132}
-[data-flavour="2am"] .scene .k1b{fill:#0e2536}
-[data-flavour="2am"] .scene .k1c{fill:#ed4b43}
-[data-flavour="2am"] .scene .k1d{fill:#020815}
-[data-flavour="2am"] .scene .k1e{fill:#67d3d6}
-[data-flavour="2am"] .scene .k1f{fill:#7d957d}
-[data-flavour="2am"] .scene .k1g{fill:#3d554d}
-[data-flavour="2am"] .scene .k1h{fill:#324746}
-[data-flavour="2am"] .scene .k1i{fill:#fe9cc3}
-[data-flavour="2am"] .scene .k1j{fill:#459499}
-[data-flavour="2am"] .scene .k1k{fill:#65445f}
-[data-flavour="2am"] .scene .k1l{fill:#7d659d}
-[data-flavour="2am"] .scene .k1m{fill:#6a5284}
-[data-flavour="2am"] .scene .k1n{fill:#204c55}
-[data-flavour="2am"] .scene .k1o{fill:#8eb07f}
-[data-flavour="2am"] .scene .k1p{fill:#181f36}
-[data-flavour="2am"] .scene .k1q{fill:#010b1c}
-[data-flavour="2am"] .scene .k1r{fill:#000616}
-[data-flavour="2am"] .scene .k1s{fill:#282e3c}
-[data-flavour="2am"] .scene .k1t{fill:#192634}
-[data-flavour="2am"] .scene .k1u{fill:#867389}
-[data-flavour="2am"] .scene .k1v{fill:#856981}
-[data-flavour="2am"] .scene .k1w{fill:#855e79}
-[data-flavour="2am"] .scene .k1x{fill:#735461}
-[data-flavour="2am"] .scene .k1y{fill:#65576d}
-[data-flavour="2am"] .scene .k1z{fill:#0f141e}
-[data-flavour="2am"] .scene .k20{fill:#624c64}
-[data-flavour="2am"] .scene .k21{fill:#5c4657}
-[data-flavour="2am"] .scene .k22{fill:#4d3b43}
-[data-flavour="2am"] .scene .k23{fill:#2e3f4d}
-[data-flavour="2am"] .scene .k24{fill:#686276}
-[data-flavour="2am"] .scene .k25{fill:#5e415b}
-[data-flavour="2am"] .scene .k26{fill:#02091b}
-[data-flavour="2am"] .scene .k27{fill:#0a1126}
-[data-flavour="2am"] .scene .k28{fill:#151932}
-[data-flavour="2am"] .scene .k29{fill:#071d2e}
-[data-flavour="2am"] .scene .k2a{fill:#0c2838}
-[data-flavour="2am"] .scene .k2b{fill:#113242}
-[data-flavour="2am"] .scene .k2c{fill:#253544}
-[data-flavour="2am"] .scene .k2d{fill:#041324}
-[data-flavour="2am"] .scene .k2e{fill:#131d2d}
-[data-flavour="2am"] .scene .k2f{fill:#292c44}
-[data-flavour="2am"] .scene .k2g{fill:#274553}
-[data-flavour="2am"] .scene .k2h{fill:#315a67}
-[data-flavour="2am"] .scene .k2i{fill:#3b707c}
-[data-flavour="2am"] .scene .k2j{fill:#1d3040}
-[data-flavour="2am"] .scene .k2k{fill:#0c2939}
-[data-flavour="2am"] .scene .k2l{fill:#3c717e}
-[data-flavour="2am"] .scene .k2m{fill:#123444}
-[data-flavour="2am"] .scene .k2n{fill:#498c97}
-[data-flavour="2am"] .scene .k2o{fill:#184050}
-[data-flavour="2am"] .scene .k2p{fill:#55a9b0}
-[data-flavour="2am"] .scene .k2q{fill:#313951}
-[data-flavour="2am"] .scene .k2r{fill:#031324}
-[data-flavour="2am"] .scene .k2s{fill:#071d2e}
-[data-flavour="2am"] .scene .k2t{fill:#172336}
-[data-flavour="2am"] .scene .k2u{fill:#2f334e}
-[data-flavour="2am"] .scene .k2v{fill:#38425c}
-[data-flavour="2am"] .scene .k2w{fill:#2d5160}
-[data-flavour="2am"] .scene .k2x{fill:#22394b}
-[data-flavour="2am"] .scene .k2y{fill:#386977}
-[data-flavour="2am"] .scene .k2z{fill:#44838e}
-[data-flavour="2am"] .scene .k30{fill:#010716}
-[data-flavour="2am"] .scene .k31{fill:#020c1b}
-[data-flavour="2am"] .scene .k32{fill:#031221}
+[data-flavour="2am"] .scene .kz{fill:#0c2032}
+[data-flavour="2am"] .scene .k10{fill:#2a2d49}
+[data-flavour="2am"] .scene .k11{fill:#474166}
+[data-flavour="2am"] .scene .k12{fill:#143142}
+[data-flavour="2am"] .scene .k13{fill:#273040}
+[data-flavour="2am"] .scene .k14{fill:#1e2737}
+[data-flavour="2am"] .scene .k15{fill:#01040d}
+[data-flavour="2am"] .scene .k16{fill:#1e4b59}
+[data-flavour="2am"] .scene .k17{fill:#141d2b}
+[data-flavour="2am"] .scene .k18{fill:#4ea3ab}
+[data-flavour="2am"] .scene .k19{fill:#0c2132}
+[data-flavour="2am"] .scene .k1a{fill:#0e2536}
+[data-flavour="2am"] .scene .k1b{fill:#ed4b43}
+[data-flavour="2am"] .scene .k1c{fill:#020815}
+[data-flavour="2am"] .scene .k1d{fill:#67d3d6}
+[data-flavour="2am"] .scene .k1e{fill:#7d957d}
+[data-flavour="2am"] .scene .k1f{fill:#3d554d}
+[data-flavour="2am"] .scene .k1g{fill:#324746}
+[data-flavour="2am"] .scene .k1h{fill:#fe9cc3}
+[data-flavour="2am"] .scene .k1i{fill:#459499}
+[data-flavour="2am"] .scene .k1j{fill:#65445f}
+[data-flavour="2am"] .scene .k1k{fill:#7d659d}
+[data-flavour="2am"] .scene .k1l{fill:#6a5284}
+[data-flavour="2am"] .scene .k1m{fill:#204c55}
+[data-flavour="2am"] .scene .k1n{fill:#8eb07f}
+[data-flavour="2am"] .scene .k1o{fill:#181f36}
+[data-flavour="2am"] .scene .k1p{fill:#010b1c}
+[data-flavour="2am"] .scene .k1q{fill:#000616}
+[data-flavour="2am"] .scene .k1r{fill:#282e3c}
+[data-flavour="2am"] .scene .k1s{fill:#192634}
+[data-flavour="2am"] .scene .k1t{fill:#867389}
+[data-flavour="2am"] .scene .k1u{fill:#856981}
+[data-flavour="2am"] .scene .k1v{fill:#855e79}
+[data-flavour="2am"] .scene .k1w{fill:#735461}
+[data-flavour="2am"] .scene .k1x{fill:#65576d}
+[data-flavour="2am"] .scene .k1y{fill:#0f141e}
+[data-flavour="2am"] .scene .k1z{fill:#624c64}
+[data-flavour="2am"] .scene .k20{fill:#5c4657}
+[data-flavour="2am"] .scene .k21{fill:#4d3b43}
+[data-flavour="2am"] .scene .k22{fill:#2e3f4d}
+[data-flavour="2am"] .scene .k23{fill:#686276}
+[data-flavour="2am"] .scene .k24{fill:#5e415b}
+[data-flavour="2am"] .scene .k25{fill:#02091b}
+[data-flavour="2am"] .scene .k26{fill:#0a1126}
+[data-flavour="2am"] .scene .k27{fill:#151932}
+[data-flavour="2am"] .scene .k28{fill:#071d2e}
+[data-flavour="2am"] .scene .k29{fill:#0c2838}
+[data-flavour="2am"] .scene .k2a{fill:#113242}
+[data-flavour="2am"] .scene .k2b{fill:#253544}
+[data-flavour="2am"] .scene .k2c{fill:#041324}
+[data-flavour="2am"] .scene .k2d{fill:#131d2d}
+[data-flavour="2am"] .scene .k2e{fill:#292c44}
+[data-flavour="2am"] .scene .k2f{fill:#274553}
+[data-flavour="2am"] .scene .k2g{fill:#315a67}
+[data-flavour="2am"] .scene .k2h{fill:#3b707c}
+[data-flavour="2am"] .scene .k2i{fill:#1d3040}
+[data-flavour="2am"] .scene .k2j{fill:#0c2939}
+[data-flavour="2am"] .scene .k2k{fill:#3c717e}
+[data-flavour="2am"] .scene .k2l{fill:#123444}
+[data-flavour="2am"] .scene .k2m{fill:#498c97}
+[data-flavour="2am"] .scene .k2n{fill:#184050}
+[data-flavour="2am"] .scene .k2o{fill:#55a9b0}
+[data-flavour="2am"] .scene .k2p{fill:#313951}
+[data-flavour="2am"] .scene .k2q{fill:#031324}
+[data-flavour="2am"] .scene .k2r{fill:#071d2e}
+[data-flavour="2am"] .scene .k2s{fill:#172336}
+[data-flavour="2am"] .scene .k2t{fill:#2f334e}
+[data-flavour="2am"] .scene .k2u{fill:#38425c}
+[data-flavour="2am"] .scene .k2v{fill:#2d5160}
+[data-flavour="2am"] .scene .k2w{fill:#22394b}
+[data-flavour="2am"] .scene .k2x{fill:#386977}
+[data-flavour="2am"] .scene .k2y{fill:#44838e}
+[data-flavour="2am"] .scene .k2z{fill:#010716}
+[data-flavour="2am"] .scene .k30{fill:#020c1b}
+[data-flavour="2am"] .scene .k31{fill:#031221}
 [data-flavour="2am"] .scene .mn-lit{fill:#ece2e6}
 [data-flavour="2am"] .scene .mn-crater{fill:#d4d8ec}
 [data-flavour="2am"] .scene .mn-edge{fill:#dedce9}
@@ -271,82 +269,81 @@
 [data-flavour="4am"] .scene .kw{fill:#3d4a61}
 [data-flavour="4am"] .scene .kx{fill:#4b5b76}
 [data-flavour="4am"] .scene .ky{fill:#5f494d}
-[data-flavour="4am"] .scene .kz{fill:#1d2432}
-[data-flavour="4am"] .scene .k10{fill:#253340}
-[data-flavour="4am"] .scene .k11{fill:#3b4659}
-[data-flavour="4am"] .scene .k12{fill:#4e5c76}
-[data-flavour="4am"] .scene .k13{fill:#2c434f}
-[data-flavour="4am"] .scene .k14{fill:#414550}
-[data-flavour="4am"] .scene .k15{fill:#383c46}
-[data-flavour="4am"] .scene .k16{fill:#0f141d}
-[data-flavour="4am"] .scene .k17{fill:#335964}
-[data-flavour="4am"] .scene .k18{fill:#2c313a}
-[data-flavour="4am"] .scene .k19{fill:#57a9af}
-[data-flavour="4am"] .scene .k1a{fill:#253441}
-[data-flavour="4am"] .scene .k1b{fill:#273845}
-[data-flavour="4am"] .scene .k1c{fill:#ed4b43}
-[data-flavour="4am"] .scene .k1d{fill:#151b25}
-[data-flavour="4am"] .scene .k1e{fill:#67d3d6}
-[data-flavour="4am"] .scene .k1f{fill:#7f9e81}
-[data-flavour="4am"] .scene .k1g{fill:#4e6256}
-[data-flavour="4am"] .scene .k1h{fill:#445650}
-[data-flavour="4am"] .scene .k1i{fill:#fe9cc3}
-[data-flavour="4am"] .scene .k1j{fill:#4e9a9f}
-[data-flavour="4am"] .scene .k1k{fill:#755068}
-[data-flavour="4am"] .scene .k1l{fill:#7187ac}
-[data-flavour="4am"] .scene .k1m{fill:#5f7394}
-[data-flavour="4am"] .scene .k1n{fill:#315a60}
-[data-flavour="4am"] .scene .k1o{fill:#8fb280}
-[data-flavour="4am"] .scene .k1p{fill:#2d3646}
-[data-flavour="4am"] .scene .k1q{fill:#151e2b}
-[data-flavour="4am"] .scene .k1r{fill:#121825}
-[data-flavour="4am"] .scene .k1s{fill:#393d49}
-[data-flavour="4am"] .scene .k1t{fill:#313943}
-[data-flavour="4am"] .scene .k1u{fill:#907a8f}
-[data-flavour="4am"] .scene .k1v{fill:#907187}
-[data-flavour="4am"] .scene .k1w{fill:#916780}
-[data-flavour="4am"] .scene .k1x{fill:#7d636a}
-[data-flavour="4am"] .scene .k1y{fill:#736276}
-[data-flavour="4am"] .scene .k1z{fill:#25262b}
-[data-flavour="4am"] .scene .k20{fill:#71586d}
-[data-flavour="4am"] .scene .k21{fill:#685861}
-[data-flavour="4am"] .scene .k22{fill:#5f494d}
-[data-flavour="4am"] .scene .k23{fill:#46525c}
-[data-flavour="4am"] .scene .k24{fill:#756d7e}
-[data-flavour="4am"] .scene .k25{fill:#6f4d65}
-[data-flavour="4am"] .scene .k26{fill:#161d2a}
-[data-flavour="4am"] .scene .k27{fill:#1e2636}
-[data-flavour="4am"] .scene .k28{fill:#263042}
-[data-flavour="4am"] .scene .k29{fill:#202f3c}
-[data-flavour="4am"] .scene .k2a{fill:#243946}
-[data-flavour="4am"] .scene .k2b{fill:#29434f}
-[data-flavour="4am"] .scene .k2c{fill:#3d4852}
-[data-flavour="4am"] .scene .k2d{fill:#1b2633}
-[data-flavour="4am"] .scene .k2e{fill:#2c313c}
-[data-flavour="4am"] .scene .k2f{fill:#3a4353}
-[data-flavour="4am"] .scene .k2g{fill:#3c555f}
-[data-flavour="4am"] .scene .k2h{fill:#446872}
-[data-flavour="4am"] .scene .k2i{fill:#4c7c85}
-[data-flavour="4am"] .scene .k2j{fill:#34424e}
-[data-flavour="4am"] .scene .k2k{fill:#243a47}
-[data-flavour="4am"] .scene .k2l{fill:#4f7e87}
-[data-flavour="4am"] .scene .k2m{fill:#294551}
-[data-flavour="4am"] .scene .k2n{fill:#56969e}
-[data-flavour="4am"] .scene .k2o{fill:#2f505b}
-[data-flavour="4am"] .scene .k2p{fill:#5eafb5}
-[data-flavour="4am"] .scene .k2q{fill:#404f5f}
-[data-flavour="4am"] .scene .k2r{fill:#1a2533}
-[data-flavour="4am"] .scene .k2s{fill:#1f303d}
-[data-flavour="4am"] .scene .k2t{fill:#323947}
-[data-flavour="4am"] .scene .k2u{fill:#414b5e}
-[data-flavour="4am"] .scene .k2v{fill:#47596b}
-[data-flavour="4am"] .scene .k2w{fill:#43626d}
-[data-flavour="4am"] .scene .k2x{fill:#3b4d59}
-[data-flavour="4am"] .scene .k2y{fill:#4b7781}
-[data-flavour="4am"] .scene .k2z{fill:#538e96}
-[data-flavour="4am"] .scene .k30{fill:#131925}
-[data-flavour="4am"] .scene .k31{fill:#161f2b}
-[data-flavour="4am"] .scene .k32{fill:#192530}
+[data-flavour="4am"] .scene .kz{fill:#253340}
+[data-flavour="4am"] .scene .k10{fill:#3b4659}
+[data-flavour="4am"] .scene .k11{fill:#4e5c76}
+[data-flavour="4am"] .scene .k12{fill:#2c434f}
+[data-flavour="4am"] .scene .k13{fill:#414550}
+[data-flavour="4am"] .scene .k14{fill:#383c46}
+[data-flavour="4am"] .scene .k15{fill:#0f141d}
+[data-flavour="4am"] .scene .k16{fill:#335964}
+[data-flavour="4am"] .scene .k17{fill:#2c313a}
+[data-flavour="4am"] .scene .k18{fill:#57a9af}
+[data-flavour="4am"] .scene .k19{fill:#253441}
+[data-flavour="4am"] .scene .k1a{fill:#273845}
+[data-flavour="4am"] .scene .k1b{fill:#ed4b43}
+[data-flavour="4am"] .scene .k1c{fill:#151b25}
+[data-flavour="4am"] .scene .k1d{fill:#67d3d6}
+[data-flavour="4am"] .scene .k1e{fill:#7f9e81}
+[data-flavour="4am"] .scene .k1f{fill:#4e6256}
+[data-flavour="4am"] .scene .k1g{fill:#445650}
+[data-flavour="4am"] .scene .k1h{fill:#fe9cc3}
+[data-flavour="4am"] .scene .k1i{fill:#4e9a9f}
+[data-flavour="4am"] .scene .k1j{fill:#755068}
+[data-flavour="4am"] .scene .k1k{fill:#7187ac}
+[data-flavour="4am"] .scene .k1l{fill:#5f7394}
+[data-flavour="4am"] .scene .k1m{fill:#315a60}
+[data-flavour="4am"] .scene .k1n{fill:#8fb280}
+[data-flavour="4am"] .scene .k1o{fill:#2d3646}
+[data-flavour="4am"] .scene .k1p{fill:#151e2b}
+[data-flavour="4am"] .scene .k1q{fill:#121825}
+[data-flavour="4am"] .scene .k1r{fill:#393d49}
+[data-flavour="4am"] .scene .k1s{fill:#313943}
+[data-flavour="4am"] .scene .k1t{fill:#907a8f}
+[data-flavour="4am"] .scene .k1u{fill:#907187}
+[data-flavour="4am"] .scene .k1v{fill:#916780}
+[data-flavour="4am"] .scene .k1w{fill:#7d636a}
+[data-flavour="4am"] .scene .k1x{fill:#736276}
+[data-flavour="4am"] .scene .k1y{fill:#25262b}
+[data-flavour="4am"] .scene .k1z{fill:#71586d}
+[data-flavour="4am"] .scene .k20{fill:#685861}
+[data-flavour="4am"] .scene .k21{fill:#5f494d}
+[data-flavour="4am"] .scene .k22{fill:#46525c}
+[data-flavour="4am"] .scene .k23{fill:#756d7e}
+[data-flavour="4am"] .scene .k24{fill:#6f4d65}
+[data-flavour="4am"] .scene .k25{fill:#161d2a}
+[data-flavour="4am"] .scene .k26{fill:#1e2636}
+[data-flavour="4am"] .scene .k27{fill:#263042}
+[data-flavour="4am"] .scene .k28{fill:#202f3c}
+[data-flavour="4am"] .scene .k29{fill:#243946}
+[data-flavour="4am"] .scene .k2a{fill:#29434f}
+[data-flavour="4am"] .scene .k2b{fill:#3d4852}
+[data-flavour="4am"] .scene .k2c{fill:#1b2633}
+[data-flavour="4am"] .scene .k2d{fill:#2c313c}
+[data-flavour="4am"] .scene .k2e{fill:#3a4353}
+[data-flavour="4am"] .scene .k2f{fill:#3c555f}
+[data-flavour="4am"] .scene .k2g{fill:#446872}
+[data-flavour="4am"] .scene .k2h{fill:#4c7c85}
+[data-flavour="4am"] .scene .k2i{fill:#34424e}
+[data-flavour="4am"] .scene .k2j{fill:#243a47}
+[data-flavour="4am"] .scene .k2k{fill:#4f7e87}
+[data-flavour="4am"] .scene .k2l{fill:#294551}
+[data-flavour="4am"] .scene .k2m{fill:#56969e}
+[data-flavour="4am"] .scene .k2n{fill:#2f505b}
+[data-flavour="4am"] .scene .k2o{fill:#5eafb5}
+[data-flavour="4am"] .scene .k2p{fill:#404f5f}
+[data-flavour="4am"] .scene .k2q{fill:#1a2533}
+[data-flavour="4am"] .scene .k2r{fill:#1f303d}
+[data-flavour="4am"] .scene .k2s{fill:#323947}
+[data-flavour="4am"] .scene .k2t{fill:#414b5e}
+[data-flavour="4am"] .scene .k2u{fill:#47596b}
+[data-flavour="4am"] .scene .k2v{fill:#43626d}
+[data-flavour="4am"] .scene .k2w{fill:#3b4d59}
+[data-flavour="4am"] .scene .k2x{fill:#4b7781}
+[data-flavour="4am"] .scene .k2y{fill:#538e96}
+[data-flavour="4am"] .scene .k2z{fill:#131925}
+[data-flavour="4am"] .scene .k30{fill:#161f2b}
+[data-flavour="4am"] .scene .k31{fill:#192530}
 [data-flavour="4am"] .scene .mn-lit{fill:#ece2e6}
 [data-flavour="4am"] .scene .mn-crater{fill:#d4d8ec}
 [data-flavour="4am"] .scene .mn-edge{fill:#dedce9}

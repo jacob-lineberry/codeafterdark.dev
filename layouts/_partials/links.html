@@ -1,7 +1,7 @@
-{{- /* params.links, then the feed, as list items. */ -}}
+{{- /* Where else to find the writer: params.links, as list items, each an icon and its name
+       (the name stays visible: an icon alone is a guess). The feed is not one of them; it is
+       subscribe.html, since following the blog is not the same as finding its writer. */ -}}
 {{- range site.Params.links }}
-<li><a href="{{ .url }}"{{ if hasPrefix .url "http" }} rel="me noopener"{{ end }}>{{ .name | lower }}</a></li>
+<li><a href="{{ .url }}"{{ if hasPrefix .url "http" }} rel="me noopener"{{ end }}>{{ partial "icon.html" (lower .name) }}<span>{{ .name | lower }}</span></a></li>
 {{- end }}
-{{- with site.Home.OutputFormats.Get "rss" }}
-<li><a href="{{ .RelPermalink }}">rss</a></li>
-{{- end }}
+{{- /* chomp */ -}}

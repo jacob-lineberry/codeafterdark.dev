@@ -13,7 +13,7 @@
 <section class="intro" aria-labelledby="hello">
   <h1 id="hello" class="wordmark">{{ site.Title }}</h1>
   <p class="tagline">{{ replace (strings.TrimSuffix "." (site.Params.description | lower)) "late-night" `<span class="nw">late-night</span>` | safeHTML }}</p>
-  <p class="about">{{ site.Params.author }} writes about {{ site.Params.writesAbout }}.</p>
+  <p class="about">{{ site.Params.intro | markdownify }}</p>
   <nav aria-label="Elsewhere">
     <ul class="links">
       {{- partial "links.html" . }}
@@ -24,6 +24,7 @@
 <section class="home-list" aria-labelledby="latest">
   <div class="list-head">
     <h2 id="latest">latest</h2>
+    {{ partial "subscribe.html" }}
   </div>
   {{- with $posts }}
   <ol class="posts">
