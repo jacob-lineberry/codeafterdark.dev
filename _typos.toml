@@ -2,6 +2,10 @@
 [default]
 extend-ignore-re = ["U\\+[0-9A-Fa-f]+(-[0-9A-Fa-f]+)?"]
 
+# a variable font's width axis, in the names of the fonts scripts/fallbacks.py measures
+[default.extend-words]
+wdth = "wdth"
+
 # third-party code, copied in unchanged (static/vendor/*/README.md)
 [files]
 extend-exclude = ["static/vendor/"]

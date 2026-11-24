@@ -2,6 +2,8 @@
 .hugo_build.lock
 public/
 resources/
+# drawn on every build (scripts/diagrams.py)
+assets/diagrams/
 node_modules/
 
 # Local agent and design tool state (Claude Code, Impeccable), not site source

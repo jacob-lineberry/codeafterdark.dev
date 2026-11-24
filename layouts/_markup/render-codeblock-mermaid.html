@@ -1,6 +1,26 @@
-{{- .Page.Store.Set "hasMermaid" true -}}
+{{- /* A Mermaid diagram, drawn before Hugo runs: on every build, scripts/diagrams.py draws
+       each one with the site's own Mermaid, fonts and colours into assets/diagrams/<key>.svg
+       (not committed), and the page carries that SVG, so a reader downloads no Mermaid and
+       never sees the diagram's source first. The production build stops on a diagram that
+       was not drawn. On the dev server, where the script usually hasn't run, the browser
+       draws it instead. The script builds the site in the "diagrams" environment, where
+       every diagram is left to the browser, to find them all. */ -}}
+{{- $key := hash.XxHash .Inner }}
+{{- $svg := "" }}
+{{- if ne hugo.Environment "diagrams" }}
+  {{- with resources.Get (printf "diagrams/%s.svg" $key) }}{{ $svg = .Content }}{{ end }}
+  {{- if and (not $svg) hugo.IsProduction }}
+    {{- $where := .Page.String }}{{ with .Page.File }}{{ $where = .Path }}{{ end }}
+    {{- errorf "%s: a diagram is not drawn. Run scripts/diagrams.py before building (deploy.yml does)." $where }}
+  {{- end }}
+{{- end }}
 <figure class="diagram">
-  <pre class="mermaid">{{ .Inner | htmlEscape | safeHTML }}</pre>
+  {{- if $svg }}
+  <div class="mermaid" data-processed>{{ $svg | safeHTML }}</div>
+  {{- else }}
+  {{- .Page.Store.Set "hasMermaid" true }}
+  <pre class="mermaid" data-diagram="{{ $key }}">{{ .Inner | htmlEscape | safeHTML }}</pre>
+  {{- end }}
   {{- with .Attributes.caption }}
   <figcaption>{{ . | markdownify }}</figcaption>
   {{- end }}
