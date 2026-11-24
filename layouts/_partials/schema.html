@@ -1,14 +1,57 @@
+{{- /* Structured data, for search engines: the site and who writes it on the home page, the
+       writer's profile on the about page, and each post as a blog post with its writer, its
+       card and its tags. Other pages carry none. */ -}}
+{{- $about := site.GetPage "/about" }}
+{{- $person := dict "@type" "Person" "name" site.Params.author }}
+{{- with $about }}{{ $person = merge $person (dict "url" .Permalink) }}{{ end }}
+{{- $card := "" }}
+{{- with .Params.images | default site.Params.images }}{{ $card = index . 0 | absURL }}{{ end }}
+{{- $d := dict }}
+{{- if .IsHome }}
+  {{- $d = dict
+    "@context" "https://schema.org"
+    "@type" "WebSite"
+    "name" site.Title
+    "url" .Permalink
+    "description" site.Params.description
+    "inLanguage" (site.Language.Locale | default "en-US")
+    "author" $person
+  }}
+{{- else if and $about (eq . $about) }}
+  {{- /* the profiles that are the writer's own (not the email address or the chat invite) */}}
+  {{- $same := slice }}
+  {{- range site.Params.links }}
+    {{- if and (hasPrefix .url "https://") (not (strings.Contains .url "discord.gg")) }}{{ $same = $same | append .url }}{{ end }}
+  {{- end }}
+  {{- $d = dict
+    "@context" "https://schema.org"
+    "@type" "ProfilePage"
+    "url" .Permalink
+    "mainEntity" (merge $person (dict "sameAs" $same))
+  }}
+{{- else if and .IsPage (eq .Section "posts") }}
+  {{- $d = dict
+    "@context" "https://schema.org"
+    "@type" "BlogPosting"
+    "headline" .Title
+    "datePublished" (.Date.Format "2006-01-02T15:04:05Z07:00")
+    "dateModified" (.Lastmod.Format "2006-01-02T15:04:05Z07:00")
+    "url" .Permalink
+    "mainEntityOfPage" .Permalink
+    "author" $person
+    "publisher" $person
+    "inLanguage" (site.Language.Locale | default "en-US")
+    "wordCount" .WordCount
+  }}
+  {{- with .Description }}{{ $d = merge $d (dict "description" .) }}{{ end }}
+  {{- with $card }}{{ $d = merge $d (dict "image" .) }}{{ end }}
+  {{- with .GetTerms "tags" }}
+    {{- $k := slice }}{{ range . }}{{ $k = $k | append (.LinkTitle | lower) }}{{ end }}
+    {{- $d = merge $d (dict "keywords" $k) }}
+  {{- end }}
+{{- end }}
+{{- with $d }}
 <script type="application/ld+json">
-{{- $d := dict
-  "@context" "https://schema.org"
-  "@type" "BlogPosting"
-  "headline" .Title
-  "datePublished" (.Date.Format "2006-01-02T15:04:05Z07:00")
-  "dateModified" (.Lastmod.Format "2006-01-02T15:04:05Z07:00")
-  "url" .Permalink
-  "author" (dict "@type" "Person" "name" site.Params.author)
-  "wordCount" .WordCount
-}}
-{{- with .Description }}{{ $d = merge $d (dict "description" .) }}{{ end }}
-{{ $d | jsonify | safeJS }}
+{{ . | jsonify | safeJS }}
 </script>
+{{- end }}

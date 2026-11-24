@@ -1,7 +1,7 @@
 {{ define "main" }}
 <div class="col">
   <header class="page-head">
-    <h1>{{ .Title }}</h1>
+    <h1>{{ .Title | lower }}</h1>
     <p class="page-sub">{{ len .Data.Terms }} {{ cond (eq (len .Data.Terms) 1) (.Data.Singular | lower) (.Data.Plural | lower) }}, most used first.</p>
   </header>
   <ul class="terms">

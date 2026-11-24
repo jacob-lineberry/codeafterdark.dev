@@ -1,5 +1,5 @@
 ---
-title: "About"
+title: "about"
 description: "I'm Jacob Lineberry. This is where I write things down after the workday ends."
 date: 2025-01-01
 view: true

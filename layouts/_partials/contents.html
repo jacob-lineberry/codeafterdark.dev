@@ -5,7 +5,7 @@
 {{- if ge (len $items) 3 }}
 <nav class="toc" aria-labelledby="toc-h">
   <details open>
-    <summary id="toc-h">Contents</summary>
+    <summary id="toc-h">contents</summary>
     <ol>
       {{- range $items }}
       <li{{ if not .top }} class="sub"{{ end }}><a href="#{{ .id }}">{{ .title | safeHTML }}</a></li>

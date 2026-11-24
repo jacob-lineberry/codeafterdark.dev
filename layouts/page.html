@@ -21,12 +21,14 @@
     {{- end }}
     {{- with .Params.listening }}{{ partial "listening.html" . }}{{ end }}
   </header>
+  {{- /* the contents come first, as they are read on a narrow screen and by the keyboard;
+         on a wide one the view is drawn above them (main.css) */}}
   <div class="side">
-    {{ partial "view.html" (dict "night" $n "label" (printf "the moon that night: %s, %d%% lit" $n.name $n.lit)) }}
     {{- if ne .Params.showToc false }}{{ partial "contents.html" . }}{{ end }}
+    {{ partial "view.html" (dict "night" $n "label" (printf "the moon that night: %s, %d%% lit" $n.name $n.lit)) }}
   </div>
   <div class="prose" id="prose">
-    {{ .Content }}
+    {{ partial "content.html" . }}
   </div>
   {{ partial "post-end.html" (dict "page" . "night" $n) }}
 </article>
@@ -35,7 +37,7 @@
        view as it is tonight. */}}
 <article class="post">
   <header class="phead">
-    <h1>{{ .Title }}</h1>
+    <h1 class="page-title">{{ .Title | lower }}</h1>
     {{- with .Description }}
     <p class="lede">{{ . }}</p>
     {{- end }}
@@ -44,19 +46,19 @@
     {{ partial "view.html" (dict "label" "the view from the desk, tonight") }}
   </div>
   <div class="prose" id="prose">
-    {{ .Content }}
+    {{ partial "content.html" . }}
   </div>
 </article>
 {{- else }}
 <article class="col">
   <header class="page-head">
-    <h1>{{ .Title }}</h1>
+    <h1>{{ .Title | lower }}</h1>
     {{- with .Description }}
     <p class="page-sub">{{ . }}</p>
     {{- end }}
   </header>
   <div class="prose" id="prose">
-    {{ .Content }}
+    {{ partial "content.html" . }}
   </div>
 </article>
 {{- end }}

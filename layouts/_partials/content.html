@@ -1,0 +1,7 @@
+{{- /* A page's text. Goldmark draws a task list's boxes as bare inputs; each gets a name, so a
+       screen reader says whether the item is done. */ -}}
+{{- $c := string .Content }}
+{{- $c = replace $c `<input checked="" disabled="" type="checkbox">` `<input checked="" disabled="" type="checkbox" aria-label="done">` }}
+{{- $c = replace $c `<input disabled="" type="checkbox">` `<input disabled="" type="checkbox" aria-label="not done">` }}
+{{- $c | safeHTML }}
+{{- /* chomp */ -}}

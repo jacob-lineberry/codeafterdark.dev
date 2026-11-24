@@ -118,8 +118,8 @@
     "selectionBackground": "hlMed",
     "selectionForeground": "text"
   },
-  "flavourClock": {
-    "$about": "Which flavour the blog shows by the reader's local hour; midnight is the default (no JS, daytime).",
+  "roomClock": {
+    "$about": "The blog is always the midnight flavour. Only its room follows the reader's local hour (sky, window light, moon, lit windows, the screen's clock; scripts/room/scene.mjs HOURS), and shows midnight by day and without JavaScript.",
     "midnight": "22:00-01:59 and the default",
     "2am": "02:00-03:59",
     "4am": "04:00-05:59"

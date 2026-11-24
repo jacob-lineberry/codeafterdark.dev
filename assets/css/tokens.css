@@ -41,7 +41,7 @@
   --sx-punctuation: var(--subtle);
   --sx-comment: var(--subtle);
   --glow: 32%;
-  /* flavour: Midnight (default) */
+  /* flavour: Midnight */
   --ground: #18172c;
   --surface: #1f1f34;
   --overlay: #26263c;
@@ -50,26 +50,4 @@
   --hl-high: #4e4e62;
   --muted: #727289;
   --sky: var(--flamingo);
-}
-:root[data-flavour="2am"] {
-  /* 2am: deep navy, the darkest hour */
-  --ground: #051022;
-  --surface: #0b172a;
-  --overlay: #121e32;
-  --hl-low: #0e1a2d;
-  --hl-med: #283447;
-  --hl-high: #3a4557;
-  --muted: #687589;
-  --sky: var(--orchid);
-}
-:root[data-flavour="4am"] {
-  /* 4am: dusk slate, the sky starting to pale */
-  --ground: #1d2432;
-  --surface: #252c3a;
-  --overlay: #2c3342;
-  --hl-low: #282f3e;
-  --hl-med: #444b58;
-  --hl-high: #565c68;
-  --muted: #6a758a;
-  --sky: var(--periwinkle);
 }
