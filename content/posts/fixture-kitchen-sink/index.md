@@ -27,6 +27,8 @@ The same thing as a sequence, for one request crossing regions:
 
 ```mermaid
 sequenceDiagram
+    accTitle: A SYN crossing regions through two Transit Gateways
+    accDescr: The app in us-east-1 sends a SYN to its regional Transit Gateway, which passes it over the peering attachment to the eu-west-1 gateway and on to the database. The SYN-ACK returns the same way.
     participant App as app (us-east-1)
     participant TGW1 as TGW us-east-1
     participant TGW2 as TGW eu-west-1

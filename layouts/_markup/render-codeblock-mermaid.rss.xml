@@ -1,0 +1,21 @@
+{{- /* Diagrams in the feed (home.rss.xml) are images of the drawing the page carries
+       (render-codeblock-mermaid.html), published beside it. The drawing is light lines on the
+       site's dark panel, so it keeps that panel (--surface in assets/css/tokens.css) in a
+       reader's light page. Its title is the diagram's accTitle, else its caption. */ -}}
+{{- $key := hash.XxHash .Inner }}
+{{- $alt := "Diagram" }}
+{{- with .Attributes.caption }}{{ $alt = . | plainify }}{{ end }}
+{{- with findRESubmatch `(?m)^\s*accTitle\s*:\s*(.+?)\s*$` .Inner 1 }}{{ $alt = index . 0 1 }}{{ end }}
+<figure>
+  {{- with resources.Get (printf "diagrams/%s.svg" $key) }}
+  {{- $svg := replaceRE `^(<svg\b[^>]*?\sstyle=")` "${1}background:#1f1f34;" .Content 1 }}
+  {{- with resources.FromString (printf "feed/diagrams/%s.svg" $key) $svg }}
+  <img src="{{ .Permalink }}" alt="{{ $alt }}">
+  {{- end }}
+  {{- else }}
+  <pre><code>{{ .Inner | htmlEscape | safeHTML }}</code></pre>
+  {{- end }}
+  {{- with .Attributes.caption }}
+  <figcaption>{{ . | markdownify }}</figcaption>
+  {{- end }}
+</figure>
