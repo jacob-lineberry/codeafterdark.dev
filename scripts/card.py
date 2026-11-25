@@ -44,7 +44,7 @@ async def main(url: str) -> None:
     async with async_playwright() as p:
         browser = await p.chromium.launch(executable_path=os.environ.get("CHROMIUM") or None)
         page = await browser.new_page(viewport={"width": 1200, "height": 630}, reduced_motion="reduce")
-        await page.goto(f"{url}/?hour=midnight", wait_until="networkidle")
+        await page.goto(f"{url}/?hour=midnight&weather=clear", wait_until="networkidle")
         await page.evaluate("document.fonts.ready")
         await page.add_style_tag(content=CARD_CSS)
         await page.evaluate(

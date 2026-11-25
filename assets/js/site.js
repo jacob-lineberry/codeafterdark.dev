@@ -94,7 +94,8 @@ function initOverflow() {
 }
 
 // The night's small life: windows across the street light up and go dark, the beacon on the
-// hotel roof blinks, the caret blinks on the monitor, the steam drifts and the cat's zzz rise.
+// hotel roof blinks, the caret blinks on the monitor, the steam drifts, the cat's zzz rise and,
+// now and then, rain falls on the glass.
 // One pause control stops all of it, and is remembered. Without JavaScript, or with reduced
 // motion asked for, the room starts still.
 function initNight() {
@@ -170,6 +171,38 @@ function initNight() {
     window.addEventListener(type, () => { last = Date.now(); rest(); }, { passive: true, capture: true }));
   document.addEventListener("visibilitychange", () => { if (document.hidden) rest(); });
   const home = rooms.find((r) => r.svg.dataset.room === "home");
+
+  // Pet the cat: it wakes, a heart rises, its tail flicks and the screen purrs, then it goes back
+  // to sleep (main.css). Petted again mid-purr, it starts over.
+  const cat = document.querySelector(".pet");
+  if (home && cat) {
+    let nap = 0;
+    cat.hidden = false;
+    cat.addEventListener("click", () => {
+      home.svg.classList.remove("petting");
+      void home.svg.getBoundingClientRect();
+      home.svg.classList.add("petting");
+      clearTimeout(nap);
+      nap = setTimeout(() => home.svg.classList.remove("petting"), 2400);
+    });
+  }
+
+  // Rain comes and goes: a shower of half a minute to a minute and a quarter, then clear for
+  // three quarters of a minute to two minutes. Its clock only runs while the room is in view
+  // and moving, so a reader looking at it has a fair chance of seeing one arrive.
+  // ?weather=rain or ?weather=clear holds the weather for the visit (head.html).
+  if (home?.svg.querySelector(".rain") && !["rain", "clear"].includes(new URLSearchParams(location.search).get("weather"))) {
+    const spell = (wet) => 1000 * (wet ? 30 + Math.random() * 45 : 45 + Math.random() * 75);
+    let left = spell(root.dataset.weather === "rain");
+    setInterval(() => {
+      if (paused || document.hidden || !seen.has(home.svg) || (left -= 1000) > 0) return;
+      const wet = root.dataset.weather !== "rain";
+      if (wet) root.dataset.weather = "rain";
+      else delete root.dataset.weather;
+      left = spell(wet);
+    }, 1000);
+  }
+
   const star = home?.svg.querySelector(".falling");
   star?.addEventListener("animationend", () => star.classList.remove("go"));
   if (home)
@@ -198,7 +231,7 @@ function initNight() {
   document.querySelectorAll(".tonight").forEach((el) => {
     el.querySelector(".moon-lit").setAttribute("d", moonPath(now));
     el.querySelector("span").textContent = `the moon tonight: ${moonName(now)}, ${Math.round(moonLit(now) * 100)}% lit`;
-    el.hidden = false;
+    el.closest(".site-foot").hidden = false;
   });
 }
 

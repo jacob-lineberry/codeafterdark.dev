@@ -20,7 +20,7 @@ export const GLASS = { x0: 66, x1: 97, y0: 12, y1: 35 };    // the CRT's screen:
 const CASE = { x0: 62, x1: 101, y0: 9, y1: 39 };
 export const WIN = { x0: 4, x1: 43, y0: 5, y1: 36 };        // the window's glass
 const DESK = { top: 43, lip: 50 };
-const CAT = { x: 33, y: 35 };
+export const CAT = { x: 33, y: 35, w: 28, h: 12 };
 
 // The hours. The moon sinks through the night, the street goes to sleep, the haze over the city
 // changes colour. sky is five bands from the top of the window down, each an accent mixed into
@@ -93,7 +93,7 @@ const CODE = [
   [["ln", " 5 "], ["fn", "    write"], ["pu", "("], ["st", "\"posts\""], ["pu", ")"]],
   [["ln", " 6 "], ["fn", "    sip"], ["pu", "("], ["st", "\"coffee\""], ["pu", ")"]],
   [["ln", " 7 "], ["pu", "  }"]],
-  [["ln", " 8 "], ["fn", "  pet"], ["pu", "("], ["id", "cat"], ["pu", ")"], ["cm", " // zzz"]],
+  [["ln", " 8 "], ["fn", "  pet"], ["pu", "("], ["id", "cat"], ["pu", ")"], ["cm", " // zzz", " // purr"]],
   [["ln", " 9 "], ["pu", "}"], ["cur", " "]],
   [["dim", " ~"]],
   [["mode", " NORMAL "], ["dim", " main.go"], ["clock", "CLOCK"]],
@@ -121,8 +121,18 @@ const CAT_MARKS = [
   [1, 9, "t"], [2, 9, "t"], [3, 10, "t"], [4, 10, "t"], [5, 10, "t"], [6, 10, "t"], [7, 10, "t"], [8, 10, "t"], [9, 10, "t"], [10, 10, "t"], [11, 10, "t"],
   [12, 10, "t"], [13, 10, "t"], [14, 10, "t"], [15, 10, "t"], [16, 10, "t"], [17, 9, "t"], [18, 9, "t"], [19, 9, "t"], [20, 9, "t"],
 ];
-// The tail's tip, lifted against the wall: the twitch the room does after dark.
+// The tail's tip, lifted against the wall: the twitch the room does after dark, and its flick
+// when the cat is petted.
 const TAIL_UP = [[0, 8, "cat"], [-1, 7, "catRimP2"], [0, 7, "catRimP2"]];
+// Petted (site.js), the cat wakes: its eyes open, two round eyes catching the screen's light,
+// and its ears prick up a pixel. Drawn over the sleeping cat, shown only while it is awake.
+const AWAKE = [
+  [19, 4, "catEyeOpen"], [20, 4, "catEyeOpen"], [19, 5, "catEyeOpen"], [20, 5, "catEyeOpen"],
+  [23, 4, "catEyeOpen"], [24, 4, "catEyeOpen"], [23, 5, "catEyeOpen"], [24, 5, "catEyeOpen"],
+  [19, -1, "catRimT"], [24, -1, "catRimT"],
+];
+// and a heart rises from it where the zzz were, a pixel at a time (main.css)
+const HEART = [".X.X.", "XXXXX", ".XXX.", "..X.."];
 
 // a pothos in a terracotta pot at the left end of the desk, trailing over the edge
 // G a leaf in the window's light, g a leaf in shadow, s stem, R the pot's rim, P the pot
@@ -212,7 +222,7 @@ export function scene({ things = true, frame = 0.5, city = {}, sky = "shades" } 
   const R = rng(1987);
   const grid = (v) => Array.from({ length: PH }, () => Array(PW).fill(v));
   // mat: material name; emit: an emissive key instead; cls: an extra class (for motion)
-  const S = { mat: grid("wall"), It: grid(0), Iw: grid(0), emit: grid(null), cls: grid(""), glyphs: [], windows: [], tail: [] };
+  const S = { mat: grid("wall"), It: grid(0), Iw: grid(0), emit: grid(null), cls: grid(""), glyphs: [], windows: [], tail: [], awake: [], heart: [] };
   const inside = (x, y) => x >= 0 && y >= 0 && x < PW && y < PH;
   const set = (x, y, m, it = null, iw = null) => {
     if (!inside(x, y)) return;
@@ -374,6 +384,9 @@ export function scene({ things = true, frame = 0.5, city = {}, sky = "shades" } 
     }
     // the tail's lifted tip, drawn as its own frame
     for (const [i, j, m] of TAIL_UP) S.tail.push({ x: CAT.x + i, y: CAT.y + j, key: m });
+    // awake: open eyes and pricked ears, then the heart, each its own frame
+    for (const [i, j, m] of AWAKE) S.awake.push({ x: CAT.x + i, y: CAT.y + j, key: m });
+    HEART.forEach((row, j) => [...row].forEach((ch, i) => { if (ch === "X") S.heart.push({ x: CAT.x + 20 + i, y: 29 + j, key: "heart" }); }));
     // zzz, drifting up from the cat toward the light, one at a time while the room moves
     text(CAT.x + 21, 16, "z", "z0", "z z1"); text(CAT.x + 23, 15, "z", "z1", "z z2"); text(CAT.x + 25, 14, "Z", "z2", "z z3");
   }
@@ -400,7 +413,7 @@ export function scene({ things = true, frame = 0.5, city = {}, sky = "shades" } 
   // ---- the screen's text; the clock is the hour's own ----
   CODE.forEach((runs, j) => {
     let col = GLASS.x0;
-    for (const [role, s] of runs) {
+    for (const [role, s, alt] of runs) {
       const r = GLASS.y0 / 2 + j;
       const bg = { tab: "tabBg", mode: "modeBg", cur: "curBg" }[role] ?? null;
       if (s === "CLOCK") {
@@ -411,8 +424,9 @@ export function scene({ things = true, frame = 0.5, city = {}, sky = "shades" } 
         }
         continue;
       }
-      [...s].forEach((ch, i) => text(col + i, r, ch, "sx-" + role, role === "cur" ? "screen cur" : "screen", bg));
-      col += s.length;
+      [...s].forEach((ch, i) => text(col + i, r, ch, "sx-" + role, role === "cur" ? "screen cur" : alt ? "screen asleep" : "screen", bg));
+      if (alt) [...alt].forEach((ch, i) => text(col + i, r, ch, "sx-" + role, "screen awake", bg));
+      col += Math.max(s.length, alt?.length ?? 0);
     }
   });
   return S;
@@ -449,7 +463,7 @@ export function framed(S, { dx = 0, fade = 0 } = {}) {
     if (d < fade && desk.test(emit[y][x]) && bayer(x, y) > (d + 0.5) / fade) { emit[y][x] = "wall.0.0"; cls[y][x] = ""; }
   }
   const at = (o) => ({ ...o, x: o.x + dx });
-  return { ...S, emit, cls, dx, glyphs: S.glyphs.map((g) => ({ ...g, c: g.c + dx })), windows: S.windows.map(at), tail: S.tail.map(at) };
+  return { ...S, emit, cls, dx, glyphs: S.glyphs.map((g) => ({ ...g, c: g.c + dx })), windows: S.windows.map(at), tail: S.tail.map(at), awake: S.awake.map(at), heart: S.heart.map(at) };
 }
 
 /** Every key's colour at one hour, as hex: the midnight palette under that hour's sky. */
@@ -464,6 +478,10 @@ export function colours(hour, keys, hours = HOURS) {
     beacon: [0.64, 0.2 * Math.cos((27 * Math.PI) / 180), 0.2 * Math.sin((27 * Math.PI) / 180)],
     glass0: mix(g, P.turquoise, 0.105), glass1: mix(g, P.turquoise, 0.13), led: mix(g, P.palm, 0.95),
     "win-marigold": mix(city, P.marigold, 0.62), "win-flamingo": mix(city, P.flamingo, 0.62), "win-turquoise": mix(city, P.turquoise, 0.62),
+    // the cat awake: eyes the screen's light catches; the heart it gives off; and the rain on
+    // the glass, some nights (head.html)
+    catEyeOpen: mix(P.palm, P.marigold, 0.55), heart: P.flamingo,
+    rain: mix(sky(1), P.periwinkle, 0.42),
     neonP: mix(g, P.flamingo, 0.9), neonT: mix(g, P.turquoise, 0.8), "beacon-coral": mix(g, P.coral, 0.95),
     tabBg: mix(g, P.turquoise, 0.78), modeBg: P.flamingo, curBg: P.turquoise,
     steam0: mix(g, P.soft, 0.7), steam1: mix(g, P.soft, 0.52), steam2: mix(g, P.soft, 0.36),
