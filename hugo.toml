@@ -23,7 +23,7 @@ author = 'Jacob Lineberry'
 mainSections = ['posts']
 # The home page's line under the tagline, in Markdown; the name links to the about page.
 intro = 'Hi, I’m [Jacob](/about/). This is where I write about Go, the terminal, distributed systems, and the network underneath it all.'
-dateFormat = 'Jan 2, 2006'
+dateFormat = 'Jan 2 2006'
 rssLimit = 20
 keywords = ['Go', 'Distributed systems', 'Production engineering', 'Linux', 'Kubernetes', 'gRPC', 'AWS']
 # The card a shared link shows (1200 x 630): the room and the wordmark, drawn by

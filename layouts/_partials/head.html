@@ -40,8 +40,9 @@
        it stands at midnight's place. ?hour=4am pins an hour, its sky and its moon, for the
        rest of the visit (this tab only); ?hour=clock goes back to the clock. Runs before the stylesheet paints, then once a
        minute. Now and then it rains (data-weather): one visit in three opens on a shower, and
-       site.js brings the next one and clears it; ?weather=rain or ?weather=clear holds one for
-       that visit. */ -}}
+       site.js brings the next one and clears it. The weather goes with the reader from page to
+       page (this tab only), so the window beside a post has the room's weather; ?weather=rain
+       or ?weather=clear holds one for that page. */ -}}
 <script>
 (function () {
   try {
@@ -68,7 +69,9 @@
     };
     place();
     setInterval(place, 60000);
-    if (wq === "rain" || (wq !== "clear" && Math.random() < 1 / 3)) d.setAttribute("data-weather", "rain");
+    var w = wq === "rain" || wq === "clear" ? wq : sessionStorage.getItem("weather");
+    if (w !== "rain" && w !== "clear") { w = Math.random() < 1 / 3 ? "rain" : "clear"; sessionStorage.setItem("weather", w); }
+    if (w === "rain") d.setAttribute("data-weather", "rain");
   } catch (e) {}
 })();
 </script>
