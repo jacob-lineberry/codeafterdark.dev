@@ -1,7 +1,8 @@
-{{- /* The end of a post: who wrote it, on which day and under which moon, where else to find
-       them and how to follow along; then the posts either side, related posts, and where to
-       suggest an edit. Takes dict "page" and "night". Readers mostly arrive at a single post,
-       so this is where most of them learn who wrote it. */ -}}
+{{- /* The end of a post: who wrote it, on which day and under which moon; then the next read,
+       the posts either side and related posts, set like every other list of posts; then, quiet,
+       where else to find the writer, the feed, and where to suggest an edit. Takes dict "page"
+       and "night". Readers mostly arrive at a single post, so this is where most of them learn
+       who wrote it, and where a series sends them on. */ -}}
 {{- $p := .page }}
 {{- $n := .night }}
 {{- $posts := where site.RegularPages "Section" "posts" }}
@@ -12,13 +13,7 @@
 <footer class="post-end">
   <div class="signed">
     {{ partial "moon.html" $n }}
-    <div>
-      <p>Written by {{ with site.GetPage "/about" }}<a href="{{ .RelPermalink }}" rel="author">{{ site.Params.author }}</a>{{ else }}{{ site.Params.author }}{{ end }} on {{ $p.Date.Format site.Params.dateFormat }}, under a {{ $n.name }}{{ if not (strings.HasSuffix $n.name "moon") }} moon{{ end }}.</p>
-      <ul class="links">
-        {{- partial "links.html" . }}
-        <li>{{ partial "subscribe.html" }}</li>
-      </ul>
-    </div>
+    <p>Written by {{ with site.GetPage "/about" }}<a href="{{ .RelPermalink }}" rel="author">{{ site.Params.author }}</a>{{ else }}{{ site.Params.author }}{{ end }} on {{ $p.Date.Format site.Params.dateFormat }}, under a {{ $n.name }}{{ if not (strings.HasSuffix $n.name "moon") }} moon{{ end }}.</p>
   </div>
 
   {{- if or $newer $older }}
@@ -43,6 +38,11 @@
   </section>
   {{- end }}
 
+  <div class="after">
+  <ul class="links">
+    {{- partial "links.html" . }}
+    <li>{{ partial "subscribe.html" }}</li>
+  </ul>
   <p class="edit">
     {{- with $p.File }}
     <a href="{{ site.Params.editURL }}{{ .Path }}">suggest an edit</a>
@@ -54,4 +54,5 @@
     <a class="rev" href="{{ . }}{{ $p.GitInfo.Hash }}" title="The commit this version of the post comes from">rev {{ $p.GitInfo.AbbreviatedHash }}</a>
     {{- end }}{{ end }}
   </p>
+  </div>
 </footer>

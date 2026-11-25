@@ -1,7 +1,8 @@
 {{- $index := slice -}}
 {{- /* The search index (assets/js/search.js). Each post carries its whole text, its date as
        every list shows it, and the moon that night, drawn here so a result matches the post
-       lists. */ -}}
+       lists. The text leaves out the page's own furniture, which search would show in the
+       line a result matched: copy buttons, the # beside headings, and footnote marks. */ -}}
 {{- range where site.RegularPages "Section" "in" site.Params.mainSections -}}
 {{- $n := partial "night.html" .Date -}}
 {{- $index = $index | append (dict
@@ -13,7 +14,7 @@
   "moon" (partial "moon.html" $n)
   "minutes" .ReadingTime
   "summary" (.Description | default (.Summary | plainify | htmlUnescape) | truncate 200)
-  "content" (.Plain | htmlUnescape)
+  "content" (.Content | replaceRE `<button class="copy"[^>]*>[^<]*</button>` " " | replaceRE `<a class="hash"[^>]*>#</a>|<sup id="fnref[^"]*">.*?</sup>|<a [^>]*class="footnote-backref"[^>]*>[^<]*</a>` "" | plainify | htmlUnescape)
   "tags" (.Params.tags | default slice)
 ) -}}
 {{- end -}}

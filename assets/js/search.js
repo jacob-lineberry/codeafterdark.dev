@@ -1,5 +1,12 @@
-// Client-side search over /index.json with Fuse.js (self-hosted, no third parties).
+// Client-side search over /index.json (self-hosted, no third parties).
 // Works like a launcher: type, arrow down through results, enter opens the first hit.
+//
+// Every word typed must be in the post. A word of three letters or fewer (go, cli, tui, mtu)
+// matches only that whole word, or its plural; a longer one matches the start of a word, so
+// rust finds rustc and kube finds kubernetes. A hit in the title counts most, then the tags,
+// the summary and the text. Each result shows the line it matched, with the words marked.
+// Only when nothing matches, and the query is five letters or more, does Fuse.js look for
+// near misses (a long word with a typo), and the status says they are only close.
 
 const input = document.getElementById("q");
 const list = document.getElementById("search-results");
@@ -11,15 +18,50 @@ const say = (text) => {
 const esc = (s) =>
   String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
+const FIELDS = [["title", 3], ["tags", 2], ["summary", 1.5], ["content", 1]];
+// a letter or digit, in any script
+const ALNUM = "[\\p{L}\\p{N}]";
+const NOT_ALNUM = "[^\\p{L}\\p{N}]";
+const pattern = (w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + (w.length <= 3 ? `s?(?!${ALNUM})` : "");
+const words = (q) => q.toLowerCase().split(/\s+/).filter((w) => w.length > 1);
+// a word at the start of the text or after anything but a letter or digit; group 2 is the word
+const find = (ps, flags = "iu") => new RegExp(`(^|${NOT_ALNUM})(${ps.join("|")})`, flags);
+
+// The line a result matched: its summary if a word is there, or else the passage of the post
+// around the first word found; every word in it marked.
+function excerpt(item, ws) {
+  const any = find(ws.map(pattern));
+  let text = item.summary || "";
+  if (!any.test(text)) {
+    const c = item.content || "", m = any.exec(c);
+    if (m) {
+      const at = m.index + m[1].length;
+      // about a summary's length around it, cut at spaces
+      let a = Math.max(0, at - 50), b = Math.min(c.length, at + 110);
+      const sa = c.indexOf(" ", a), sb = c.lastIndexOf(" ", b);
+      if (a > 0 && sa >= 0 && sa < at) a = sa + 1;
+      if (b < c.length && sb > at) b = sb;
+      text = `${a > 0 ? "…" : ""}${c.slice(a, b).replace(/\s+/g, " ").trim()}${b < c.length ? "…" : ""}`;
+    }
+  }
+  let out = "", last = 0;
+  for (const m of text.matchAll(find(ws.map(pattern), "giu"))) {
+    const i = m.index + m[1].length;
+    out += `${esc(text.slice(last, i))}<mark>${esc(m[2])}</mark>`;
+    last = i + m[2].length;
+  }
+  return out + esc(text.slice(last));
+}
+
 // One result, set like a post in the home page's list (layouts/_partials/post-row.html). The
 // moon is the site's own drawing, made at build time (layouts/home.json), so it goes in as is.
-function row(item, i) {
+function row(item, i, ws) {
   const tags = (item.tags || [])
     .map((t) => `<span class="tag"><span class="th" aria-hidden="true">#</span>${esc(String(t).toLowerCase())}</span>`)
     .join("");
   return `<li${i === 0 ? " data-selected" : ""}><a href="${esc(item.permalink)}">
     <span class="r-title">${esc(item.title)}</span>
-    <span class="r-sum">${esc(item.summary)}</span>
+    <span class="r-sum">${ws ? excerpt(item, ws) : esc(item.summary)}</span>
     <span class="meta"><span class="when" title="${esc(item.night)}">${item.moon}<time datetime="${esc(item.date)}">${esc(item.dateLabel)}</time></span><span>${esc(item.minutes)} min read</span>${tags ? `<span class="tags">${tags}</span>` : ""}</span>
   </a></li>`;
 }
@@ -36,14 +78,25 @@ async function init() {
     return;
   }
 
+  const docs = data.map((item) => ({ item, text: FIELDS.map(([k]) => [].concat(item[k] || []).join(" ")) }));
+  const exact = (ws) => {
+    const res = ws.map((w) => find([pattern(w)]));
+    return docs
+      .map((d) => {
+        let score = 0;
+        for (const re of res) {
+          const s = FIELDS.reduce((n, [, weight], i) => n + (re.test(d.text[i]) ? weight : 0), 0);
+          if (!s) return null;
+          score += s;
+        }
+        return { item: d.item, score };
+      })
+      .filter(Boolean)
+      .sort((a, b) => b.score - a.score);
+  };
   const fuse = new window.Fuse(data, {
-    keys: [
-      { name: "title", weight: 3 },
-      { name: "tags", weight: 2 },
-      { name: "summary", weight: 1.5 },
-      { name: "content", weight: 1 },
-    ],
-    threshold: 0.35,
+    keys: FIELDS.map(([name, weight]) => ({ name, weight })),
+    threshold: 0.3,
     ignoreLocation: true,
     minMatchCharLength: 2,
   });
@@ -62,9 +115,13 @@ async function init() {
       say(q ? "Keep typing…" : `${data.length} ${data.length === 1 ? "post" : "posts"} to search.`);
       return;
     }
-    hits = fuse.search(q, { limit: 30 });
-    list.innerHTML = hits.map((h, i) => row(h.item, i)).join("");
-    if (hits.length) say(`${hits.length} ${hits.length === 1 ? "result" : "results"} for “${q}”.`);
+    const ws = words(q);
+    hits = ws.length ? exact(ws).slice(0, 30) : [];
+    const close = !hits.length && q.length >= 5;
+    if (close) hits = fuse.search(q, { limit: 10 });
+    list.innerHTML = hits.map((h, i) => row(h.item, i, close ? null : ws)).join("");
+    if (close && hits.length) say(`No post has “${q}”. ${hits.length === 1 ? "This one comes" : "These come"} close.`);
+    else if (hits.length) say(`${hits.length} ${hits.length === 1 ? "result" : "results"} for “${q}”.`);
     else {
       say(`Nothing matches “${q}”. Try a broader word, or browse the `);
       const a = document.createElement("a");
