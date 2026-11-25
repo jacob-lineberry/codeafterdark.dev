@@ -96,16 +96,11 @@ function initOverflow() {
 // The night's small life: windows across the street light up and go dark, the beacon on the
 // hotel roof blinks, the caret blinks on the monitor, the steam drifts, the cat's zzz rise and,
 // now and then, rain falls on the glass.
-// One pause control stops all of it, and is remembered. Without JavaScript, or with reduced
-// motion asked for, the room starts still.
+// Without JavaScript, or with reduced motion asked for, the room is still.
 function initNight() {
   const root = document.documentElement;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
   let paused = reduced.matches;
-  try {
-    const saved = localStorage.getItem("cad-paused");
-    if (saved !== null) paused = saved === "1";
-  } catch {}
 
   // the room was drawn with the moon of the day the site was built; show tonight's
   const now = moonPhase(Date.now());
@@ -117,26 +112,14 @@ function initNight() {
   const flip = (w) => { w.style.display = isLit(w) ? "none" : "inline"; };
 
   let away = null; // the room after dark, while it runs (see below)
-  const buttons = [...document.querySelectorAll(".pause")];
   const set = (p) => {
     paused = p;
     root.classList.toggle("motion", !p);
-    buttons.forEach((b) => {
-      b.dataset.state = p ? "paused" : "playing";
-      b.querySelector("span").textContent = p ? "play motion" : "pause motion";
-    });
     if (p) rest();
   };
-  buttons.forEach((b) => {
-    b.hidden = false;
-    b.addEventListener("click", () => {
-      set(!paused);
-      try { localStorage.setItem("cad-paused", paused ? "1" : "0"); } catch {}
-    });
-  });
   set(paused);
-  // asking for less motion mid-visit stops the room, whatever was chosen before
-  reduced.addEventListener("change", (e) => { if (e.matches) set(true); });
+  // asking for less motion mid-visit stills the room, and moves it again when that's undone
+  reduced.addEventListener("change", (e) => set(e.matches));
 
   // a window across the street, every few seconds, never on a beat; only rooms on screen
   const seen = new Set();
@@ -156,7 +139,7 @@ function initNight() {
   // After dark: when the home room has been left alone for a while, it comes alive a little
   // more. More windows light across the street, the cat's tail twitches, and now and then a
   // star falls behind the palm. It is only in the picture, never over text, and any input ends
-  // it. It never starts while paused, with reduced motion, or on a post.
+  // it. It never starts with reduced motion, or on a post.
   const AWAY_MS = 90000;
   let last = Date.now();
   function rest() {

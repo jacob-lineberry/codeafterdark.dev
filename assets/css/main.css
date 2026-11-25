@@ -266,7 +266,7 @@ kbd {
    sits over the cat wherever the crop puts it (--cat-* from scene.css, in pixels of the drawing,
    which is 60 tall). Petted (site.js adds .petting for a few seconds), the cat wakes, eyes open
    and ears up; a heart rises where the zzz were, the tail flicks and the screen purrs. It
-   answers even while the room is paused: it's what the reader asked for. */
+   answers even when the room is still (reduced motion): it's what the reader asked for. */
 .pet {
   position: absolute;
   left: calc((var(--cat-x) - var(--x0)) / var(--cols) * 100%);
@@ -309,29 +309,6 @@ kbd {
 .motion[data-weather="rain"] .scene .rain { animation: shower 1.6s steps(4, end); }
 .motion [data-room="home"] .moon { transition: opacity 1.6s steps(4, end); }
 @keyframes shower { from { opacity: 0; } }
-
-/* the one pause control, for every motion on the page */
-.pause {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  min-height: 2.25rem;
-  padding: 0 0.55rem;
-  border: 0;
-  border-radius: 6px;
-  background: none;
-  font-size: 0.82rem;
-  line-height: 1;
-  white-space: nowrap;
-  color: var(--subtle);
-  cursor: pointer;
-}
-.pause:hover { color: var(--text-hi); background: var(--surface); }
-.pause[hidden] { display: none; }
-.pause svg { width: 12px; height: 12px; }
-.pause[data-state="paused"] .i-pause, .pause[data-state="playing"] .i-play { display: none; }
-/* bottom right, on the desk's faded front edge, clear of the drawing */
-.room .pause { position: absolute; right: var(--gutter); bottom: 0; }
 
 /* ---- home ---------------------------------------------------------------------------- */
 
@@ -565,18 +542,12 @@ kbd {
 
 /* the view from the window on the night it was written */
 .view { margin: 0; container-type: inline-size; min-width: 0; }
-.view figcaption, .view-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem 1rem;
+.view figcaption {
   margin-top: 0.4rem;
   font-size: 0.85rem;
   line-height: 1.45;
   color: var(--subtle);
 }
-/* no caption: the pause control alone, at the right as it is beside one */
-.view-foot { justify-content: flex-end; }
 
 /* what was playing: optional, from `listening` in a post's front matter */
 .np {
@@ -980,8 +951,8 @@ kbd {
   .intro { margin-top: 1.5rem; }
   .home-list { margin-top: 1.75rem; }
 }
-/* Asked for less motion: nothing moves. The room starts paused too (site.js), but it is left
-   out here so that pressing "play motion" still plays it. */
+/* Asked for less motion: nothing moves. The room is stilled by site.js (no .motion class);
+   petting the cat still answers, standing still. */
 @media (prefers-reduced-motion: reduce) {
   :not(.scene *), :not(.scene *)::before, :not(.scene *)::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   /* petted, the cat still wakes and the heart still shows, standing still */
