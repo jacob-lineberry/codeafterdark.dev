@@ -30,7 +30,7 @@ FULL_MOON = 15  # data/scenes.json has one window view per thirtieth of the moon
 # Everything on the home page but the room, the wordmark and the tagline goes; the room is
 # drawn at its own size (one pixel of the art is 8 of the card's) and the name sits under it.
 CARD_CSS = """
-.skip, .top, .pause, .intro .about, .intro nav, .home-list, .site-foot { display: none !important; }
+.skip, .top, .intro .about, .intro nav, .home-list, .site-foot { display: none !important; }
 html { overflow: hidden; }
 .room { max-width: none; width: 960px; padding: 0; margin: 8px auto 0; }
 .intro { margin-top: -14px; }
