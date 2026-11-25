@@ -1,5 +1,5 @@
-{{- /* One quiet line, and the moon tonight (site.js works it out from the reader's clock). */ -}}
-<footer class="site-foot">
-  <p>{{ site.Title }} · no trackers, no comments</p>
-  <p class="tonight" hidden><svg class="moon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle class="moon-dark" cx="8" cy="8" r="7"/><path class="moon-lit" d=""/></svg><span></span></p>
+{{- /* The moon tonight, and nothing else. site.js works it out from the reader's clock and then
+       shows the footer; without script there is none. */ -}}
+<footer class="site-foot" hidden>
+  <p class="tonight"><svg class="moon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle class="moon-dark" cx="8" cy="8" r="7"/><path class="moon-lit" d=""/></svg><span></span></p>
 </footer>

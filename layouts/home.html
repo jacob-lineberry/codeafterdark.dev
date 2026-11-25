@@ -7,7 +7,10 @@
 {{- $scenes := hugo.Data.scenes }}
 {{- $n := partial "night.html" now }}
 <div class="room">
-  <div class="frame">{{ $scenes.home.head | safeHTML }}<g class="moon" data-tonight>{{ index $scenes.moons $n.view | safeHTML }}</g>{{ $scenes.home.tail | safeHTML }}</div>
+  <div class="frame">{{ $scenes.home.head | safeHTML }}<g class="moon" data-tonight>{{ index $scenes.moons $n.view | safeHTML }}</g>{{ $scenes.home.tail | safeHTML }}
+    {{- /* the cat, as a button: pet it (site.js shows it; main.css) */}}
+    <button class="pet" type="button" aria-label="pet the cat" title="pet the cat" hidden></button>
+  </div>
   {{ partial "pause.html" }}
 </div>
 <section class="intro" aria-labelledby="hello">

@@ -4,7 +4,8 @@
 // hour of the night, so one drawing serves the whole night.
 //
 // Layers, back to front: the sky; the moon (inserted by the template or by site.js, between
-// `head` and `tail`); a falling star (home only); the room; the street's windows; the characters.
+// `head` and `tail`); a falling star (home only); the room; the street's windows; the rain on the
+// glass, the cat's tail, eyes and heart (home only); the characters.
 import { PW, PH, WIN, pixelKey } from "./scene.mjs";
 
 const U = 8, FS = 13.333, BASE = 12.67;
@@ -49,7 +50,7 @@ function rects(px) {
 
 /** The drawing of `S` inside `crop` (pixels; y0 even and y1 odd, so the crop falls on cell rows).
     Returns { head, tail }: the moon's <g> goes between them (inside a move by S.dx, if any). */
-export function render(S, reg, { room, crop = { x0: 0, x1: PW - 1, y0: 0, y1: PH - 1 }, bloom = false, falling = false }) {
+export function render(S, reg, { room, crop = { x0: 0, x1: PW - 1, y0: 0, y1: PH - 1 }, bloom = false, falling = false, pet = false, rain = false }) {
   const dx = S.dx ?? 0;   // how far framed() moved the drawing: the moon and the falling star follow it
   const inCrop = (x, y) => x >= crop.x0 && x <= crop.x1 && y >= crop.y0 && y <= crop.y1;
   const K = Array.from({ length: PH }, (_, y) => Array.from({ length: PW }, (_, x) => pixelKey(S, x, y)));
@@ -77,10 +78,33 @@ export function render(S, reg, { room, crop = { x0: 0, x1: PW - 1, y0: 0, y1: PH
   // the street's windows, one element each so site.js can switch them
   const wins = S.windows.filter((w) => inCrop(w.x, w.y)).map((w) =>
     `<rect class="${[reg.cls(w.key), "w", ...w.hide.map((f) => "h-" + f)].join(" ")}" x="${w.x * U}" y="${w.y * U}" width="${U}" height="${U}"/>`).join("");
-  // the tail's lifted tip (home only; shown during the twitch)
-  const byKey = new Map();
-  if (falling) for (const t of S.tail) (byKey.get(t.key) || byKey.set(t.key, []).get(t.key)).push([t.x, t.y]);
-  const tail = [...byKey].map(([k, px]) => `<path class="${reg.cls(k)} tail-up" d="${rects(px)}"/>`).join("");
+  // frames drawn over the room, hidden until main.css shows them: one path per colour
+  const overlay = (px, cls) => {
+    const byKey = new Map();
+    for (const p of px) (byKey.get(p.key) || byKey.set(p.key, []).get(p.key)).push([p.x, p.y]);
+    return [...byKey].map(([k, xy]) => `<path class="${reg.cls(k)} ${cls}" d="${rects(xy)}"/>`).join("");
+  };
+  // the tail's lifted tip (home only; the twitch after dark, the flick when petted)
+  const tail = falling || pet ? overlay(S.tail, "tail-up") : "";
+  // the cat awake, and the heart it gives off, when petted (home only)
+  const awake = pet ? overlay(S.awake, "awake") + `<g class="heart">${overlay(S.heart, "")}</g>` : "";
+  // Rain on the glass, some nights (head.html sets data-weather). Short streaks repeat every T
+  // rows, and the whole sheet falls T rows a loop in pixel steps (main.css), over what the window
+  // shows and never over the plant or the cat in front of it.
+  let rainOut = "", rainClip = "";
+  if (rain) {
+    const glass = [];
+    for (let y = crop.y0; y <= crop.y1; y++) for (let x = crop.x0; x <= crop.x1; x++) if (/^(sky|palm|city|beacon)/.test(K[y][x])) glass.push({ x, y });
+    const xs = glass.map((p) => p.x), ys = glass.map((p) => p.y);
+    const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
+    const T = 16, R = ((n) => () => (n = (n * 16807) % 2147483647) / 2147483647)(2026);
+    const tile = [];
+    for (let x = x0; x <= x1; x++) if (R() < 0.34) tile.push([x, Math.floor(R() * T)]);
+    const drops = [];
+    for (let k = -1; y0 + k * T <= y1; k++) for (const [x, dy] of tile) drops.push({ x, y: y0 + k * T + dy, key: "rain" }, { x, y: y0 + k * T + dy + 1, key: "rain" });
+    rainClip = `<clipPath id="${room}-rain"><path d="${rects(glass.map((p) => [p.x, p.y]))}"/></clipPath>`;
+    rainOut = `<g class="rain" clip-path="url(#${room}-rain)"><g class="rain-fall">${overlay(drops, "")}</g></g>`;
+  }
   // a falling star: three pixels on a slant, sliding down the sky in pixel steps (see main.css)
   const star = falling
     ? `<g transform="translate(${(8 + dx) * U} ${6 * U})"><g class="falling"><path class="${reg.cls("fall0")}" d="${rects([[0, 0]])}"/><path class="${reg.cls("fall1")}" d="${rects([[-1, 0], [-2, -1]])}"/><path class="${reg.cls("fall2")}" d="${rects([[-3, -1], [-4, -2]])}"/></g></g>`
@@ -108,8 +132,8 @@ export function render(S, reg, { room, crop = { x0: 0, x1: PW - 1, y0: 0, y1: PH
   const filter = bloom && screen.length
     ? `<filter id="${fid}" x="-5%" y="-20%" width="110%" height="140%"><feGaussianBlur stdDeviation="1.4" result="b"/><feComponentTransfer in="b" result="s"><feFuncA type="linear" slope="0.85"/></feComponentTransfer><feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`
     : "";
-  const head = `<svg class="scene" data-room="${room}" viewBox="${vb.join(" ")}" aria-hidden="true" focusable="false"><defs>${glass}${filter}</defs><g shape-rendering="crispEdges">${paths(back)}${dx ? `<g transform="translate(${dx * U} 0)">` : ""}<g clip-path="url(#${gid})">`;
-  const tailOut = `</g>${dx ? "</g>" : ""}${star}${paths(front)}${wins}${tail}</g>` +
+  const head = `<svg class="scene" data-room="${room}" viewBox="${vb.join(" ")}" aria-hidden="true" focusable="false"><defs>${glass}${rainClip}${filter}</defs><g shape-rendering="crispEdges">${paths(back)}${dx ? `<g transform="translate(${dx * U} 0)">` : ""}<g clip-path="url(#${gid})">`;
+  const tailOut = `</g>${dx ? "</g>" : ""}${star}${paths(front)}${wins}${rainOut}${tail}${awake}</g>` +
     (plain.length || screen.length
       ? `<g class="chars" font-family="'Recursive Mono', ui-monospace, monospace" font-size="${FS}">${plain.join("")}` +
         (screen.length ? `<g${bloom ? ` filter="url(#${fid})"` : ""}>${screen.join("")}</g>` : "") + `</g>`

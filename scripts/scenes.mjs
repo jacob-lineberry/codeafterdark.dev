@@ -9,15 +9,16 @@
 // show the reader tonight's moon. The page is always midnight; the room follows the reader's
 // clock (head.html sets data-hour="2am" or "4am" on <html>, and nothing at midnight).
 import { writeFileSync } from "node:fs";
-import { scene, framed, colours, moonPath, TIMES, HOURS, STARS, STAR_CLEAR } from "./room/scene.mjs";
+import { scene, framed, colours, moonPath, TIMES, HOURS, STARS, STAR_CLEAR, CAT } from "./room/scene.mjs";
 import { registry, render } from "./room/svg.mjs";
 import { moonSVG } from "../assets/js/room.js";
 
 export const VIEWS = 30;
 const reg = registry();
+// three pixels right, so the room's weight sits on the page's centre line; the desk's ends fade out
+const DX = 3;
 const scenes = {
-  // three pixels right, so the room's weight sits on the page's centre line; the desk's ends fade out
-  home: render(framed(scene(), { dx: 3, fade: 4 }), reg, { room: "home", bloom: true, falling: true }),
+  home: render(framed(scene(), { dx: DX, fade: 4 }), reg, { room: "home", bloom: true, falling: true, pet: true, rain: true }),
   // the window, its frame (solid: the alternate-pixel posts are busy this close) and the sill,
   // with nothing in front: 46 x 36 pixels
   view: render(scene({ things: false, frame: 0.4 }), reg, { room: "view", crop: { x0: 1, x1: 46, y0: 4, y1: 39 } }),
@@ -50,6 +51,9 @@ css.push(`.scene .mn-halo{fill-opacity:.1}`);
 css.push(STARS.map((_, n) => `[data-hide~="st${n}"] .scene .st${n}`).join(",") + `{display:none}`);
 const near = STARS.flatMap(([c, r], n) => (Math.hypot(c - mx, r * 2 - my) < STAR_CLEAR ? [n] : []));
 if (near.length) css.push(near.map((n) => `:root:not([data-hide]) .scene .st${n}`).join(",") + `{display:none}`);
+// where the cat lies on the home page, ears pricked, in pixels of the drawing: the pet button
+// (home.html) sits over it (main.css)
+css.push(`.room{--cat-x:${CAT.x + DX};--cat-y:${CAT.y - 1};--cat-w:${CAT.w};--cat-h:${CAT.h + 1}}`);
 // what only shows at some hours: the clock, the stars clear of the moon, the street's windows
 css.push(`:root:not([data-hour]) .scene .h-${TIMES[0]},${TIMES.slice(1).map((h) => `[data-hour="${h}"] .scene .h-${h}`).join(",")}{display:none}`);
 writeFileSync(new URL("../assets/css/scene.css", import.meta.url), css.join("\n") + "\n");

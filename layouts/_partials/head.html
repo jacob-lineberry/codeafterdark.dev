@@ -39,13 +39,15 @@
        from 22:00 until it sets at 06:00, a pixel at a time, hiding the stars it passes. By day
        it stands at midnight's place. ?hour=4am pins an hour, its sky and its moon, for next
        time; ?hour=clock goes back to the clock. Runs before the stylesheet paints, then once a
-       minute. */ -}}
+       minute. Now and then it rains (data-weather): one visit in three opens on a shower, and
+       site.js brings the next one and clears it; ?weather=rain or ?weather=clear holds one for
+       that visit. */ -}}
 <script>
 (function () {
   try {
     var d = document.documentElement, M = {{ hugo.Data.scenes.moonPath | jsonify | safeJS }};
     var at = { midnight: 120, "2am": 240, "4am": 360 }, has = function (k) { return Object.prototype.hasOwnProperty.call(at, k); };
-    var q = new URLSearchParams(location.search).get("hour");
+    var q = new URLSearchParams(location.search).get("hour"), wq = new URLSearchParams(location.search).get("weather");
     localStorage.removeItem("flavour");
     if (q === "clock") localStorage.removeItem("hour");
     else if (has(q)) localStorage.setItem("hour", q);
@@ -66,6 +68,7 @@
     };
     place();
     setInterval(place, 60000);
+    if (wq === "rain" || (wq !== "clear" && Math.random() < 1 / 3)) d.setAttribute("data-weather", "rain");
   } catch (e) {}
 })();
 </script>

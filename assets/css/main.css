@@ -199,6 +199,9 @@ kbd {
 .room {
   --screen: 70%;
   --wash: 11%;
+  /* the columns of the drawing on show: all 120 of them, from the first */
+  --x0: 0;
+  --cols: 120;
 }
 .room::after {
   inset: -30% 0 -42%;
@@ -214,7 +217,7 @@ kbd {
   background: radial-gradient(closest-side, color-mix(in srgb, var(--sky) 6%, transparent), transparent);
 }
 .frame { overflow: hidden; }
-.room .frame { mask-image: linear-gradient(to bottom, #000 86%, transparent); }
+.room .frame { position: relative; mask-image: linear-gradient(to bottom, #000 86%, transparent); }
 .scene {
   display: block;
   width: 100%;
@@ -223,10 +226,11 @@ kbd {
   user-select: none;
 }
 .scene .chars { font-variant-ligatures: none; font-feature-settings: "calt" 0, "liga" 0; }
-/* a phone gets the middle of the room: the moon, the cat, the screen, the mug */
+/* a phone gets the room from the plant to the screen: the window whole, palm and all, the cat
+   and the monitor; the mug and the monitor's deep back are cut */
 @media (max-width: 640px) {
-  .room .scene { width: calc(100% * 120 / 94); max-width: none; margin-left: calc(100% * -23 / 94); }
-  .room { --screen: 62%; }
+  .room { --screen: 79%; --x0: 4; --cols: 102; }
+  .room .scene { width: calc(100% * 120 / var(--cols)); max-width: none; margin-left: calc(-100% * var(--x0) / var(--cols)); }
   /* the crop cuts through the window and the desk, so its sides fade into the page */
   .room .frame {
     mask-image: linear-gradient(to right, transparent, #000 1.5rem, #000 calc(100% - 1.5rem), transparent), linear-gradient(to bottom, #000 86%, transparent);
@@ -254,6 +258,54 @@ kbd {
 @keyframes z3 { 0% { opacity: 0; } 66% { opacity: 1; } }
 @keyframes tail { 0% { opacity: 0; } 78% { opacity: 1; } 86% { opacity: 0; } 90% { opacity: 1; } 96% { opacity: 0; } }
 @keyframes fall { from { opacity: 1; transform: translate(0, 0); } to { opacity: 1; transform: translate(128px, 64px); } }
+
+/* Pet the cat: the cat is the button (home.html), so the button draws only its focus ring. It
+   sits over the cat wherever the crop puts it (--cat-* from scene.css, in pixels of the drawing,
+   which is 60 tall). Petted (site.js adds .petting for a few seconds), the cat wakes, eyes open
+   and ears up; a heart rises where the zzz were, the tail flicks and the screen purrs. It
+   answers even while the room is paused: it's what the reader asked for. */
+.pet {
+  position: absolute;
+  left: calc((var(--cat-x) - var(--x0)) / var(--cols) * 100%);
+  top: calc(var(--cat-y) / 60 * 100%);
+  width: calc(var(--cat-w) / var(--cols) * 100%);
+  height: calc(var(--cat-h) / 60 * 100%);
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  cursor: pointer;
+}
+.pet[hidden] { display: none; }
+.pet:focus-visible { border-radius: 10px; }
+.scene .awake, .scene .heart { display: none; }
+.scene.petting .awake, .scene.petting .heart { display: inline; }
+.scene.petting .asleep, .scene.petting .z { display: none; }
+.scene.petting .heart { animation: heart 1.8s steps(1, end) forwards; }
+.scene.petting .tail-up { animation: flick 1.2s steps(1, end) 0.2s; }
+@keyframes heart {
+  0% { transform: translate(0, 0); }
+  14% { transform: translate(0, -8px); }
+  28% { transform: translate(0, -16px); }
+  42% { transform: translate(0, -24px); }
+  56% { transform: translate(0, -32px); }
+  70% { transform: translate(0, -40px); opacity: 1; }
+  84%, 100% { transform: translate(0, -48px); opacity: 0; }
+}
+@keyframes flick { 0% { opacity: 1; } 25% { opacity: 0; } 50% { opacity: 1; } 75%, 100% { opacity: 0; } }
+
+/* Rain on the glass now and then (head.html and site.js set data-weather): the stars go behind
+   the cloud, no star falls, the moon dims, and while the room moves the rain falls two pixels a
+   step, coming on in four steps when a shower starts. */
+.scene .rain { display: none; }
+[data-weather="rain"] .scene .rain { display: inline; }
+[data-weather="rain"] [data-room="home"] :is(.star, .falling) { display: none; }
+[data-weather="rain"] [data-room="home"] .moon { opacity: 0.55; }
+.motion .scene .rain-fall { animation: rain 0.8s steps(8, end) infinite; }
+@keyframes rain { to { transform: translate(0, 128px); } }
+.motion[data-weather="rain"] .scene .rain { animation: shower 1.6s steps(4, end); }
+.motion [data-room="home"] .moon { transition: opacity 1.6s steps(4, end); }
+@keyframes shower { from { opacity: 0; } }
 
 /* the one pause control, for every motion on the page */
 .pause {
@@ -851,10 +903,6 @@ kbd {
 /* ---- the footer -------------------------------------------------------------------- */
 
 .site-foot {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.6rem 2rem;
   max-width: calc(var(--frame) + 2 * var(--gutter));
   margin: 6rem auto 0;
   padding: 1.6rem var(--gutter) 2.4rem;
@@ -863,6 +911,7 @@ kbd {
   text-align: center;
   color: var(--subtle);
 }
+.site-foot[hidden] { display: none; }
 .site-foot p { margin: 0; }
 .tonight { display: inline-flex; align-items: center; gap: 0.5rem; }
 .tonight .moon { width: 15px; height: 15px; }
@@ -925,4 +974,7 @@ kbd {
    out here so that pressing "play motion" still plays it. */
 @media (prefers-reduced-motion: reduce) {
   :not(.scene *), :not(.scene *)::before, :not(.scene *)::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  /* petted, the cat still wakes and the heart still shows, standing still */
+  .scene.petting .heart { animation: none; transform: translate(0, -16px); }
+  .scene.petting .tail-up { animation: none; }
 }
