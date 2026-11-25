@@ -12,7 +12,6 @@
 {{- $related := first 3 (complement $newer $older (site.RegularPages.Related $p)) }}
 <footer class="post-end">
   <div class="signed">
-    {{ partial "moon.html" $n }}
     {{- /* signed like a journal entry: the first name, lowercase, as the home page says "Hi,
            I'm Jacob"; the full name is in the page's metadata and the feed */}}
     {{- $sig := index (split site.Params.author " ") 0 | lower }}

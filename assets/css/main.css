@@ -302,12 +302,12 @@ kbd {
    step, coming on in four steps when a shower starts. */
 .scene .rain { display: none; }
 [data-weather="rain"] .scene .rain { display: inline; }
-[data-weather="rain"] [data-room="home"] :is(.star, .falling) { display: none; }
-[data-weather="rain"] [data-room="home"] .moon { opacity: 0.55; }
+[data-weather="rain"] .scene :is(.star, .falling) { display: none; }
+[data-weather="rain"] .scene .moon { opacity: 0.55; }
 .motion .scene .rain-fall { animation: rain 0.8s steps(8, end) infinite; }
 @keyframes rain { to { transform: translate(0, 128px); } }
 .motion[data-weather="rain"] .scene .rain { animation: shower 1.6s steps(4, end); }
-.motion [data-room="home"] .moon { transition: opacity 1.6s steps(4, end); }
+.motion .scene .moon { transition: opacity 1.6s steps(4, end); }
 @keyframes shower { from { opacity: 0; } }
 
 /* ---- home ---------------------------------------------------------------------------- */
@@ -511,7 +511,7 @@ kbd {
 
 /* 404 */
 .lost-links { display: flex; flex-wrap: wrap; gap: 0.4rem 1.6rem; list-style: none; padding: 0; }
-.lost .view { margin-top: 2.5rem; max-width: 26rem; }
+.lost .view { margin-top: 2.5rem; }
 
 /* ---- a post ----------------------------------------------------------------------- */
 
@@ -543,8 +543,17 @@ kbd {
 .phead .tags { display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; margin-top: 1rem; font: 0.85rem/1.5 var(--mono); }
 .phead .tag { color: var(--soft); }
 
-/* the view from the window on the night it was written */
-.view { margin: 0; container-type: inline-size; min-width: 0; }
+/* the view from the window on the night it was written: the home room's window, at the room's
+   8px a pixel (352px), with the window's haze on the page behind it as in the room */
+.view { position: relative; isolation: isolate; max-width: 352px; margin: 0; container-type: inline-size; min-width: 0; }
+.view::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -12% -18%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--sky) 6%, transparent), transparent);
+}
 .view figcaption {
   margin-top: 0.4rem;
   font-size: 0.85rem;
@@ -844,9 +853,6 @@ kbd {
 
 .post-end { margin-top: 4rem; }
 .signed {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.9rem;
   margin: 0;
   padding: 1.2rem 0;
   border-top: 1px solid var(--line);
@@ -855,7 +861,6 @@ kbd {
   line-height: 1.55;
   color: var(--soft);
 }
-.signed .moon { flex: none; width: 26px; height: 26px; margin-top: 0.05rem; }
 .signed p { margin: 0; }
 /* the next read: the posts either side, titled as in every list of posts */
 .pager { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
@@ -901,7 +906,7 @@ kbd {
   .post { grid-template-columns: minmax(0, var(--measure)); grid-template-rows: none; }
   .side { display: contents; }
   .phead, .view, .toc, .post > .prose, .post-end { grid-column: 1; grid-row: auto; }
-  .view { margin-top: 2rem; max-width: 26rem; }
+  .view { margin-top: 2rem; }
   .toc {
     position: static;
     max-height: none;
@@ -926,6 +931,8 @@ kbd {
   .post-end { order: 4; margin-top: 1.5rem; }
 }
 @media (max-width: 640px) {
+  /* the window's haze stays inside the gutter, so the page never scrolls sideways */
+  .view::before { inset: -12% calc(2px - var(--gutter)); }
   .post-row .meta > .when::after { content: none; }
   .post-row .meta .tags { flex-basis: 100%; }
   .results .meta .tags { flex-basis: 100%; }

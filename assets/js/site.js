@@ -136,10 +136,11 @@ function initNight() {
   };
   if (rooms.length) setTimeout(tick, 2000);
 
-  // After dark: when the home room has been left alone for a while, it comes alive a little
-  // more. More windows light across the street, the cat's tail twitches, and now and then a
-  // star falls behind the palm. It is only in the picture, never over text, and any input ends
-  // it. It never starts with reduced motion, or on a post.
+  // After dark: when the window (the home room's, or the one beside a post) has been on screen
+  // and left alone for a while, it comes alive a little more. More windows light across the
+  // street, the cat's tail twitches (at home), and now and then a star falls behind the palm.
+  // It is only in the picture, never over text, and any input ends it. It never starts with
+  // reduced motion.
   const AWAY_MS = 90000;
   let last = Date.now();
   function rest() {
@@ -154,6 +155,8 @@ function initNight() {
     window.addEventListener(type, () => { last = Date.now(); rest(); }, { passive: true, capture: true }));
   document.addEventListener("visibilitychange", () => { if (document.hidden) rest(); });
   const home = rooms.find((r) => r.svg.dataset.room === "home");
+  // the window with weather and falling stars: the home room's, or the one beside a post
+  const sky = rooms.find((r) => r.svg.querySelector(".rain"));
 
   // Pet the cat: it wakes, a heart rises, its tail flicks and the screen purrs, then it goes back
   // to sleep (main.css). Petted again mid-purr, it starts over.
@@ -173,34 +176,36 @@ function initNight() {
   // Rain comes and goes: a shower of half a minute to a minute and a quarter, then clear for
   // three quarters of a minute to two minutes. Its clock only runs while the room is in view
   // and moving, so a reader looking at it has a fair chance of seeing one arrive.
-  // ?weather=rain or ?weather=clear holds the weather for the visit (head.html).
-  if (home?.svg.querySelector(".rain") && !["rain", "clear"].includes(new URLSearchParams(location.search).get("weather"))) {
+  // The weather goes on from page to page (head.html keeps it for the tab); ?weather=rain or
+  // ?weather=clear holds it on that page.
+  if (sky && !["rain", "clear"].includes(new URLSearchParams(location.search).get("weather"))) {
     const spell = (wet) => 1000 * (wet ? 30 + Math.random() * 45 : 45 + Math.random() * 75);
     let left = spell(root.dataset.weather === "rain");
     setInterval(() => {
-      if (paused || document.hidden || !seen.has(home.svg) || (left -= 1000) > 0) return;
+      if (paused || document.hidden || !seen.has(sky.svg) || (left -= 1000) > 0) return;
       const wet = root.dataset.weather !== "rain";
       if (wet) root.dataset.weather = "rain";
       else delete root.dataset.weather;
+      try { sessionStorage.setItem("weather", wet ? "rain" : "clear"); } catch {}
       left = spell(wet);
     }, 1000);
   }
 
-  const star = home?.svg.querySelector(".falling");
+  const star = sky?.svg.querySelector(".falling");
   star?.addEventListener("animationend", () => star.classList.remove("go"));
-  if (home)
+  if (sky)
     setInterval(() => {
-      if (away || paused || document.hidden || reduced.matches || Date.now() - last < AWAY_MS || !seen.has(home.svg)) return;
+      if (away || paused || document.hidden || reduced.matches || Date.now() - last < AWAY_MS || !seen.has(sky.svg)) return;
       let n = 0;
-      away = { r: home, lit: [], star, timer: 0 };
+      away = { r: sky, lit: [], star, timer: 0 };
       root.classList.add("away");
       // twice a second: a window every second and a half, until about two in three are lit;
       // a star every fifteen seconds
       away.timer = setInterval(() => {
         n++;
         if (n % 3 === 0) {
-          const dark = home.windows.filter((w) => !isLit(w));
-          if (dark.length > home.windows.length * 0.35) {
+          const dark = sky.windows.filter((w) => !isLit(w));
+          if (dark.length > sky.windows.length * 0.35) {
             const w = pick(dark);
             flip(w);
             away.lit.push(w);

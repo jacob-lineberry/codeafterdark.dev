@@ -19,9 +19,9 @@ const reg = registry();
 const DX = 3;
 const scenes = {
   home: render(framed(scene(), { dx: DX, fade: 4 }), reg, { room: "home", bloom: true, falling: true, pet: true, rain: true }),
-  // the window, its frame (solid: the alternate-pixel posts are busy this close) and the sill,
-  // with nothing in front: 46 x 36 pixels
-  view: render(scene({ things: false, frame: 0.4 }), reg, { room: "view", crop: { x0: 1, x1: 46, y0: 4, y1: 39 } }),
+  // the home room's window, its frame and the sill, with nothing in front: 44 x 36 pixels, so
+  // at 352px wide it is drawn at the room's 8px a pixel. The same night: rain and falling stars
+  view: render(scene({ things: false }), reg, { room: "view", crop: { x0: 2, x1: 45, y0: 4, y1: 39 }, falling: true, rain: true }),
   moons: Array.from({ length: VIEWS }, (_, i) => moonSVG(i / VIEWS)),
   // the moon's path and the stars it passes, for head.html
   moonPath: moonPath(),
