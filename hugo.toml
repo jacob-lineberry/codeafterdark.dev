@@ -96,8 +96,15 @@ startLevel = 2
 endLevel = 3
 ordered = false
 
+# "updated" comes from a post's own `lastmod`, never from git: a commit that fixes a typo or a
+# template isn't new writing. Git still gives each post its rev link (post-end.html).
+[frontmatter]
+lastmod = ['lastmod', 'date']
+
+# A post's address is its file name (or folder, for a post with its own images), or a `slug` in
+# its front matter: never its title, so a post can be retitled without breaking its links
 [permalinks.page]
-posts = '/:year/:slug/'
+posts = '/:year/:slugorcontentbasename/'
 
 [permalinks.term]
 tags = '/tags/:slug/'

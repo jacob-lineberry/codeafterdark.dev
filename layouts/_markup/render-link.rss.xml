@@ -1,0 +1,6 @@
+{{- /* Links in the feed (home.rss.xml) carry their full address: a feed reader shows the post
+       away from the site, where a relative link (/about/, #heading, file.zip) would lead nowhere.
+       Each resolves against the post's own address, as the browser resolves it on the page. */ -}}
+{{- $u := (urls.Parse .Page.Permalink).ResolveReference (urls.Parse .Destination) -}}
+<a href="{{ $u.String | safeURL }}"{{ with .Title }} title="{{ . }}"{{ end }}>{{ .Text }}</a>
+{{- /* chomp */ -}}

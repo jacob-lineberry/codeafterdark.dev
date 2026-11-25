@@ -5,7 +5,7 @@ on:
     branches: [main]
   pull_request:
   schedule:
-    # Weekly external link check; scheduled runs never deploy
+    # Weekly external link check: it reports in an issue (the links job) and never deploys
     - cron: "17 6 * * 1"
   workflow_dispatch:
 
@@ -30,6 +30,9 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: read
+    outputs:
+      links: ${{ steps.links.outputs.exit_code }}
+      report: ${{ steps.report.outputs.report }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -66,8 +69,10 @@ jobs:
       - name: Build
         run: hugo build --gc --minify --panicOnWarning
 
-      # Internal links on every run; external sites too on the weekly schedule
+      # Internal links on every run, and a broken one stops it. The weekly run checks external
+      # sites too, and doesn't stop: the links job reports what it found in an issue.
       - name: Check links
+        id: links
         uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
         with:
           args: >-
@@ -76,7 +81,15 @@ jobs:
             --root-dir ${{ github.workspace }}/public
             --remap 'https://codeafterdark\.dev/ file://${{ github.workspace }}/public/'
             public
+          fail: ${{ github.event_name != 'schedule' }}
           jobSummary: true
+
+      - name: Keep the link report
+        id: report
+        if: github.event_name == 'schedule'
+        run: |
+          eof="EOF_$(openssl rand -hex 8)"
+          { echo "report<<$eof"; cat lychee/out.md; echo "$eof"; } >> "$GITHUB_OUTPUT"
 
       - if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
@@ -98,3 +111,45 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+
+  # The weekly link check's report: one "Broken links" issue, opened when a link breaks, kept
+  # up to date while any stay broken, and closed once they're all fixed
+  links:
+    name: links
+    if: github.event_name == 'schedule'
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write # open, update and close the "Broken links" issue
+    steps:
+      - name: Report broken links
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          EXIT_CODE: ${{ needs.build.outputs.links }}
+          REPORT: ${{ needs.build.outputs.report }}
+        run: |
+          title="Broken links"
+          open=$(gh issue list --state open --limit 100 --json number,title \
+            --jq ".[] | select(.title == \"$title\") | .number" | head -n 1)
+          run="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          case "$EXIT_CODE" in
+            0)
+              if [ -n "$open" ]; then
+                gh issue close "$open" --comment "The weekly link check found no broken links: $run"
+              fi
+              ;;
+            2)
+              printf '%s\n\nFound by the weekly link check: %s\n' "$REPORT" "$run" > body.md
+              if [ -n "$open" ]; then
+                gh issue edit "$open" --body-file body.md
+              else
+                gh issue create --title "$title" --body-file body.md
+              fi
+              ;;
+            *)
+              echo "::error::The link check itself failed (lychee exit code '$EXIT_CODE'): $run"
+              exit 1
+              ;;
+          esac

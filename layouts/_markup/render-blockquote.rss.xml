@@ -1,0 +1,13 @@
+{{- /* Callouts in the feed (home.rss.xml): a quote led by its kind in bold, without the page's
+       icon, which a feed reader would draw at full width */ -}}
+{{- if eq .Type "alert" -}}
+{{- $t := .AlertType | lower -}}
+<blockquote>
+  <p><strong>{{ $t | strings.FirstUpper }}{{ with .AlertTitle }}{{ if ne (lower .) $t }}: {{ . }}{{ end }}{{ end }}</strong></p>
+  {{ .Text }}
+</blockquote>
+{{- else -}}
+<blockquote>
+  {{ .Text }}
+</blockquote>
+{{- end -}}

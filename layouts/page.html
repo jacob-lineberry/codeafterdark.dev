@@ -1,5 +1,10 @@
 {{ define "main" }}
 {{- if eq .Section "posts" }}
+{{- /* Every post has a description: it's the line under the title here, in the lists and
+       search, and in a shared link's card. A warning on the dev server; CI stops on it. */}}
+{{- if not .Description }}
+  {{- warnf "%s: no description. Add one line to its front matter: description = '…'" .File.Path }}
+{{- end }}
 {{- $n := partial "night.html" .Date }}
 {{- /* The reading column, and beside it the view from the window that night with the
        contents under it (they stay in view as you read). Below 1120px it is one column. */}}

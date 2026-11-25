@@ -1,0 +1,3 @@
+{{- /* Headings in the feed (home.rss.xml), without the # link the page gives them */ -}}
+<h{{ .Level }}>{{ .Text }}</h{{ .Level }}>
+{{- /* chomp */ -}}

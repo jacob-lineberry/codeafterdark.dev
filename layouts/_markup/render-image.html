@@ -4,6 +4,11 @@
        loads. An SVG's size is its root's width and height; one with only a viewBox has no size
        of its own and fills the figure, so the viewBox gives it its shape and it is marked to
        fill. */ -}}
+{{- /* Every image says what it shows, for readers who can't see it. A warning on the dev
+       server; CI stops on it. */ -}}
+{{- if not .PlainText -}}
+{{- warnf "%s: the image %s has no alt text. Describe it in the brackets: ![What it shows](%s)" .Page.File.Path .Destination .Destination -}}
+{{- end -}}
 {{- $src := .Destination -}}
 {{- $w := 0 }}{{ $h := 0 }}{{ $fill := false -}}
 {{- with .Page.Resources.Get .Destination -}}

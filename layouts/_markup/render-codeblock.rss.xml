@@ -1,0 +1,7 @@
+{{- /* Code and terminal blocks in the feed (home.rss.xml): plain, without the page's copy
+       button or colours, which a feed reader would drop. A block's title stays above it. */ -}}
+{{- with .Attributes.title }}
+<p><code>{{ . }}</code></p>
+{{- end }}
+<pre><code>{{ .Inner | htmlEscape | safeHTML }}</code></pre>
+{{- /* chomp */ -}}

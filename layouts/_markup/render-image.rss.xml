@@ -1,0 +1,15 @@
+{{- /* Images in the feed (home.rss.xml): the post's own image by its full address, else the
+       address resolved against the post's, as for links. A standalone image keeps its caption. */ -}}
+{{- $src := ((urls.Parse .Page.Permalink).ResolveReference (urls.Parse .Destination)).String -}}
+{{- with .Page.Resources.Get .Destination }}{{ $src = .Permalink }}{{ end -}}
+{{- $img := printf `<img src="%s" alt="%s">` $src .PlainText -}}
+{{- if .IsBlock -}}
+<figure>
+  {{ $img | safeHTML }}
+  {{- with .Title }}
+  <figcaption>{{ . | markdownify }}</figcaption>
+  {{- end }}
+</figure>
+{{- else -}}
+{{ $img | safeHTML }}
+{{- end -}}

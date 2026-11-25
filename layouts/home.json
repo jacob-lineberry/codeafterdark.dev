@@ -1,6 +1,7 @@
 {{- $index := slice -}}
-{{- /* The search index (assets/js/search.js). Each post carries its date as every list shows
-       it, and the moon that night, drawn here so a result matches the post lists. */ -}}
+{{- /* The search index (assets/js/search.js). Each post carries its whole text, its date as
+       every list shows it, and the moon that night, drawn here so a result matches the post
+       lists. */ -}}
 {{- range where site.RegularPages "Section" "in" site.Params.mainSections -}}
 {{- $n := partial "night.html" .Date -}}
 {{- $index = $index | append (dict
@@ -12,7 +13,7 @@
   "moon" (partial "moon.html" $n)
   "minutes" .ReadingTime
   "summary" (.Description | default (.Summary | plainify | htmlUnescape) | truncate 200)
-  "content" (.Plain | htmlUnescape | truncate 5000)
+  "content" (.Plain | htmlUnescape)
   "tags" (.Params.tags | default slice)
 ) -}}
 {{- end -}}

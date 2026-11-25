@@ -5,6 +5,13 @@
        was not drawn. On the dev server, where the script usually hasn't run, the browser
        draws it instead. The script builds the site in the "diagrams" environment, where
        every diagram is left to the browser, to find them all. */ -}}
+{{- /* Every diagram has a title for screen readers, which can't read the drawing: an
+       `accTitle: …` line, and an `accDescr: …` line when the drawing says more than its
+       title. A warning on the dev server; CI stops on it. */ -}}
+{{- if not (findRE `(?m)^\s*accTitle\s*:` .Inner 1) }}
+  {{- $at := .Page.String }}{{ with .Page.File }}{{ $at = .Path }}{{ end }}
+  {{- warnf "%s: a diagram has no title for screen readers. Add a line to it: accTitle: What it shows" $at }}
+{{- end }}
 {{- $key := hash.XxHash .Inner }}
 {{- $svg := "" }}
 {{- if ne hugo.Environment "diagrams" }}
