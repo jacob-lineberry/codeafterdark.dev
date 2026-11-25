@@ -23,7 +23,9 @@
 {{- end }}
 <figure class="diagram">
   {{- if $svg }}
-  <div class="mermaid" data-processed>{{ $svg | safeHTML }}</div>
+  {{- /* its drawn width, so a phone can keep it from shrinking past reading (main.css) */}}
+  {{- $w := "" }}{{ range findRESubmatch `viewBox="\S+ \S+ ([\d.]+)` $svg 1 }}{{ $w = index . 1 }}{{ end }}
+  <div class="mermaid" data-processed{{ with $w }} style="{{ printf "--w: %s" . | safeCSS }}"{{ end }}>{{ $svg | safeHTML }}</div>
   {{- else }}
   {{- .Page.Store.Set "hasMermaid" true }}
   <pre class="mermaid" data-diagram="{{ $key }}">{{ .Inner | htmlEscape | safeHTML }}</pre>

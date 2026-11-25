@@ -7,7 +7,7 @@
   <div class="launcher">
     <form class="prompt" role="search" action="{{ "search/" | relURL }}" method="get">
       <label for="q"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg><span class="vh">Search</span></label>
-      <input id="q" name="q" type="search" placeholder="terraform, mtu, jq…" autocomplete="off" spellcheck="false" aria-describedby="search-status" aria-controls="search-results" data-index="{{ "index.json" | relURL }}">
+      <input id="q" name="q" type="search" placeholder="terraform, mtu, jq…" autocomplete="off" spellcheck="false" aria-describedby="search-status" aria-controls="search-results" autofocus data-index="{{ "index.json" | relURL }}">
     </form>
     <p class="search-status" id="search-status" aria-live="polite" data-archive="{{ "archives/" | relURL }}">Type to search.</p>
     <ol class="results" id="search-results" aria-label="Results"></ol>
