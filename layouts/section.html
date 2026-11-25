@@ -7,7 +7,7 @@
     {{- if $isArchive }}
     <p class="page-sub">{{ len $posts }} {{ cond (eq (len $posts) 1) "post" "posts" }}, newest first.</p>
     {{- else }}{{ with .Description }}
-    <p class="page-sub">{{ . }}</p>
+    <p class="page-sub">{{ . | markdownify }}</p>
     {{- end }}{{ end }}
   </header>
 

@@ -10,7 +10,8 @@
 {{- else }}
 <li class="post-row">
   <h{{ $h }}><a href="{{ $p.RelPermalink }}">{{ $p.Title }}</a></h{{ $h }}>
-  {{- with $p.Description | default $p.Summary }}
+  {{- /* a description gets the typography a post's text gets (curly quotes, dashes) */}}
+  {{- with cond (ne $p.Description "") ($p.Description | markdownify) $p.Summary }}
   <p class="summary">{{ . | plainify | htmlUnescape | truncate 200 }}</p>
   {{- end }}
   <p class="meta">{{ partial "when.html" (dict "page" $p) }}{{ with $p.GetTerms "tags" }}<span class="tags">{{ partial "tags.html" $p }}</span>{{ end }}</p>

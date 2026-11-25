@@ -37,8 +37,8 @@
        its sky is midnight's (22:00-01:59, and by day or with no script), 2am's (02:00-03:59) or
        4am's (04:00-05:59), and the moon crosses the window on its path (scripts/room/scene.mjs)
        from 22:00 until it sets at 06:00, a pixel at a time, hiding the stars it passes. By day
-       it stands at midnight's place. ?hour=4am pins an hour, its sky and its moon, for next
-       time; ?hour=clock goes back to the clock. Runs before the stylesheet paints, then once a
+       it stands at midnight's place. ?hour=4am pins an hour, its sky and its moon, for the
+       rest of the visit (this tab only); ?hour=clock goes back to the clock. Runs before the stylesheet paints, then once a
        minute. Now and then it rains (data-weather): one visit in three opens on a shower, and
        site.js brings the next one and clears it; ?weather=rain or ?weather=clear holds one for
        that visit. */ -}}
@@ -48,10 +48,10 @@
     var d = document.documentElement, M = {{ hugo.Data.scenes.moonPath | jsonify | safeJS }};
     var at = { midnight: 120, "2am": 240, "4am": 360 }, has = function (k) { return Object.prototype.hasOwnProperty.call(at, k); };
     var q = new URLSearchParams(location.search).get("hour"), wq = new URLSearchParams(location.search).get("weather");
-    localStorage.removeItem("flavour");
-    if (q === "clock") localStorage.removeItem("hour");
-    else if (has(q)) localStorage.setItem("hour", q);
-    var pin = localStorage.getItem("hour");
+    localStorage.removeItem("flavour"); localStorage.removeItem("hour");
+    if (q === "clock") sessionStorage.removeItem("hour");
+    else if (has(q)) sessionStorage.setItem("hour", q);
+    var pin = sessionStorage.getItem("hour");
     var place = function () {
       var now = new Date(), h = now.getHours();
       var t = h >= 2 && h < 4 ? "2am" : h >= 4 && h < 6 ? "4am" : "midnight";
