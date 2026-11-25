@@ -4,7 +4,6 @@ locale = 'en-US'
 timeZone = 'America/New_York'
 title = 'code after dark'
 enableRobotsTXT = true
-enableGitInfo = true
 enableEmoji = true
 buildDrafts = false
 buildFuture = false
@@ -30,12 +29,6 @@ keywords = ['Go', 'Distributed systems', 'Production engineering', 'Linux', 'Kub
 # The card a shared link shows (1200 x 630): the room and the wordmark, drawn by
 # scripts/card.py from the site itself. A post can name its own with `images` in front matter.
 images = ['/images/card.png']
-
-# Where "Suggest an edit" links point.
-editURL = 'https://github.com/jacob-lineberry/codeafterdark.dev/edit/main/content/'
-# Where the "history" link and the rev hash in each post's memo row point.
-historyURL = 'https://github.com/jacob-lineberry/codeafterdark.dev/commits/main/content/'
-commitURL = 'https://github.com/jacob-lineberry/codeafterdark.dev/commit/'
 
 # Links: the row under the intro on the home page, at the end of every post and on the about
 # page, in this order: the work, then the ways to reach me, the professional profile last.
@@ -97,7 +90,7 @@ endLevel = 3
 ordered = false
 
 # "updated" comes from a post's own `lastmod`, never from git: a commit that fixes a typo or a
-# template isn't new writing. Git still gives each post its rev link (post-end.html).
+# template isn't new writing.
 [frontmatter]
 lastmod = ['lastmod', 'date']
 
@@ -144,9 +137,9 @@ changefreq = 'weekly'
 filename = 'sitemap.xml'
 priority = 0.5
 
-# Only git (enableGitInfo) runs as an external process; js.Build uses Hugo's built-in esbuild
+# Nothing runs as an external process: js.Build uses Hugo's built-in esbuild
 [security.exec]
-allow = ['^git$']
+allow = []
 
 [security.funcs]
 getenv = ['^HUGO_', '^CI$']

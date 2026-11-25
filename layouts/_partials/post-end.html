@@ -1,6 +1,6 @@
 {{- /* The end of a post: signed, with the day and the moon it was written under; then the next read,
        the posts either side and related posts, set like every other list of posts; then, quiet,
-       where else to find the writer, the feed, and where to suggest an edit. Takes dict "page"
+       where else to find the writer, and the feed. Takes dict "page"
        and "night". Readers mostly arrive at a single post, so this is where most of them learn
        who wrote it, and where a series sends them on. */ -}}
 {{- $p := .page }}
@@ -46,16 +46,5 @@
     {{- partial "links.html" . }}
     <li>{{ partial "subscribe.html" }}</li>
   </ul>
-  <p class="edit">
-    {{- with $p.File }}
-    <a href="{{ site.Params.editURL }}{{ .Path }}">suggest an edit</a>
-    {{- with site.Params.historyURL }}
-    <a href="{{ . }}{{ $p.File.Path }}">history</a>
-    {{- end }}
-    {{- end }}
-    {{- with $p.GitInfo }}{{ with site.Params.commitURL }}
-    <a class="rev" href="{{ . }}{{ $p.GitInfo.Hash }}" title="The commit this version of the post comes from">rev {{ $p.GitInfo.AbbreviatedHash }}</a>
-    {{- end }}{{ end }}
-  </p>
   </div>
 </footer>

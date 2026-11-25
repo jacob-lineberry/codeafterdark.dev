@@ -30,7 +30,7 @@
          on a wide one the view is drawn above them (main.css) */}}
   <div class="side">
     {{- if ne .Params.showToc false }}{{ partial "contents.html" . }}{{ end }}
-    {{ partial "view.html" (dict "night" $n "label" (printf "the moon that night: %s, %d%% lit" $n.name $n.lit)) }}
+    {{ partial "view.html" (dict "night" $n) }}
   </div>
   <div class="prose" id="prose">
     {{ partial "content.html" . }}

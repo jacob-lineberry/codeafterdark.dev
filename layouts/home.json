@@ -2,9 +2,16 @@
 {{- /* The search index (assets/js/search.js). Each post carries its whole text, its date as
        every list shows it, and the moon that night, drawn here so a result matches the post
        lists. The text leaves out the page's own furniture, which search would show in the
-       line a result matched: copy buttons, the # beside headings, and footnote marks. */ -}}
+       line a result matched: the # beside headings and footnote marks. Code, terminal output
+       and diagrams are kept apart from the prose ("code", without their captions and
+       prompts, one block apiece), so a result shows a sentence when it can. */ -}}
 {{- range where site.RegularPages "Section" "in" site.Params.mainSections -}}
 {{- $n := partial "night.html" .Date -}}
+{{- $html := .Content | replaceRE `<a class="?hash"?[^>]*>#</a>|<sup id="?fnref[^>]*>.*?</sup>|<a [^>]*class="?footnote-backref"?[^>]*>[^<]*</a>` "" -}}
+{{- $code := slice }}{{ range findRE `(?s)<pre[^>]*>.*?</pre>` $html }}
+  {{- $code = $code | append (. | replaceRE `<span class="?p"?>[^<]*</span>(<span class="?cmd)` "$1" | replaceRE `<span class="?(?:p|caret)"? aria-hidden="?true"?>[^<]*</span>` "" | plainify | htmlUnescape | strings.TrimSpace) }}
+{{- end -}}
+{{- $prose := $html | replaceRE `(?s)<figure class="?(?:code|term|diagram)"?>.*?</figure>` " " -}}
 {{- $index = $index | append (dict
   "title" .Title
   "permalink" .RelPermalink
@@ -14,7 +21,8 @@
   "moon" (partial "moon.html" $n)
   "minutes" .ReadingTime
   "summary" ((cond (ne .Description "") (.Description | markdownify) .Summary) | plainify | htmlUnescape | truncate 200)
-  "content" (.Content | replaceRE `<button class="copy"[^>]*>[^<]*</button>` " " | replaceRE `<a class="hash"[^>]*>#</a>|<sup id="fnref[^"]*">.*?</sup>|<a [^>]*class="footnote-backref"[^>]*>[^<]*</a>` "" | plainify | htmlUnescape)
+  "content" ($prose | plainify | htmlUnescape)
+  "code" $code
   "tags" (.Params.tags | default slice)
 ) -}}
 {{- end -}}

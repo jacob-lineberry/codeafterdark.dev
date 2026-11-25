@@ -4,7 +4,8 @@
 // Every word typed must be in the post. A word of three letters or fewer (go, cli, tui, mtu)
 // matches only that whole word, or its plural; a longer one matches the start of a word, so
 // rust finds rustc and kube finds kubernetes. A hit in the title counts most, then the tags,
-// the summary and the text. Each result shows the line it matched, with the words marked.
+// the summary, the text and the code. Each result shows the line it matched, with the words
+// marked: a sentence when the words are in the prose, or else the code, set as code.
 // Only when nothing matches, and the query is five letters or more, does Fuse.js look for
 // near misses (a long word with a typo), and the status says they are only close.
 
@@ -18,7 +19,7 @@ const say = (text) => {
 const esc = (s) =>
   String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
-const FIELDS = [["title", 3], ["tags", 2], ["summary", 1.5], ["content", 1]];
+const FIELDS = [["title", 3], ["tags", 2], ["summary", 1.5], ["content", 1], ["code", 0.5]];
 // a letter or digit, in any script
 const ALNUM = "[\\p{L}\\p{N}]";
 const NOT_ALNUM = "[^\\p{L}\\p{N}]";
@@ -27,23 +28,8 @@ const words = (q) => q.toLowerCase().split(/\s+/).filter((w) => w.length > 1);
 // a word at the start of the text or after anything but a letter or digit; group 2 is the word
 const find = (ps, flags = "iu") => new RegExp(`(^|${NOT_ALNUM})(${ps.join("|")})`, flags);
 
-// The line a result matched: its summary if a word is there, or else the passage of the post
-// around the first word found; every word in it marked.
-function excerpt(item, ws) {
-  const any = find(ws.map(pattern));
-  let text = item.summary || "";
-  if (!any.test(text)) {
-    const c = item.content || "", m = any.exec(c);
-    if (m) {
-      const at = m.index + m[1].length;
-      // about a summary's length around it, cut at spaces
-      let a = Math.max(0, at - 50), b = Math.min(c.length, at + 110);
-      const sa = c.indexOf(" ", a), sb = c.lastIndexOf(" ", b);
-      if (a > 0 && sa >= 0 && sa < at) a = sa + 1;
-      if (b < c.length && sb > at) b = sb;
-      text = `${a > 0 ? "…" : ""}${c.slice(a, b).replace(/\s+/g, " ").trim()}${b < c.length ? "…" : ""}`;
-    }
-  }
+// Text with every word found marked, escaped.
+function marked(text, ws) {
   let out = "", last = 0;
   for (const m of text.matchAll(find(ws.map(pattern), "giu"))) {
     const i = m.index + m[1].length;
@@ -51,6 +37,32 @@ function excerpt(item, ws) {
     last = i + m[2].length;
   }
   return out + esc(text.slice(last));
+}
+
+// About a summary's length of text around the first word found, cut at spaces; or null.
+function passage(c, any) {
+  const m = any.exec(c);
+  if (!m) return null;
+  const at = m.index + m[1].length;
+  let a = Math.max(0, at - 50), b = Math.min(c.length, at + 110);
+  const sa = c.indexOf(" ", a), sb = c.lastIndexOf(" ", b);
+  if (a > 0 && sa >= 0 && sa < at) a = sa + 1;
+  if (b < c.length && sb > at) b = sb;
+  return { text: c.slice(a, b).replace(/\s+/g, " ").trim(), before: a > 0 ? "…" : "", after: b < c.length ? "…" : "" };
+}
+
+// The line a result matched: its summary if a word is there, or else the passage of the post
+// around the first word found, or else the passage of the first block of code that has one.
+function excerpt(item, ws) {
+  const any = find(ws.map(pattern));
+  if (any.test(item.summary || "")) return marked(item.summary, ws);
+  const p = passage(item.content || "", any);
+  if (p) return `${p.before}${marked(p.text, ws)}${p.after}`;
+  for (const block of [].concat(item.code || [])) {
+    const c = passage(block, any);
+    if (c) return `${c.before}<code>${marked(c.text, ws)}</code>${c.after}`;
+  }
+  return esc(item.summary || "");
 }
 
 // One result, set like a post in the home page's list (layouts/_partials/post-row.html). The
