@@ -19,7 +19,7 @@
     </p>
     <h1>{{ .Title }}</h1>
     {{- with .Description }}
-    <p class="lede">{{ . }}</p>
+    <p class="lede">{{ . | markdownify }}</p>
     {{- end }}
     {{- with .GetTerms "tags" }}
     <p class="tags">{{ partial "tags.html" $ }}</p>
@@ -44,7 +44,7 @@
   <header class="phead">
     <h1 class="page-title">{{ .Title | lower }}</h1>
     {{- with .Description }}
-    <p class="lede">{{ . }}</p>
+    <p class="lede">{{ . | markdownify }}</p>
     {{- end }}
   </header>
   <div class="side">
@@ -59,7 +59,7 @@
   <header class="page-head">
     <h1>{{ .Title | lower }}</h1>
     {{- with .Description }}
-    <p class="page-sub">{{ . }}</p>
+    <p class="page-sub">{{ . | markdownify }}</p>
     {{- end }}
   </header>
   <div class="prose" id="prose">

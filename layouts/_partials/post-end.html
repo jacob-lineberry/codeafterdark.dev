@@ -1,4 +1,4 @@
-{{- /* The end of a post: who wrote it, on which day and under which moon; then the next read,
+{{- /* The end of a post: signed, with the day and the moon it was written under; then the next read,
        the posts either side and related posts, set like every other list of posts; then, quiet,
        where else to find the writer, the feed, and where to suggest an edit. Takes dict "page"
        and "night". Readers mostly arrive at a single post, so this is where most of them learn
@@ -13,7 +13,10 @@
 <footer class="post-end">
   <div class="signed">
     {{ partial "moon.html" $n }}
-    <p>Written by {{ with site.GetPage "/about" }}<a href="{{ .RelPermalink }}" rel="author">{{ site.Params.author }}</a>{{ else }}{{ site.Params.author }}{{ end }} on {{ $p.Date.Format site.Params.dateFormat }}, under a {{ $n.name }}{{ if not (strings.HasSuffix $n.name "moon") }} moon{{ end }}.</p>
+    {{- /* signed like a journal entry: the first name, lowercase, as the home page says "Hi,
+           I'm Jacob"; the full name is in the page's metadata and the feed */}}
+    {{- $sig := index (split site.Params.author " ") 0 | lower }}
+    <p>— {{ with site.GetPage "/about" }}<a href="{{ .RelPermalink }}" rel="author">{{ $sig }}</a>{{ else }}{{ $sig }}{{ end }}, <time datetime="{{ $p.Date.Format "2006-01-02" }}">{{ $p.Date.Format site.Params.dateFormat }}</time>, under a {{ $n.name }}{{ if not (strings.HasSuffix $n.name "moon") }} moon{{ end }}.</p>
   </div>
 
   {{- if or $newer $older }}

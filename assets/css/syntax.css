@@ -41,8 +41,11 @@
 .chroma .p { color: var(--sx-punctuation); }
 
 /* Generic: diffs, prompts, output */
-.chroma .gd { color: var(--removed); background: color-mix(in srgb, var(--removed) 12%, transparent); }
-.chroma .gi { color: var(--added); background: color-mix(in srgb, var(--added) 12%, transparent); }
+.chroma .gd { color: var(--removed); }
+.chroma .gi { color: var(--added); }
+/* the whole line is marked, not just its text */
+.chroma .line:has(.gd) { background: color-mix(in srgb, var(--removed) 12%, transparent); }
+.chroma .line:has(.gi) { background: color-mix(in srgb, var(--added) 12%, transparent); }
 .chroma :is(.gh, .gu) { color: var(--brand); font-weight: 600; }
 .chroma .gp { color: var(--brand); user-select: none; -webkit-user-select: none; }
 .chroma .go { color: var(--soft); }

@@ -391,7 +391,8 @@ kbd {
    the date as the other dots are from their words */
 .meta > .when::after { margin-left: 0.1rem; }
 .when .moon { width: 13px; height: 13px; }
-.when time, .updated time { text-transform: lowercase; }
+/* dates are lowercase across the blog, in the byline's sentence too */
+.when time, .updated time, .signed time { text-transform: lowercase; }
 .post-row .meta .tags { gap: 0; }
 .post-row .meta .tag .th { display: none; }
 .post-row .meta .tag + .tag::before { content: "·" / ""; margin: 0 0.6rem; color: var(--subtle); }
@@ -492,7 +493,10 @@ kbd {
 .results { list-style: none; margin: 1.2rem 0 0; padding: 0; }
 .results li { border-top: 1px solid var(--line-soft); }
 .results a { display: block; padding: 1rem 0.75rem; margin: 0 -0.75rem; border-radius: 8px; text-decoration: none; }
-.results a:hover, .results li[data-selected] a { background: var(--surface); }
+.results a:hover { background: var(--surface); }
+/* the first result is what Enter opens; marked where there's a keyboard-and-mouse, not on a
+   touch screen, where it would look stuck */
+@media (hover: hover) { .results li[data-selected] a { background: var(--surface); } }
 .results a:hover .r-title { color: var(--action); }
 /* a result is set like a post on the home page: the title, the summary, then the moon and
    the date, the minutes and the tags */
@@ -684,13 +688,15 @@ kbd {
 .prose dl { margin-top: 1.6em; }
 .prose dt { font-weight: 650; color: var(--text-hi); }
 .prose dd { margin: 0.2rem 0 1rem 1.2rem; }
-.prose sup a, .footnote-ref { font: 0.72em var(--mono); text-decoration: none; padding: 0 0.1em; }
-.footnotes { margin-top: 3em; font-size: 0.92rem; color: var(--soft); }
+/* the footnote marks are tiny; padding gives a finger a 24px target and the negative margin
+   gives the room back, so the line doesn't move */
+.prose sup a, .footnote-ref { font: 0.72em var(--mono); text-decoration: none; padding: 0.55em 0.8em; margin: -0.55em -0.7em; }
+.footnotes { margin-top: 3em; font-size: 0.85em; color: var(--soft); }
 .footnotes hr { margin: 0 0 1.2rem; height: 1px; border: 0; background: var(--line-soft); }
 .footnotes ol { padding-left: 1.2rem; }
 .footnotes p { margin: 0; }
 /* underlined like every link in the text, so it is not told apart by colour alone */
-.footnote-backref { margin-left: 0.25em; }
+.footnote-backref { padding: 0.3em 0.45em; margin: -0.3em -0.45em -0.3em -0.2em; }
 
 /* figures */
 .fig { margin: 2.2em 0; }
@@ -822,7 +828,7 @@ kbd {
 .term .p { color: var(--brand); user-select: none; -webkit-user-select: none; }
 .term .cmd { color: var(--action); }
 .term .w { color: var(--warning); }
-.term .x { color: var(--err-text); }
+.term .x { color: var(--error); }
 .term .caret {
   display: inline-block;
   width: 0.6em;
@@ -910,7 +916,10 @@ kbd {
     border-radius: 10px;
   }
   /* the whole bar opens it, not just the word */
-  .toc summary { margin: 0; padding: 0.9rem 1.1rem; cursor: pointer; font-size: 0.9rem; color: var(--soft); }
+  .toc summary { display: flex; align-items: center; justify-content: space-between; margin: 0; padding: 0.9rem 1.1rem; cursor: pointer; font-size: 0.9rem; color: var(--soft); }
+  /* a chevron, so the bar reads as something that opens: down when folded, up when open */
+  .toc summary::after { content: ""; width: 0.45em; height: 0.45em; margin: 0 0.2em 0.25em 0; border: solid var(--subtle); border-width: 0 1.5px 1.5px 0; rotate: 45deg; }
+  .toc details[open] summary::after { margin: 0.25em 0.2em 0 0; rotate: -135deg; }
   .toc[open] summary { padding-bottom: 0.7rem; }
   .toc ol { margin: 0 1.1rem 0.9rem; }
   .post > .prose { margin-top: 2.5rem; }
@@ -941,11 +950,19 @@ kbd {
   /* a number hangs left of its line, and a phone's margin is too narrow to hold it */
   .prose ol { padding-left: 2rem; }
   .footnotes ol { padding-left: 1.75rem; }
+  /* what was playing wraps rather than being cut short: a phone can't hover for the title */
+  .np { align-items: flex-start; }
+  .np-label { margin-top: 0.25rem; }
+  .np-track { white-space: normal; margin-top: 0.25rem; }
+  /* a cell keeps some width, so a table scrolls sideways before its words stack up; a
+     number column (set right-aligned) needs less */
+  .prose :is(th, td) { min-width: 8em; }
+  .prose :is(th, td).a-right { min-width: 4.5em; }
   /* a drawn diagram shrinks to three quarters of its size at most, so its text stays near
      12px; wider than the column, it scrolls (site.js marks the edge that hides more) */
   .diagram .mermaid svg { min-width: calc(var(--w, 0) * 0.75px); }
 }
-/* short screens: a smaller room, so the first post still shows */
+/* short screens: a smaller room, so the list starts sooner */
 @media (min-width: 641px) and (max-height: 820px) {
   .room { max-width: 740px; }
   .intro { margin-top: 1.5rem; }

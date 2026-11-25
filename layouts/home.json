@@ -13,7 +13,7 @@
   "night" (printf "%s, %v%% lit" $n.name $n.lit)
   "moon" (partial "moon.html" $n)
   "minutes" .ReadingTime
-  "summary" (.Description | default (.Summary | plainify | htmlUnescape) | truncate 200)
+  "summary" ((cond (ne .Description "") (.Description | markdownify) .Summary) | plainify | htmlUnescape | truncate 200)
   "content" (.Content | replaceRE `<button class="copy"[^>]*>[^<]*</button>` " " | replaceRE `<a class="hash"[^>]*>#</a>|<sup id="fnref[^"]*">.*?</sup>|<a [^>]*class="footnote-backref"[^>]*>[^<]*</a>` "" | plainify | htmlUnescape)
   "tags" (.Params.tags | default slice)
 ) -}}
