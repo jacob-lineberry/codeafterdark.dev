@@ -381,7 +381,7 @@ kbd {
   font-variant-numeric: tabular-nums;
 }
 /* Recursive Mono sets data with honest glyphs, as it does code */
-.brand, .meta, .phead .tags, .terms a, .year-h span, .posts.compact :is(.when, .mins), .np-track, .edit .rev, .code figcaption, .term figcaption {
+.brand, .meta, .phead .tags, .terms a, .year-h span, .posts.compact :is(.when, .mins), .np-track, .code figcaption, .term figcaption {
   font-variant-ligatures: none;
   font-feature-settings: "calt" 0, "liga" 0;
 }
@@ -874,16 +874,12 @@ kbd {
 .related a { font: 650 1.08rem/1.3 var(--display); color: var(--text-hi); text-decoration: none; }
 .related a:hover { color: var(--action); }
 .related .meta { margin-top: 0.15rem; }
-/* last and quiet: where else to find the writer, the feed, and where to suggest an edit */
+/* last and quiet: where else to find the writer, and the feed */
 .after { margin-top: 2.6rem; padding-top: 1.2rem; border-top: 1px solid var(--line-soft); }
 .after .links { justify-content: flex-start; gap: 0.2rem 1.25rem; margin: 0; font-size: 0.88rem; }
 .after .links a { color: var(--subtle); }
 .after .links .sub { margin-block: 0; }
 .after .links a:hover { color: var(--action); }
-.edit { display: flex; flex-wrap: wrap; gap: 0.4rem 1.4rem; margin: 0.9rem 0 0; font-size: 0.82rem; color: var(--subtle); }
-.edit a { color: var(--subtle); text-decoration-color: var(--line); }
-.edit a:hover { color: var(--action); }
-.edit .rev { font-family: var(--mono); font-size: 0.8rem; }
 
 /* ---- the footer -------------------------------------------------------------------- */
 
